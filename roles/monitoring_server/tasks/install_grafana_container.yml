@@ -1,0 +1,43 @@
+---
+- name: Ensure grafana's directory exists - {{ grafana.external_data_dir }}
+  ansible.builtin.file:
+    path: "{{ grafana.external_data_dir }}"
+    owner: "{{ monitoring_server.owner }}"
+    group: "{{ monitoring_server.group }}"
+    mode: "0700"
+    state: directory
+  notify:
+    - Restart grafana
+
+- name: Ensure grafana's storage directory exists
+  ansible.builtin.file:
+    path: "{{ grafana.external_storage_dir }}"
+    state: directory
+    owner: "{{ monitoring_server.owner }}"
+    group: "{{ monitoring_server.group }}"
+    mode: "0744"
+
+- name: Copy datasource file to grafana
+  ansible.builtin.template:
+    src: templates/datasources.yml.j2
+    dest: "{{ grafana.external_datasource }}"
+    owner: "{{ monitoring_server.owner }}"
+    group: "{{ monitoring_server.group }}"
+    mode: "0644"
+  notify:
+    - Restart grafana
+
+- name: Start Grafana container
+  community.docker.docker_container:
+    name: "{{ grafana.container_name }}"
+    hostname: "{{ grafana.container_name }}"
+    image: "{{ grafana.image }}"
+    state: started
+    user: "{{ monitoring_server.uid }}:{{ monitoring_server.gid }}"
+    volumes:
+      - "{{ grafana.external_storage_dir }}:{{ grafana.volume }}"
+      - "{{ grafana.external_datasource }}:{{ grafana.volume_datasource }}"
+    networks:
+      - name: monitor-net
+    env: "{{ grafana.environment_variables }}"
+    restart_policy: always

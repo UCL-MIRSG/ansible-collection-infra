@@ -1,0 +1,3 @@
+---
+docker_generate_certificates: true
+docker_client_hostnames: ["docker-client.com"]

@@ -1,0 +1,44 @@
+---
+- name: Ensure base mirrorlist is in repository file (CentOS)
+  community.general.ini_file:
+    path: /etc/yum.repos.d/CentOS-Base.repo
+    section: base
+    option: mirrorlist
+    value: http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=os
+    backup: true
+    mode: 0644
+
+- name: Ensure updates mirrorlist is in repository file (CentOS)
+  community.general.ini_file:
+    path: /etc/yum.repos.d/CentOS-Base.repo
+    section: updates
+    option: mirrorlist
+    value: http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=updates
+    backup: true
+    mode: 0644
+
+- name: Check if locale already set
+  ansible.builtin.shell: |
+    set -o pipefail
+    localectl status | grep -i {{ server_locale | quote }}
+  register: found_locale
+  changed_when: false
+  failed_when: false
+
+- name: Install and set locale
+  when: found_locale.rc != 0
+  block:
+    - name: Allow install of other locales
+      ansible.builtin.lineinfile:
+        path: /etc/yum.conf
+        search_string: "override_install_langs=en_US.utf8"
+        state: absent
+
+    - name: Install locales # noqa: package-latest
+      ansible.builtin.yum:
+        name: glibc-common
+        state: latest
+
+    - name: Set locale
+      ansible.builtin.command: "localectl set-locale LANG={{ server_locale | quote }}"
+      changed_when: false

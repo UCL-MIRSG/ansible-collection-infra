@@ -1,0 +1,78 @@
+---
+# tasks file for ../ansible-role-firewalld
+- name: Make sure firewalld service is enabled
+  ansible.builtin.systemd:
+    name: firewalld
+    enabled: true
+
+- name: Make sure firewalld service is started
+  ansible.builtin.systemd:
+    name: firewalld
+    state: started
+
+- name: Close zones to services
+  become: true
+  ansible.posix.firewalld:
+    zone: "{{ item.0.key }}"
+    service: "{{ item.1 }}"
+    immediate: true
+    permanent: true
+    state: disabled
+  loop: "{{ close_zone_services | dict2items | subelements('value') }}"
+
+- name: Open zones to services
+  become: true
+  ansible.posix.firewalld:
+    zone: "{{ item.0.key }}"
+    service: "{{ item.1 }}"
+    immediate: true
+    permanent: true
+    state: enabled
+  loop: "{{ open_zone_services | dict2items | subelements('value') }}"
+
+- name: Open zones to sources
+  become: true
+  ansible.posix.firewalld:
+    zone: "{{ item.0.key }}"
+    source: "{{ item.1 }}"
+    permanent: true
+    immediate: true
+    state: enabled
+  loop: "{{ zone_sources | dict2items | subelements('value') }}"
+
+- name: Open zones to ports
+  become: true
+  ansible.posix.firewalld:
+    zone: "{{ item.0.key }}"
+    port: "{{ item.1 }}/tcp"
+    immediate: true
+    permanent: true
+    state: enabled
+  loop: "{{ zone_ports | dict2items | subelements('value') }}"
+
+- name: Add firewall rich rules
+  become: true
+  ansible.posix.firewalld:
+    rich_rule: "rule {{ item.rule }}"
+    zone: "{{ item.zone }}"
+    permanent: true
+    immediate: true
+    state: enabled
+  loop: "{{ rich_rules | default([]) }}"
+
+- name: Check firewall default zone
+  become: true
+  ansible.builtin.shell: |
+    set -o pipefail
+    firewall-cmd --get-default-zone | grep -i {% if allow_public_access %}public{% else %}drop{% endif %}
+  register: firewall_default_zone
+  changed_when: firewall_default_zone.rc != 0
+  failed_when: false
+
+- name: Allow or drop default connections
+  become: true
+  ansible.builtin.command: >-
+    firewall-cmd
+    --set-default-zone={% if allow_public_access %}public{% else %}drop{% endif %}
+  when: firewall_default_zone.rc != 0
+  changed_when: firewall_default_zone.rc != 0

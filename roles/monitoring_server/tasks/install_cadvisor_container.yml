@@ -1,0 +1,22 @@
+---
+- name: Start cadvisor container
+  community.docker.docker_container:
+    name: "{{ cadvisor.container_name }}"
+    hostname: "{{ cadvisor.container_name }}"
+    image: "{{ cadvisor.image }}"
+    state: started
+    user: "{{ monitoring_server.uid }}:{{ monitoring_server.gid }}"
+    networks:
+      - name: monitor-net
+    command:
+      - "-url_base_prefix=/cadvisor"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /etc/machine-id:/etc/machine-id:ro
+      - /var/lib/dbus/machine-id:/var/lib/dbus/machine-id:ro
+    devices:
+      - /dev/kmsg:/dev/kmsg
+    restart_policy: always

@@ -1,0 +1,64 @@
+---
+- name: Find limited hosts that exist in monitoring_service group
+  ansible.builtin.set_fact:
+    # loop through the list and concatenate the result
+    # the default([]) means use the empty list if list doesn't exist
+    # add to this the ansible group corresponding to the given item
+    # then perform the intersection with the monitoring_service group
+    # the final step gets the URL from the host
+    monitoring_service_clients: >
+      {{
+      monitoring_service_clients |
+      default([]) +
+      groups[item] |
+      intersect(groups['monitoring_service']) |
+      map('extract', hostvars, 'ansible_host')
+      }}
+  with_items:
+    # converts the string to a list
+    - "{{ ansible_limit.split(',') }}"
+
+- name: Ensure monitoring cert dir exists on server
+  ansible.builtin.file:
+    path: "{{ monitoring_server.client_cert_dir }}"
+    state: directory
+    owner: "{{ monitoring_server.cert_owner }}"
+    group: "{{ monitoring_server.cert_group }}"
+    mode: "0700"
+
+- name: Copy monitoring client CSRs to server
+  ansible.builtin.copy:
+    src: "{{ monitoring_temp_files_cert_dir }}/{{ item }}.csr"
+    dest: "{{ monitoring_server.client_cert_dir }}/{{ item }}.csr"
+    owner: "{{ monitoring_server.cert_owner }}"
+    group: "{{ monitoring_server.cert_group }}"
+    mode: "0600"
+  loop: "{{ monitoring_service_clients }}"
+
+- name: Generate client certificates signed by server CA
+  community.crypto.x509_certificate:
+    path: "{{ monitoring_server.client_cert_dir }}/{{ item }}.cert"
+    csr_path: "{{ monitoring_server.client_cert_dir }}/{{ item }}.csr"
+    provider: ownca
+    ownca_path: "{{ docker.ca_cert }}"
+    ownca_privatekey_path: "{{ docker.ca_key }}"
+    mode: "0400"
+    owner: "{{ monitoring_server.cert_owner }}"
+    group: "{{ monitoring_server.cert_group }}"
+  loop: "{{ monitoring_service_clients }}"
+
+- name: Copy signed client certificates
+  ansible.builtin.fetch:
+    src: "{{ monitoring_server.client_cert_dir }}/{{ item }}.cert"
+    dest: "{{ monitoring_temp_files_cert_dir }}/{{ item }}.cert"
+    flat: true
+  loop: "{{ monitoring_service_clients }}"
+
+- name: Copy server certificate
+  ansible.builtin.fetch:
+    src: "{{ docker.ca_cert }}"
+    dest: "{{ monitoring_temp_files_cert_dir }}/ca.pem"
+    owner: "{{ monitoring_server.cert_owner }}"
+    group: "{{ monitoring_server.cert_group }}"
+    mode: "0600"
+    flat: true

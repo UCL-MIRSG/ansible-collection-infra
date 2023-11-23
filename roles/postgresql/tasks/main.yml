@@ -1,0 +1,202 @@
+---
+# tasks file for postgresql
+- name: Setup for RedHat 7 - install sefcontext dependencies and psycopg2
+  ansible.builtin.yum:
+    name:
+      - libselinux-python
+      - policycoreutils-python
+      - python-psycopg2
+    state: installed
+  when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] is version('7')
+
+- name: Setup for RedHat 8+ - install sefcontext dependencies and psycopg2
+  ansible.builtin.yum:
+    name:
+      - python3-libselinux
+      - policycoreutils-python-utils
+      - python3-psycopg2
+    state: installed
+  when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] is version('7', '>')
+
+- name: Ensure postgres RPM is installed
+  ansible.builtin.yum:
+    name: "{{ postgresql_install.rpm }}"
+    state: present
+    disable_gpg_check: "{{ postgresql_install.disable_gpg_check }}"
+
+- name: Ensure postgresql is installed
+  ansible.builtin.yum:
+    name: "{{ postgresql_install.yum_package }}"
+    state: installed
+
+- name: Ensure postgresql contrib is installed
+  ansible.builtin.yum:
+    name: "{{ postgresql_install.yum_contrib_package }}"
+    state: installed
+  when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] is version('7')
+
+- name: Ensure postgresql is not running during configuration change
+  ansible.builtin.service:
+    name: "{{ postgresql_service.name }}"
+    state: stopped
+  changed_when: false
+
+- name: Ensure postgresql service configuration directory exists
+  ansible.builtin.file:
+    path: "{{ postgresql_service.directory }}"
+    owner: "root"
+    group: "root"
+    state: directory
+    mode: 0755
+
+- name: Set custom postgresql service configuration
+  ansible.builtin.template:
+    src: postgresql.service.j2
+    dest: "{{ postgresql_service.filename }}"
+    owner: "root"
+    group: "root"
+    mode: 0644
+  register: postgresql_custom_service_config
+
+- name: Ensure postgresql storage subdirectory exists
+  ansible.builtin.file:
+    path: "{{ postgresql_storage.storage_directory }}"
+    owner: "{{ postgresql.owner }}"
+    group: "{{ postgresql.group }}"
+    state: directory
+    mode: 0700
+
+- name: Ensure postgres storage data subdirectory exists
+  ansible.builtin.file:
+    path: "{{ postgresql_storage.data_directory }}"
+    owner: "{{ postgresql.owner }}"
+    group: "{{ postgresql.group }}"
+    state: directory
+    mode: 0700
+
+- name: Ensure postgresql base directory exists - {{ postgresql.base_directory }}
+  ansible.builtin.file:
+    path: "{{ postgresql.base_directory }}"
+    owner: "{{ postgresql.owner }}"
+    group: "{{ postgresql.group }}"
+    state: directory
+    mode: 0700
+
+- name: Ensure postgresql logging directory exists
+  ansible.builtin.file:
+    path: "{{ postgresql.log_directory }}"
+    owner: "{{ postgresql.owner }}"
+    group: "{{ postgresql.group }}"
+    state: directory
+    mode: 0700
+
+- name: Check the status of the postgresql data directory symlink
+  ansible.builtin.stat:
+    path: "{{ postgresql.data_directory }}"
+  register: postgresql_data_directory_exists
+
+- name: Check if postgreql data directory is empty
+  ansible.builtin.find:
+    paths: "{{ postgresql.data_directory }}"
+    patterns: "*.*"
+  register: postgresql_data_files
+
+- name: Remove empty postgresql data directory (if a folder and not a symlink)
+  ansible.builtin.file:
+    path: "{{ postgresql.data_directory }}"
+    state: absent
+  when: postgresql_data_directory_exists.stat.isdir is defined and postgresql_data_directory_exists.stat.isdir and postgresql_data_files.matched | int == 0
+
+- name: Ensure there is a symbolic link from postgresql data_directory to storage
+  ansible.builtin.file:
+    src: "{{ postgresql_storage.data_directory }}"
+    dest: "{{ postgresql.data_directory }}"
+    state: link
+  when: postgresql_storage.data_directory != postgresql.data_directory
+
+- name: Create PostgreSQL database directory if it does not already exist
+  ansible.builtin.command: "{{ postgresql.setup_command }} initdb"
+  environment:
+    PATH: "$PATH:/sbin:/bin"
+  args:
+    creates: "{{ postgresql.data_directory }}/PG_VERSION"
+
+- name: Ensure postgresql configuration directory exists
+  ansible.builtin.file:
+    path: "{{ postgresql.configuration_directory }}"
+    owner: "{{ postgresql.owner }}"
+    group: "{{ postgresql.group }}"
+    state: directory
+    mode: 0700
+
+- name: Set postgresql host-based authentication configuration
+  ansible.builtin.template:
+    src: pg_hba.conf.j2
+    dest: "{{ postgresql.hba_configuration_filename }}"
+    owner: "{{ postgresql.owner }}"
+    group: "{{ postgresql.group }}"
+    mode: 0640
+
+- name: Set postgresql configuration
+  ansible.builtin.template:
+    src: postgresql.conf.j2
+    dest: "{{ postgresql.configuration_filename }}"
+    owner: "{{ postgresql.owner }}"
+    group: "{{ postgresql.group }}"
+    mode: 0640
+
+- name: Noop to restart postgresql
+  tags: restart
+  ansible.builtin.debug:
+    msg: trigger postgresql restart
+  notify: Restart postgresql
+  changed_when: false
+
+- name: Setup SSL
+  when: postgresql_use_ssl
+  notify: Restart postgresql
+  block:
+    - name: Generate postgresql server certificate
+      ansible.builtin.include_role:
+        name: mirsg.ssl_certificates
+      vars:
+        ssl_certificate: "{{ postgresql_ssl_certificate }}" # noqa: var-naming[no-role-prefix]
+
+    - name: Get postgresql client certificate from cache
+      ansible.builtin.copy:
+        src: "{{ database_client_certificate_cache_filename }}"
+        dest: "{{ postgresql_connection.client_certificate_filename }}"
+        owner: "{{ postgresql.owner }}"
+        group: "{{ postgresql.group }}"
+        mode: 0600
+
+- name: Allow postgresql to modify files in data directory
+  community.general.sefcontext:
+    target: "{{ postgresql.base_directory }}(/.*)?"
+    setype: postgresql_db_t
+    state: present
+  notify: Restore selinux contexts
+  when: selinux_enabled
+
+- name: "Ensure that any required restore of selinux contexts happens before postgres starts"
+  ansible.builtin.meta: flush_handlers
+
+- name: Ensure postgresql is running
+  ansible.builtin.service:
+    name: "{{ postgresql_service.name }}"
+    state: started
+    enabled: true
+  changed_when: false
+
+- name: Reload service daemon if custom service config changed # noqa no-handler
+  ansible.builtin.service:
+    name: "{{ postgresql_service.name }}"
+    state: reloaded
+  when: postgresql_custom_service_config.changed
+
+- name: Configure cron job for automatic postgres backups
+  ansible.builtin.include_tasks: configure_cron_backup.yml
+
+- name: Create databse
+  ansible.builtin.include_tasks:
+    file: create_database.yml

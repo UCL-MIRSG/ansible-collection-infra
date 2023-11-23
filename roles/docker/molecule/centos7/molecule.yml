@@ -1,0 +1,41 @@
+---
+dependency:
+  name: galaxy
+  options:
+    requirements-file: meta/collections.yml
+    force: true
+
+driver:
+  name: docker
+
+platforms:
+  - name: server
+    image: centos:7
+    dockerfile: ../resources/Dockerfile.j2
+    command: ""
+    cgroupns_mode: host
+    privileged: true
+
+provisioner:
+  name: ansible
+  log: true
+  config_options:
+    defaults:
+      callbacks_enabled: profile_tasks, timer, yaml
+  inventory:
+    links:
+      host_vars: ../resources/inventory/host_vars/
+  playbooks:
+    prepare: ./prepare.yml
+    converge: ../resources/converge.yml
+  env:
+    ANSIBLE_VERBOSITY: "1"
+verifier:
+  name: ansible
+  env:
+    ANSIBLE_VERBOSITY: "1"
+
+lint: |
+  set -e
+  yamllint .
+  ansible-lint .

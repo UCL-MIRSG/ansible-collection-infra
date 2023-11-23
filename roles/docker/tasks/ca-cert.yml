@@ -1,0 +1,36 @@
+---
+- name: Ensure docker cert dir exists
+  ansible.builtin.file:
+    path: "{{ docker_certificate_directory }}"
+    state: directory
+    owner: "{{ docker_owner }}"
+    group: "{{ docker_group }}"
+    mode: "0700"
+
+- name: Generate CA private key
+  community.crypto.openssl_privatekey:
+    path: "{{ docker_ca_key }}"
+    owner: "{{ docker_owner }}"
+    group: "{{ docker_group }}"
+    mode: "0400"
+
+- name: Generate CA CSR
+  community.crypto.openssl_csr:
+    path: "{{ docker_ca_csr }}"
+    privatekey_path: "{{ docker_ca_key }}"
+    common_name: "{{ docker_server_hostname }}"
+    subject_alt_name: "IP:{{ docker_server_ip }}"
+    basic_constraints_critical: true
+    basic_constraints: ["CA:TRUE"]
+
+- name: Generate self-signed CA certificate
+  community.crypto.x509_certificate:
+    path: "{{ docker_ca_cert }}"
+    privatekey_path: "{{ docker_ca_key }}"
+    csr_path: "{{ docker_ca_csr }}"
+    provider: selfsigned
+    owner: "{{ docker_owner }}"
+    group: "{{ docker_group }}"
+    mode: "0400"
+  notify:
+    - Restart docker

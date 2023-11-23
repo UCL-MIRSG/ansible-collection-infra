@@ -1,0 +1,91 @@
+---
+- name: Create Node exporter folder
+  ansible.builtin.file:
+    owner: "{{ monitoring_client.owner }}"
+    group: "{{ monitoring_client.group }}"
+    path: "{{ node_exporter.install_dir }}"
+    state: directory
+    mode: "0777"
+
+- name: Download and unarchive node_exporter
+  ansible.builtin.unarchive:
+    src: "{{ node_exporter.binary_url }}"
+    dest: "{{ node_exporter.install_dir }}"
+    remote_src: true
+    owner: "{{ monitoring_client.owner }}"
+    group: "{{ monitoring_client.group }}"
+    extra_opts: "--strip-components=1"
+    creates: "{{ node_exporter.install_dir }}/node_exporter"
+
+- name: Copy monitoring client crt and key files to node_exporter folder
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ monitoring_client.owner }}"
+    group: "{{ monitoring_client.group }}"
+    mode: "0600"
+    remote_src: true
+  with_items:
+    - src: "{{ monitoring_client.ssl_key_file }}"
+      dest: "{{ node_exporter.ssl_key_file }}"
+    - src: "{{ monitoring_client.ssl_cert_file }}"
+      dest: "{{ node_exporter.ssl_cert_file }}"
+
+- name: Copy node_exporter service file
+  ansible.builtin.template:
+    src: templates/node_exporter.service.j2
+    dest: "{{ node_exporter.service_config_file }}"
+    mode: "0644"
+  when: ansible_service_mgr == "systemd"
+
+- name: Start and enable node_exporter
+  ansible.builtin.service:
+    daemon_reload: true
+    name: node_exporter
+    state: started
+    enabled: true
+  when: ansible_service_mgr == "systemd"
+
+- name: Check 'passlib' is installed on the Ansible controller
+  delegate_to: localhost
+  run_once: true
+  changed_when: false
+  ansible.builtin.shell: |
+    set -o pipefail
+    {{ ansible_playbook_python }} -m pip freeze | grep passlib
+  register: passlib_exists
+  # grep returns error code 2 for exceptions, otherwise don't want failure
+  # https://stackoverflow.com/a/41010653/7359333
+  failed_when: "passlib_exists.rc == 2"
+
+- name: Fail if 'passlib' is missing on the Ansible controller
+  run_once: true
+  ansible.builtin.fail:
+    msg: >
+      'bcrypt' algorithm requires 'passlib' on the Ansible controller,
+      run `python -m pip install passlib` and re-run the script
+  when: "passlib_exists.rc == 1"
+
+- name: Copy node_exporter web config file
+  ansible.builtin.template:
+    src: templates/node_exporter_web.yml.j2
+    dest: "{{ node_exporter.web_config_file }}"
+    mode: "0644"
+  notify:
+    - Restart node_exporter
+
+- name: Add monitoring server to internal zone
+  ansible.posix.firewalld:
+    zone: internal
+    source: "{{ monitoring_service.server.ip }}"
+    permanent: true
+    immediate: true
+    state: enabled
+
+- name: Open internal node_exporter port to monitoring server
+  ansible.posix.firewalld:
+    rich_rule: "rule family=ipv4 source address={{ monitoring_service.server.ip }}/32 port protocol=tcp port={{ node_exporter.port }} accept"
+    zone: internal
+    permanent: true
+    immediate: true
+    state: enabled

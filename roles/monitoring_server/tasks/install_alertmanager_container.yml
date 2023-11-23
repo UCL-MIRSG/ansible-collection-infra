@@ -1,0 +1,32 @@
+---
+- name: Ensure alertmanager data directory exists - {{ alertmanager.external_data_dir }}
+  ansible.builtin.file:
+    path: "{{ alertmanager.external_data_dir }}"
+    owner: "{{ monitoring_server.owner }}"
+    group: "{{ monitoring_server.group }}"
+    state: directory
+    mode: "0700"
+
+- name: Copy alertmanager config file
+  ansible.builtin.template:
+    src: templates/alertmanager.yml.j2
+    dest: "{{ alertmanager.external_data_dir }}/alertmanager.yml"
+    owner: root
+    mode: "0644"
+
+- name: Start alertmanager container
+  community.docker.docker_container:
+    name: "{{ alertmanager.container_name }}"
+    hostname: "{{ alertmanager.container_name }}"
+    image: "{{ alertmanager.image }}"
+    state: started
+    user: "{{ monitoring_server.uid }}:{{ monitoring_server.gid }}"
+    command: "{% for key in alertmanager.commandline_args %}--{{ key }}={{ alertmanager.commandline_args[key] }} {% endfor %}"
+    networks:
+      - name: monitor-net
+    volumes:
+      - "{{ alertmanager.external_data_dir }}:{{ alertmanager.volume }}"
+    restart_policy: always
+  notify:
+    - Restart prometheus
+    - Restart grafana

@@ -1,0 +1,30 @@
+---
+- name: Prepare
+  hosts: all
+  become: false
+  gather_facts: true
+  tasks:
+    - name: Install EPEL-release
+      ansible.builtin.yum:
+        name: "epel-release"
+        state: installed
+
+    - name: Install Python
+      ansible.builtin.package:
+        name: "{{ item }}"
+        update_cache: true
+        state: present
+      loop:
+        - python3
+        - python3-pip
+        - python3-setuptools
+
+    - name: Update pip
+      ansible.builtin.pip:
+        name: pip
+        version: "21.3.1"
+
+    - name: Install cryptography with pip - needed to generate certificates
+      ansible.builtin.pip:
+        name:
+          - cryptography

@@ -1,0 +1,74 @@
+---
+- name: Ensure python-passlib is installed
+  ansible.builtin.yum:
+    name: "python-passlib"
+    state: installed
+
+- name: Ensure nginx certs directory exists on host
+  ansible.builtin.file:
+    path: "{{ nginx_monitoring_server.certs_dir }}"
+    owner: "{{ nginx_monitoring_server.owner }}"
+    group: "{{ nginx_monitoring_server.group }}"
+    state: directory
+    mode: "0700"
+
+- name: Add a user to a password file and ensure permissions are set
+  community.general.htpasswd:
+    path: /etc/nginx/.htpasswd
+    name: "{{ monitoring_server.admin.username }}"
+    password: "{{ monitoring_server.admin.password }}"
+    owner: "{{ nginx_monitoring_server.owner }}"
+    group: "{{ nginx_monitoring_server.group }}"
+    mode: "0644"
+
+- name: Copy server certificates to nginx
+  ansible.builtin.copy:
+    remote_src: true
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ nginx_monitoring_server.owner }}"
+    group: "{{ nginx_monitoring_server.group }}"
+    mode: "0644"
+  with_items:
+    - src: "{{ monitoring_server.ssl.server_cert }}"
+      dest: "{{ nginx_monitoring_server.ssl_cert_file }}"
+    - src: "{{ monitoring_server.ssl.server_key }}"
+      dest: "{{ nginx_monitoring_server.ssl_key_file }}"
+  notify:
+    - Restart nginx
+
+- name: Generate Diffie-Hellman (DH) parameters with bits - {{ diffie_helman_size_bits }}
+  community.crypto.openssl_dhparam:
+    path: "{{ nginx_monitoring_server.dh_params_file }}"
+    size: "{{ diffie_helman_size_bits }}"
+  notify:
+    - Restart nginx
+
+- name: Copy nginx config file
+  ansible.builtin.template:
+    src: "nginx_monitoring_server.j2"
+    dest: "{{ nginx_monitoring_server.conf_file }}"
+    owner: "{{ nginx_monitoring_server.owner }}"
+    group: "{{ nginx_monitoring_server.group }}"
+    mode: "0644"
+    force: true
+  notify:
+    - Restart nginx
+
+- name: Start Nginx container
+  community.docker.docker_container:
+    name: nginx
+    hostname: nginx
+    image: nginx
+    state: started
+    networks:
+      - name: monitor-net
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/etc/nginx/.htpasswd:/etc/nginx/.htpasswd"
+      - "{{ nginx_monitoring_server.conf_file }}:/etc/nginx/nginx.conf:ro"
+      - "{{ nginx_monitoring_server.certs_dir }}:/etc/nginx/ssl"
+      - "{{ nginx_monitoring_server.log_folder }}:/var/log/nginx"
+    restart_policy: always

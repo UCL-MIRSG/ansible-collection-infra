@@ -1,0 +1,17 @@
+name: Linting
+
+on:
+  push:
+    branches:
+      - main
+      - "renovate/**"
+  pull_request:
+
+jobs:
+  linting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: UCL-MIRSG/.github/actions/linting@v0.36.0
+        with:
+          ansible-roles-config: ./meta/requirements.yml
+          pre-commit-config: ./.pre-commit-config.yaml

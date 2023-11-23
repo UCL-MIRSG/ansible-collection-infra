@@ -1,0 +1,40 @@
+---
+# defaults for mirsg.docker
+docker_owner: "root"
+docker_group: "root"
+
+# mirsg.docker service
+docker_service_directory: "/etc/systemd/system/docker.service.d"
+docker_service_name: "docker"
+
+# mirsg.docker install
+docker_rpm_gpg_key_url: "https://download.docker.com/linux/centos/gpg"
+docker_repo_baseurl: "https://download.docker.com/linux/centos/$releasever/$basearch/stable"
+docker_yum_package: "docker"
+
+# mirsg.docker certificates
+docker_generate_certificates: false
+docker_certificate_directory: "/home/docker/.docker"
+
+# mirsg.docker configuration
+docker_config_dir: "/etc/docker"
+docker_daemon_conf_file: "/etc/docker/daemon.json"
+docker_server_hostname: "{{ ansible_host }}"
+docker_server_ip: "0.0.0.0"
+docker_server_port: "2376"
+docker_tls_verify: true
+
+# mirsg.docker CA certificate
+docker_ca_key: "{{ docker_certificate_directory }}/ca.key"
+docker_ca_csr: "{{ docker_certificate_directory }}/ca.csr"
+docker_ca_cert: "{{ docker_certificate_directory }}/ca.pem"
+
+# mirsg.docker server certificate
+docker_server_key: "{{ docker_certificate_directory }}/server-key.pem"
+docker_server_csr: "{{ docker_certificate_directory }}/server.csr"
+docker_server_cert: "{{ docker_certificate_directory }}/server-cert.pem"
+
+# mirsg.docker client certificates
+docker_client_hostnames: [] # list of hostnames of clients that will connect to the server
+docker_client_certificate_directory: "{{ docker_certificate_directory }}/client_certs"
+docker_client_certificate_cache_directory: "{{ lookup('env', 'HOME') }}/ansible_persistent_files/docker_certificates"

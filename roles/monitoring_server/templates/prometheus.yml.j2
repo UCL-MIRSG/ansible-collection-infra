@@ -1,0 +1,66 @@
+global:
+  scrape_interval:     60s # By default, scrape targets every 60 seconds.
+
+  # Attach these labels to any time series or alerts when communicating with
+  # external systems (federation, remote storage, Alertmanager).
+  external_labels:
+    monitor: 'mirsg-monitor'
+
+rule_files:
+  - {{ prometheus.rules }}
+
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+
+    - job_name: 'prometheus'
+      # Override the global default and scrape targets from this job every 5 seconds.
+      scrape_interval: 5s
+      metrics_path: /prometheus/metrics
+      static_configs:
+        - targets: ['localhost:9090']
+
+    - job_name: cadvisor
+      scrape_interval: 5s
+      metrics_path: /cadvisor/metrics
+      static_configs:
+      - targets:
+        - {{ cadvisor.container_name }}:8080
+
+    - job_name: node
+      scheme: https
+      tls_config:
+        ca_file: {{ prometheus.ca_cert }}
+      basic_auth:
+        username: {{ monitoring_client.exporter_auth.username }}
+        password: {{ monitoring_client.exporter_auth.password }}
+      static_configs:
+      - targets:
+        {% for client in monitoring_service_clients %}
+        - {{ client }}:9100
+        {% endfor %}
+
+    - job_name: blackbox
+      metrics_path: /probe
+      scrape_interval: 5m
+      params:
+        module: [http_2xx]
+      static_configs:
+        - targets:
+          {% for xnat in monitoring_service_xnat_instances %}
+          - {{ xnat }}
+          {% endfor %}
+
+      relabel_configs:
+        - source_labels: [__address__]
+          target_label: __param_target
+        - source_labels: [__param_target]
+          target_label: instance
+        - target_label: __address__
+          replacement: {{ blackbox_exporter.container_name }}:9115 # Blackbox exporter.
+
+alerting:
+  alertmanagers:
+  - path_prefix: "alertmanager/"
+    static_configs:
+    - targets:
+      - {{ alertmanager.container_name }}:9093
