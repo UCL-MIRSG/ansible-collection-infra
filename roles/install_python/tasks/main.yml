@@ -1,0 +1,22 @@
+---
+# tasks file for ansible-role-install-python
+- name: Prepare to install Python for the current OS family
+  ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
+
+- name: Install Python and associated system packages
+  ansible.builtin.package:
+    name: "{{ item.name | default(item) }}"
+    update_cache: true
+    state: present
+  loop: "{{ install_python.system_packages }}"
+
+- name: Update pip
+  ansible.builtin.pip:
+    name:
+      - pip
+    version: "{{ install_python.pip_version }}"
+    executable: "{{ install_python.pip_executable }}"
+
+- name: Install Python pip packages
+  ansible.builtin.pip:
+    name: "{{ install_python.pip_packages }}"

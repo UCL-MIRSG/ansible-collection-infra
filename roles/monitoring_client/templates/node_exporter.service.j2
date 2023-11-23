@@ -1,0 +1,13 @@
+[Unit]
+Description=Node Exporter
+Documentation=https://prometheus.io/
+After=syslog.target network.target
+
+[Service]
+User= {{ monitoring_client.owner }}
+Group= {{ monitoring_client.group }}
+
+ExecStart={{ node_exporter.install_dir }}/node_exporter --web.config={{ node_exporter.web_config_file }}
+
+[Install]
+WantedBy=multi-user.target

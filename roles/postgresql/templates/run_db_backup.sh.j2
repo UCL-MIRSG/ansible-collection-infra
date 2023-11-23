@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Set by the ansible script
+pg_bin_dir="{{ postgresql.bin_directory }}"
+backup_directory="{{ postgresql_backup.directory }}"
+db_name="{{ postgresql_database.database_name }}"
+
+# We will label the backup filenames with the current time
+date_stamp="$(date +"%F-%H-%M-%S")"
+backup_file="${backup_directory}/${db_name}_dump.${date_stamp}.sql"
+backup_log="${backup_directory}/output_${db_name}_dump.${date_stamp}.log"
+
+# Ensure the backup directory exists
+mkdir -p "${backup_directory}"
+
+# Create a backup file and log the errorstream to a matching log file
+${pg_bin_dir}/pg_dump "${db_name}" > "${backup_file}" 2> "${backup_log}"
+
+# Zip up the backup file to conserve space
+gzip "${backup_file}"

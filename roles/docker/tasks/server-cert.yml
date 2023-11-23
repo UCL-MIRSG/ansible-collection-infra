@@ -1,0 +1,33 @@
+---
+- name: Generate server private key
+  community.crypto.openssl_privatekey:
+    path: "{{ docker_server_key }}"
+    owner: "{{ docker_owner }}"
+    group: "{{ docker_group }}"
+    mode: "0400"
+
+- name: Generate server CSR
+  community.crypto.openssl_csr:
+    path: "{{ docker_server_csr }}"
+    privatekey_path: "{{ docker_server_key }}"
+    common_name: "{{ docker_server_hostname }}"
+    subject_alt_name: "IP:{{ docker_server_ip }}"
+
+- name: Generate server certificate
+  community.crypto.x509_certificate:
+    path: "{{ docker_server_cert }}"
+    csr_path: "{{ docker_server_csr }}"
+    provider: ownca
+    ownca_path: "{{ docker_ca_cert }}"
+    ownca_privatekey_path: "{{ docker_ca_key }}"
+    owner: "{{ docker_owner }}"
+    group: "{{ docker_group }}"
+    mode: "0400"
+  notify:
+    - Restart docker
+
+- name: Copy server CA certificate to Ansible Controller cache
+  ansible.builtin.fetch:
+    src: "{{ docker_ca_cert }}"
+    dest: "{{ docker_client_certificate_cache_directory }}/ca.pem"
+    flat: true

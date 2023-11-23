@@ -1,0 +1,147 @@
+user nginx;
+worker_processes auto;
+error_log {{ nginx_monitoring_server.log_folder }}/error.log warn;
+pid /run/nginx_monitoring_server.pid;
+
+events {
+    worker_connections  1024;
+}
+
+http {
+    sendfile            off;
+#   sendfile            on; can cause a problem in VirtualBox
+    tcp_nopush          on;
+    tcp_nodelay         on;
+    keepalive_timeout   65;
+    types_hash_max_size 2048;
+    default_type        application/octet-stream;
+    access_log          {{ nginx_monitoring_server.log_folder }}/access.log;
+
+    # Good security practice is not to expose nginx version
+    server_tokens off;
+
+    # Compress responses to reduce network traffic. Note this may affect performance
+    gzip on;
+    gzip_disable "msie6";
+
+{% if monitoring_server.ssl.use_ssl %}
+    # SSL parameters must be specified outside of the server block.
+    # Otherwise may only use the nginx may end up using parameters specified in
+    # the default_server block even if a different serer is matched
+
+    ssl_certificate {{ nginx_monitoring_server.ssl_cert_file }};
+    ssl_certificate_key {{ nginx_monitoring_server.ssl_key_file }};
+
+    # TLS 1.0 and TLS 1.1 should be disabled
+    # TLS 1.3 may not be supported by Centos7
+    ssl_protocols TLSv1.2;
+
+    ssl_dhparam {{ nginx_monitoring_server.dh_params_file }};
+    ssl_ecdh_curve secp384r1;
+
+    # Increase the cache lifetime to improve performance; this requires a larger cache size
+    ssl_session_cache shared:SSL:40m;
+    ssl_session_timeout 4h;
+
+    # Configure ciphers
+    ssl_prefer_server_ciphers on;
+
+    # Mozilla intermediate compatibility for TLS1.2
+    ssl_ciphers "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384s";
+
+    # Enable HSTS - this requests browsers to only contact the server using TLS
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+
+{% endif %}
+
+
+    # Default server block for connections that do not match the expected host names.
+    # Note that nginx only uses server_name for disambiguation purposes; if
+    # there is no matching server_name then nginx will use the default_server
+    # regardless of its value of server_name
+    server {
+        listen 80 default_server;
+{% if monitoring_server.ssl.use_ssl %}
+        listen 443 ssl default_server;
+{% endif %}
+
+{% if ipv6_enabled %}
+        listen [::]:80 default_server;
+    {% if monitoring_server.ssl.use_ssl %}
+        listen [::]:443 ssl default_server;
+    {% endif %}
+{% endif %}
+
+        server_name _;
+
+        return 444;
+    }
+
+{% if monitoring_server.ssl.use_ssl %}
+    # Redirect to https
+    server {
+        listen {{ nginx_monitoring_server.http_port }};
+
+        server_name {{ ansible_host }};
+        return 301 https://{{ ansible_host }}:{{ nginx_monitoring_server.https_port }}$request_uri;
+    }
+{% endif %}
+
+    server {
+
+{% if monitoring_server.ssl.use_ssl %}
+        listen {{ nginx_monitoring_server.https_port }} ssl http2;
+    {% if ipv6_enabled %}
+        listen [::]:{{ nginx_monitoring_server.https_port }} ssl http2;
+    {% endif %}
+{% else %}
+        listen {{ nginx_monitoring_server.http_port }};
+    {% if ipv6_enabled %}
+        listen [::]:{{ nginx_monitoring_server.http_port }};
+    {% endif %}
+{% endif %}
+
+
+        # Note: server_name is only used for disambiguation
+        server_name     {{ ansible_host }};
+
+        proxy_set_header Host               $http_host;
+        proxy_set_header X-Real-IP          $remote_addr;
+        proxy_set_header X-Forwarded-Host   $http_host;
+        proxy_set_header X-Forwarded-Proto  $scheme;
+        proxy_set_header X-Forwarded-Port   $remote_port;
+        proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
+        proxy_connect_timeout               600;
+        proxy_send_timeout                  600;
+        proxy_read_timeout                  600;
+        proxy_buffers                       4 32k;
+        client_max_body_size                0;
+        client_body_buffer_size             128k;
+
+        location  ~* /cadvisor/.*$ {
+            proxy_pass                          http://{{ cadvisor.container_name }}:8080;
+            auth_basic "Restricted";
+            auth_basic_user_file /etc/nginx/.htpasswd;
+        }
+
+        location /grafana/ {
+            proxy_pass                          http://{{ grafana.container_name }}:3000/;
+        }
+
+        location /prometheus/ {
+            proxy_pass                          http://{{ prometheus.container_name }}:9090/prometheus/;
+            auth_basic "Restricted";
+            auth_basic_user_file /etc/nginx/.htpasswd;
+        }
+
+        location /alertmanager/ {
+            proxy_pass                          http://{{ alertmanager.container_name }}:9093/alertmanager/;
+            auth_basic "Restricted";
+            auth_basic_user_file /etc/nginx/.htpasswd;
+
+        }
+
+        access_log {{ nginx_monitoring_server.log_folder }}/monitoring_server.access.log;
+        error_log {{ nginx_monitoring_server.log_folder }}/monitoring_server.error.log;
+    }
+}

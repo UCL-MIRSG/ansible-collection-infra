@@ -1,0 +1,98 @@
+---
+- name: Ensure docker dependencies are installed
+  ansible.builtin.yum:
+    name: "{{ item }}"
+    state: installed
+  loop:
+    - yum-utils
+    - device-mapper-persistent-data
+    - lvm2
+
+- name: Install "epel-release" for centos:7
+  ansible.builtin.yum:
+    name: epel-release
+    state: installed
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "7"
+
+- name: Import docker rpm key
+  ansible.builtin.rpm_key:
+    state: present
+    key: "{{ docker_rpm_gpg_key_url }}"
+
+- name: Add Docker repository
+  ansible.builtin.yum_repository:
+    name: docker
+    description: Docker repo
+    file: docker-ce
+    baseurl: "{{ docker_repo_baseurl }}"
+    gpgcheck: true
+    gpgkey:
+      - "{{ docker_rpm_gpg_key_url }}"
+
+- name: Ensure docker is installed
+  ansible.builtin.yum:
+    name: "{{ item }}"
+    state: installed
+  loop:
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+    - docker-buildx-plugin
+    - docker-compose-plugin
+
+- name: Ensure docker service directory exists
+  ansible.builtin.file:
+    path: "{{ docker_service_directory }}"
+    owner: "root"
+    group: "root"
+    state: directory
+    mode: "0700"
+
+- name: Set custom docker service configuration
+  ansible.builtin.template:
+    src: docker.conf.j2
+    dest: "{{ docker_service_directory }}/docker.conf"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  notify: Reload docker
+
+- name: Generate CA, server, and client certificates
+  when: docker_generate_certificates
+  notify:
+    - Restart docker
+  block:
+    - name: Ensure docker config directory exists - {{ docker_config_dir }}
+      ansible.builtin.file:
+        path: "{{ docker_config_dir }}"
+        owner: "{{ docker_owner }}"
+        group: "{{ docker_group }}"
+        state: directory
+        mode: "0700"
+
+    - name: Write docker daemon configuration file
+      ansible.builtin.template:
+        src: daemon.json.j2
+        dest: "{{ docker_daemon_conf_file }}"
+        owner: "{{ docker_owner }}"
+        group: "{{ docker_group }}"
+        mode: "0640"
+
+    - name: Generate CA certificate
+      ansible.builtin.import_tasks: ca-cert.yml
+
+    - name: Generate server TLS certificate
+      ansible.builtin.import_tasks: server-cert.yml
+
+    - name: Generate TLS certificates for each client
+      ansible.builtin.import_tasks: client-certs.yml
+      when: docker_client_hostnames
+
+- name: "Ensure docker service configuration is reloaded before restarting the service"
+  ansible.builtin.meta: flush_handlers
+
+- name: Ensure docker daemon is running
+  ansible.builtin.service:
+    name: "{{ docker_service_name }}"
+    state: started
+    enabled: true
