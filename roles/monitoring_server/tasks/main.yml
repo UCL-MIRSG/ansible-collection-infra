@@ -1,0 +1,67 @@
+---
+- name: Find limited XNAT instances that exist in monitoring_service group
+  ansible.builtin.set_fact:
+    # loop through the list and concatenate the result
+    # the default([]) means use the empty list if list doesn't exist
+    # add to this the ansible group corresponding to the given item
+    # then perform the intersection with the monitoring_service and web group
+    # then get the URL from the host
+    # and prepend https:// to the start of each entry
+    monitoring_service_xnat_instances: >
+      {{
+      monitoring_service_xnat_instances |
+      default([]) +
+      groups[item] |
+      intersect(groups['monitoring_service']) |
+      intersect(groups['web']) |
+      map('extract', hostvars, 'ansible_host') |
+      map('regex_replace', '^', 'https://')
+      }}
+  with_items:
+    # converts the string to a list
+    - "{{ ansible_limit.split(',') }}"
+
+- name: Add monitoring_server group
+  ansible.builtin.group:
+    name: "{{ monitoring_server.group }}"
+    gid: "{{ monitoring_server.gid }}"
+
+- name: Add "monitoring_server" user
+  ansible.builtin.user:
+    name: "{{ monitoring_server.owner }}"
+    group: "{{ monitoring_server.group }}"
+    uid: "{{ monitoring_server.uid }}"
+    create_home: false
+    system: true
+
+- name: Install Docker SDK for Python
+  ansible.builtin.pip:
+    name:
+      - docker
+  notify:
+    - Restart docker
+
+- name: Ensure docker service restarts after Docker SDK is installed
+  ansible.builtin.meta: flush_handlers
+
+- name: "Create a network"
+  community.docker.docker_network:
+    name: monitor-net
+
+- name: Install and configure Nginx container
+  ansible.builtin.include_tasks: install_nginx_container.yml
+
+- name: Install and configure Prometheus container
+  ansible.builtin.include_tasks: install_prometheus_container.yml
+
+- name: Install and configure Blackbox Exporter container
+  ansible.builtin.include_tasks: install_blackbox_exporter_container.yml
+
+- name: Install and configure cadvisor container
+  ansible.builtin.include_tasks: install_cadvisor_container.yml
+
+- name: Install and configure Grafana container
+  ansible.builtin.include_tasks: install_grafana_container.yml
+
+- name: Install and configure alertmanager container
+  ansible.builtin.include_tasks: install_alertmanager_container.yml

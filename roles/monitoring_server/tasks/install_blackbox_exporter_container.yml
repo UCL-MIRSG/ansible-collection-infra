@@ -1,0 +1,30 @@
+---
+- name: Ensure blackbox_exporter data directory exists - {{ blackbox_exporter.external_data_dir }}
+  ansible.builtin.file:
+    path: "{{ blackbox_exporter.external_data_dir }}"
+    owner: "{{ monitoring_server.owner }}"
+    group: "{{ monitoring_server.group }}"
+    state: directory
+    mode: "0700"
+
+- name: Copy blackbox_exporter config file
+  ansible.builtin.template:
+    src: templates/blackbox-exporter.yml.j2
+    dest: "{{ blackbox_exporter.external_data_dir }}/blackbox-exporter.yml"
+    owner: "{{ monitoring_server.owner }}"
+    group: "{{ monitoring_server.group }}"
+    mode: "0644"
+
+- name: Start blackbox_exporter container
+  community.docker.docker_container:
+    name: "{{ blackbox_exporter.container_name }}"
+    hostname: "{{ blackbox_exporter.container_name }}"
+    image: "{{ blackbox_exporter.image }}"
+    state: started
+    user: "{{ monitoring_server.uid }}:{{ monitoring_server.gid }}"
+    command: "{% for key in blackbox_exporter.commandline_args %}--{{ key }}={{ blackbox_exporter.commandline_args[key] }} {% endfor %}"
+    networks:
+      - name: monitor-net
+    volumes:
+      - "{{ blackbox_exporter.external_data_dir }}/blackbox-exporter.yml:{{ blackbox_exporter.volume }}/blackbox-exporter.yml"
+    restart_policy: always
