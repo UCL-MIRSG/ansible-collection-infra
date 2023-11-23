@@ -1,0 +1,27 @@
+---
+- name: Ensure correct permissions are set for the mountpoint
+  ansible.builtin.file:
+    path: "{{ EXTERNAL_STORAGE_DRIVE }}"
+    owner: root
+    group: root
+    state: directory
+    mode: "0755"
+
+- name: "Check if storage is mounted: {{ EXTERNAL_STORAGE_DRIVE }}"
+  ansible.builtin.command: mountpoint {{ EXTERNAL_STORAGE_DRIVE }}
+  register: check_mountpoint
+  failed_when: false
+  changed_when: false
+
+- name: Start autofs if storage is not mounted
+  ansible.builtin.service:
+    name: autofs
+    state: started
+  when: "'is not a mountpoint' in check_mountpoint.stdout"
+
+- name: Check that storage has been mounted correctly if it was previously not mounted
+  ansible.builtin.command: mountpoint {{ EXTERNAL_STORAGE_DRIVE }}
+  when: "'is not a mountpoint' in check_mountpoint.stdout"
+  register: check_mountpoint_again
+  failed_when: "'is not a mountpoint' in check_mountpoint_again.stdout"
+  changed_when: "'is a mountpoint' in check_mountpoint_again.stdout"
