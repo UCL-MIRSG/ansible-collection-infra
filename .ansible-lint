@@ -1,0 +1,4 @@
+warn_list:
+  - no-handler
+  - galaxy[no-changelog]
+  - galaxy[tags]
