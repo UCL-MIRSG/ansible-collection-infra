@@ -1,0 +1,54 @@
+---
+# tasks file for ansible-role-ssl-certificates
+- name: Ensure certificate directory exists with the correct permissions
+  ansible.builtin.file:
+    path: "{{ ssl_certificate.certificate_directory }}"
+    state: directory
+    owner: "{{ ssl_certificate.owner }}"
+    group: "{{ ssl_certificate.group }}"
+    mode: 0755
+
+- name: Generate OpenSSL private key
+  community.crypto.openssl_privatekey:
+    path: "{{ ssl_certificate.privatekey_filename }}"
+    owner: "{{ ssl_certificate.owner }}"
+    group: "{{ ssl_certificate.group }}"
+    mode: 0400
+  register: new_privatekey_generated
+
+- name: Convert private key to PKCS8 for use by JDBC # noqa no-changed-when
+  ansible.builtin.command:
+    "openssl pkcs8 -topk8 -inform PEM -outform DER -nocrypt \
+    -in {{ ssl_certificate.privatekey_filename }} -out {{ ssl_certificate.pk8_filename }}"
+  when: new_privatekey_generated.changed and ssl_certificate.use_pk8
+
+- name: Generate OpenSSL CSR
+  community.crypto.openssl_csr:
+    path: "{{ ssl_certificate.csr_filename }}"
+    privatekey_path: "{{ ssl_certificate.privatekey_filename }}"
+    common_name: "{{ ssl_certificate.csr_common_name }}"
+
+- name: Generate a self-signed OpenSSL certificate
+  community.crypto.x509_certificate:
+    path: "{{ ssl_certificate.certificate_filename }}"
+    privatekey_path: "{{ ssl_certificate.privatekey_filename }}"
+    csr_path: "{{ ssl_certificate.csr_filename }}"
+    provider: "{{ ssl_certificate.provider }}"
+    mode: 0400
+    owner: "{{ ssl_certificate.owner }}"
+    group: "{{ ssl_certificate.group }}"
+
+- name: Change pk8 file ownership, group and permissions
+  ansible.builtin.file:
+    path: "{{ ssl_certificate.pk8_filename }}"
+    owner: "{{ ssl_certificate.owner }}"
+    group: "{{ ssl_certificate.owner }}"
+    mode: 0400
+  when: new_privatekey_generated.changed and ssl_certificate.use_pk8
+
+- name: Copy certificate to Ansible cache
+  ansible.builtin.fetch:
+    src: "{{ ssl_certificate.certificate_filename }}"
+    dest: "{{ ssl_certificate.cache_filename }}"
+    flat: true
+  when: ssl_certificate.cache_filename is defined
