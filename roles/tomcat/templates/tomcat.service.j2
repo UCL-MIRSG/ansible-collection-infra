@@ -1,0 +1,20 @@
+[Unit]
+Description=Tomcat
+After=syslog.target network.target
+
+[Service]
+Type=forking
+
+User={{ tomcat_owner }}
+Group={{ tomcat_group }}
+
+EnvironmentFile={{ tomcat_config_file }}
+
+Environment=CATALINA_BASE={{ tomcat_catalina_home }}
+Environment=CATALINA_PID={{ tomcat_catalina_home }}/temp/tomcat_pid
+
+ExecStart={{ tomcat_catalina_home }}/bin/catalina.sh start
+ExecStop={{ tomcat_catalina_home }}/bin/catalina.sh stop
+
+[Install]
+WantedBy=multi-user.target
