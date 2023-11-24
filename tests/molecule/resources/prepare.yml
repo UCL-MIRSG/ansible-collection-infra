@@ -1,5 +1,5 @@
 ---
-- name: Install and firewalld
+- name: Install firewalld
   hosts: all
   gather_facts: true
   tasks:
