@@ -10,8 +10,8 @@ driver:
   name: docker
 
 platforms:
-  - name: molecule_db
-    hostname: molecule.db.local
+  - name: instance
+    hostname: molecule.instnace.local
     image: ${MOLECULE_DOCKER_IMAGE:-geerlingguy/docker-centos7-ansible:latest}
     required: true
     command: ""
@@ -23,7 +23,7 @@ platforms:
     keep_volumes: false
     groups:
       - all
-      - db
+      - molecule
       - centos7
     docker_networks:
       - name: molecule
@@ -33,37 +33,6 @@ platforms:
     networks:
       - name: molecule
         ipv4_address: "192.168.56.2"
-    exposed_ports:
-      - "5432"
-    etc_hosts:
-      molecule.web.local: "192.168.56.3"
-
-  - name: molecule_web
-    hostname: molecule.web.local
-    image: ${MOLECULE_DOCKER_IMAGE:-geerlingguy/docker-centos7-ansible:latest}
-    required: true
-    command: ""
-    cgroupns_mode: host
-    privileged: true
-    pre_build_image: true
-    volumes:
-      - ./molecule-data:/storage/molecule
-    keep_volumes: false
-    groups:
-      - all
-      - web
-      - centos7
-    networks:
-      - name: molecule
-        ipv4_address: "192.168.56.3"
-    exposed_ports:
-      - "80"
-      - "443"
-      - "8080"
-    published_ports:
-      - 127.0.0.1:8080:8080
-    etc_hosts:
-      molecule.db.local: "192.168.56.2"
 
 provisioner:
   name: ansible
