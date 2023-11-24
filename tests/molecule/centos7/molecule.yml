@@ -71,7 +71,6 @@ provisioner:
   config_options:
     defaults:
       callbacks_enabled: profile_tasks, timer, yaml
-      vault_password_file: "${MOLECULE_SCENARIO_DIRECTORY}/../resources/.vault_password"
     tags:
       run: ${MOLECULE_RUN_TAGS:-all}
   inventory:
