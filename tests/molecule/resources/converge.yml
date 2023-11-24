@@ -8,3 +8,5 @@
       tags: provision
     - role: mirsg.infrastructure.install_python
       tags: python
+    - role: mirsg.infrastructure.firewalld
+      tags: firewalld
