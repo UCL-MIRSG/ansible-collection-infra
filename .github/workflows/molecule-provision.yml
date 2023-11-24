@@ -20,7 +20,7 @@ jobs:
       - name: Check out the codebase
         uses: actions/checkout@v4
         with:
-          path: ansible_collections/mirsg/xnat
+          path: ansible_collections/mirsg/infrastructure
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -35,5 +35,5 @@ jobs:
 
       - name: Test with molecule
         run: |
-          cd ansible_collections/mirsg/xnat/tests
+          cd ansible_collections/mirsg/infrastructure/tests
           molecule test --scenario-name  "${{ matrix.scenario }}"
