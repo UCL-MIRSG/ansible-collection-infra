@@ -1,5 +1,5 @@
 ---
-- name: Install the ca-certificates package
+- name: Ensure the ca-certificates package is installed
   become: true
   ansible.builtin.yum:
     name: "ca-certificates"
