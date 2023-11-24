@@ -57,28 +57,10 @@ See `defaults/main.yml` for the full list.
 - `rich_rules`: A list of hashes defining rich rules to apply. The zone to apply
   the rule to should be a key in the hash.
 
-## Installation
-
-Include in a `requirements.yml` file as follows:
-
-```yaml
-- src: https://github.com/UCL-MIRSG/ansible-role-dual-vm-firewalld.git
-  version: 2022.12.22.0
-  name: mirsg.firewalld
-```
-
 ## Example Playbook
 
 ```yaml
 - hosts: servers
   roles:
-    - { role: mirsg.firewalld }
+    - { role: mirsg.infrastructure.firewalld }
 ```
-
-## License
-
-[BSD 3-Clause License](https://github.com/UCL-MIRSG/ansible-role-postgresql/blob/main/LICENSE).
-
-## Author Information
-
-This role was created by the [Medical Imaging Research Software Group](https://www.ucl.ac.uk/advanced-research-computing/expertise/research-software-development/medical-imaging-research-software-group) at [UCL](https://www.ucl.ac.uk/).
