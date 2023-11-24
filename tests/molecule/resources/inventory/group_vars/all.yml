@@ -3,3 +3,20 @@ EXTERNAL_STORAGE_DRIVE: "/storage/molecule"
 
 # mirsg.infrastructure.provision
 server_locale: "en_GB.UTF-8"
+
+# mirsg.infrastructure.firewalld
+allow_public_access: true
+internal_zone_open_services:
+  - http
+  - https
+  - ssh
+public_zone_open_services:
+  - http
+  - https
+work_zone_open_services:
+  - http
+  - https
+public_zone_ports:
+  - "8080"
+internal_zone_ports:
+  - "5432"
