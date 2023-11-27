@@ -1,11 +1,11 @@
-name: Test provision
+name: Test firewalld
 on:
   pull_request:
     paths:
-      - "roles/provision/**"
+      - "roles/firewalld/**"
 
 jobs:
-  molecule-provision:
+  molecule-firewalld:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
@@ -13,7 +13,7 @@ jobs:
         scenario:
           - centos7
     env:
-      MOLECULE_RUN_TAGS: provision
+      MOLECULE_RUN_TAGS: firewalld
       PY_COLORS: 1
       ANSIBLE_FORCE_COLOR: 1
     steps:

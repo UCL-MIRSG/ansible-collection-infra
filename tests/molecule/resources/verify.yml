@@ -1,0 +1,13 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Verify firewalld
+      ansible.builtin.include_tasks:
+        file: verify-firewalld.yml
+        apply:
+          tags:
+            - firewalld
+      tags:
+        - firewalld
