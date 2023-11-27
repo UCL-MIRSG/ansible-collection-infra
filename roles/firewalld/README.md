@@ -62,5 +62,5 @@ See `defaults/main.yml` for the full list.
 ```yaml
 - hosts: servers
   roles:
-    - { role: mirsg.infrastructure.firewalld }
+    - role: mirsg.infrastructure.firewalld
 ```
