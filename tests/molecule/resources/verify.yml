@@ -5,7 +5,7 @@
   tasks:
     - name: Verify firewalld
       ansible.builtin.include_tasks:
-        file: verify-firewalld.yml
+        file: verify/firewalld.yml
         apply:
           tags:
             - firewalld
