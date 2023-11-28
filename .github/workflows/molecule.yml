@@ -1,0 +1,29 @@
+name: Test with Molecule
+on:
+  workflow_call:
+    inputs:
+      run_tags:
+        required: false
+        type: string
+        default: all
+
+jobs:
+  molecule:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        scenario:
+          - centos7
+    env:
+      MOLECULE_RUN_TAGS: ${{ inputs.run_tags }}
+      PY_COLORS: 1
+      ANSIBLE_FORCE_COLOR: 1
+
+    steps:
+      - name: Run `molecule test`
+        uses: UCL-MIRSG/.github/actions/molecule-test@v0.37.0
+        with:
+          scenario: ${{ matrix.scenario }}
+          checkout_path: ansible_collections/mirsg/infrastructure
+  
