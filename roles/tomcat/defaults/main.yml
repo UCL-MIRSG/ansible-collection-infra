@@ -1,5 +1,5 @@
 ---
-# mirsg.tomcat: selinux
+# mirsg.tomcat: selinux
 selinux_enabled: false
 
 # mirsg.tomcat: java settings
