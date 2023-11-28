@@ -2,7 +2,7 @@
 - name: "Check mounts are available"
   tags: restart
   ansible.builtin.include_tasks: check_mounts.yml
-  when: EXTERNAL_STORAGE_DRIVE is defined
+  when: external_storage_drive is defined
 
 - name: "Set up for specific distribution"
   ansible.builtin.include_tasks: "{{ ansible_distribution }}.yml"
