@@ -47,7 +47,7 @@
     owner: "root"
     group: "root"
     state: directory
-    mode: 0755
+    mode: "0755"
 
 - name: Set custom postgresql service configuration
   ansible.builtin.template:
@@ -55,7 +55,7 @@
     dest: "{{ postgresql_service.filename }}"
     owner: "root"
     group: "root"
-    mode: 0644
+    mode: "0644"
   register: postgresql_custom_service_config
 
 - name: Ensure postgresql storage subdirectory exists
@@ -64,7 +64,7 @@
     owner: "{{ postgresql.owner }}"
     group: "{{ postgresql.group }}"
     state: directory
-    mode: 0700
+    mode: "0700"
 
 - name: Ensure postgres storage data subdirectory exists
   ansible.builtin.file:
@@ -72,7 +72,7 @@
     owner: "{{ postgresql.owner }}"
     group: "{{ postgresql.group }}"
     state: directory
-    mode: 0700
+    mode: "0700"
 
 - name: Ensure postgresql base directory exists - {{ postgresql.base_directory }}
   ansible.builtin.file:
@@ -80,7 +80,7 @@
     owner: "{{ postgresql.owner }}"
     group: "{{ postgresql.group }}"
     state: directory
-    mode: 0700
+    mode: "0700"
 
 - name: Ensure postgresql logging directory exists
   ansible.builtin.file:
@@ -88,7 +88,7 @@
     owner: "{{ postgresql.owner }}"
     group: "{{ postgresql.group }}"
     state: directory
-    mode: 0700
+    mode: "0700"
 
 - name: Check the status of the postgresql data directory symlink
   ansible.builtin.stat:
@@ -127,7 +127,7 @@
     owner: "{{ postgresql.owner }}"
     group: "{{ postgresql.group }}"
     state: directory
-    mode: 0700
+    mode: "0700"
 
 - name: Set postgresql host-based authentication configuration
   ansible.builtin.template:
@@ -135,7 +135,7 @@
     dest: "{{ postgresql.hba_configuration_filename }}"
     owner: "{{ postgresql.owner }}"
     group: "{{ postgresql.group }}"
-    mode: 0640
+    mode: "0640"
 
 - name: Set postgresql configuration
   ansible.builtin.template:
@@ -143,7 +143,7 @@
     dest: "{{ postgresql.configuration_filename }}"
     owner: "{{ postgresql.owner }}"
     group: "{{ postgresql.group }}"
-    mode: 0640
+    mode: "0640"
 
 - name: Noop to restart postgresql
   tags: restart
@@ -168,7 +168,7 @@
         dest: "{{ postgresql_connection.client_certificate_filename }}"
         owner: "{{ postgresql.owner }}"
         group: "{{ postgresql.group }}"
-        mode: 0600
+        mode: "0600"
 
 - name: Allow postgresql to modify files in data directory
   community.general.sefcontext:
