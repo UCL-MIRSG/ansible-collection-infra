@@ -22,8 +22,9 @@ jobs:
 
     steps:
       - name: Run `molecule test`
-        uses: UCL-MIRSG/.github/actions/molecule-test@v0.37.0
+        uses: UCL-MIRSG/.github/actions/molecule-test@v0.38.0
         with:
           scenario: ${{ matrix.scenario }}
           checkout_path: ansible_collections/mirsg/infrastructure
+          tests_path: ansible_collections/mirsg/infrastructure/tests
   
