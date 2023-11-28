@@ -2,7 +2,7 @@ name: Test with Molecule
 on:
   workflow_call:
     inputs:
-      run_tags:
+      run-tags:
         required: false
         type: string
         default: all
@@ -16,7 +16,7 @@ jobs:
         scenario:
           - centos7
     env:
-      MOLECULE_RUN_TAGS: ${{ inputs.run_tags }}
+      MOLECULE_RUN_TAGS: ${{ inputs.run-tags }}
       PY_COLORS: 1
       ANSIBLE_FORCE_COLOR: 1
 

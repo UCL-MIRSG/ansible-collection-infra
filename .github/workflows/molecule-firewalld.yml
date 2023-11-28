@@ -10,4 +10,4 @@ jobs:
   molecule-firewalld:
     uses: ./.github/workflows/molecule.yml
     with:
-      run_tags: firewalld
+      run-tags: firewalld
