@@ -1,0 +1,19 @@
+---
+name: Molecule Test Collection
+description: Run `molecule test` on this Ansible Collection
+
+inputs:
+  scenario:
+    description: Name of the scenario to run the tests on
+    required: false
+    default: default
+
+runs:
+  using: composite
+  steps:
+    - name: Run `molecule test`
+      uses: UCL-MIRSG/.github/actions/molecule-test@v0.38.0
+      with:
+        scenario: ${{ inputs.scenario }}
+        checkout_path: ansible_collections/mirsg/infrastructure
+        tests_path: ansible_collections/mirsg/infrastructure/tests

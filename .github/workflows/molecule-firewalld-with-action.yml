@@ -1,0 +1,26 @@
+name: Test firewalld
+on:
+  pull_request:
+    paths:
+      - "roles/firewalld/**"
+      - ".github/actions/molecule-test-collection/action.yml"
+      - ".github/workflows/molecule-firewalld-with-action.yml"
+
+jobs:
+  molecule:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        scenario:
+          - centos7
+    env:
+      MOLECULE_RUN_TAGS: firewalld
+      PY_COLORS: 1
+      ANSIBLE_FORCE_COLOR: 1
+
+    steps:
+      - name: Run `molecule test`
+        uses: ./.github/actions/molecule-test-collection
+        with:
+          scenario: ${{ matrix.scenario }}
