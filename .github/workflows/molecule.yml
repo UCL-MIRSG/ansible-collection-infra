@@ -27,4 +27,3 @@ jobs:
           scenario: ${{ matrix.scenario }}
           checkout_path: ansible_collections/mirsg/infrastructure
           tests_path: ansible_collections/mirsg/infrastructure/tests
-  
