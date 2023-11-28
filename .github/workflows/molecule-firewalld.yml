@@ -3,6 +3,8 @@ on:
   pull_request:
     paths:
       - "roles/firewalld/**"
+      - ".github/workflows/molecule.yml"
+      - ".github/workflows/molecule-firewalld.yml"
 
 jobs:
   molecule-firewalld:
