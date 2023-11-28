@@ -5,7 +5,7 @@ on:
       - "roles/firewalld/**"
 
 jobs:
-  molecule-provision:
+  molecule-firewalld:
     uses: ./.github/workflows/molecule.yml
     with:
       run_tags: firewalld
