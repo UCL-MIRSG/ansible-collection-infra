@@ -3,37 +3,11 @@ on:
   pull_request:
     paths:
       - "roles/firewalld/**"
+      - ".github/workflows/molecule.yml"
+      - ".github/workflows/molecule-firewalld.yml"
 
 jobs:
   molecule-firewalld:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: true
-      matrix:
-        scenario:
-          - centos7
-    env:
-      MOLECULE_RUN_TAGS: firewalld
-      PY_COLORS: 1
-      ANSIBLE_FORCE_COLOR: 1
-    steps:
-      - name: Check out the codebase
-        uses: actions/checkout@v4
-        with:
-          path: ansible_collections/mirsg/infrastructure
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.11
-
-      - name: Install test dependencies
-        run: |
-          sudo apt-get update && sudo apt-get -y install rsync
-          python3 -m pip install --upgrade pip
-          python3 -m pip install ansible molecule molecule-plugins[docker] docker requests
-
-      - name: Test with molecule
-        run: |
-          cd ansible_collections/mirsg/infrastructure/tests
-          molecule test --scenario-name  "${{ matrix.scenario }}"
+    uses: ./.github/workflows/molecule.yml
+    with:
+      run-tags: firewalld
