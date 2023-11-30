@@ -3,4 +3,3 @@ warn_list:
   - galaxy[no-changelog]
   - galaxy[tags]
   - var-naming[no-role-prefix]
-
