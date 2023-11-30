@@ -1,5 +1,5 @@
 ---
-EXTERNAL_STORAGE_DRIVE: "/storage/molecule"
+external_storage_drive: "/storage/molecule"
 
 # mirsg.infrastructure.provision
 server_locale: "en_GB.UTF-8"
