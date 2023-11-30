@@ -3,7 +3,6 @@ on:
   workflow_call:
     inputs:
       run-tags:
-        required: false
         type: string
         default: all
 
