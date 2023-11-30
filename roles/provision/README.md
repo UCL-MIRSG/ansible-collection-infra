@@ -12,7 +12,7 @@ If you would like to run Ansible Molecule to test this role, the requirements ar
 
 `server_locale`: the sets the user's language, region, etc. This is set to "en_GB.UTF-8"
 
-`EXTERNAL_STORAGE_DRIVE`: path to mounted storage. By default this is undefined.
+`external_storage_drive`: path to mounted storage. By default this is undefined.
 
 ## Dependencies
 

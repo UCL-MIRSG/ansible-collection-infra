@@ -6,7 +6,7 @@
     option: mirrorlist
     value: http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=os
     backup: true
-    mode: 0644
+    mode: "0644"
 
 - name: Ensure updates mirrorlist is in repository file (CentOS)
   community.general.ini_file:
@@ -15,7 +15,7 @@
     option: mirrorlist
     value: http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=updates
     backup: true
-    mode: 0644
+    mode: "0644"
 
 - name: Check if locale already set
   ansible.builtin.shell: |

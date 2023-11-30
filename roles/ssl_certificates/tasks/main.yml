@@ -6,14 +6,14 @@
     state: directory
     owner: "{{ ssl_certificate.owner }}"
     group: "{{ ssl_certificate.group }}"
-    mode: 0755
+    mode: "0755"
 
 - name: Generate OpenSSL private key
   community.crypto.openssl_privatekey:
     path: "{{ ssl_certificate.privatekey_filename }}"
     owner: "{{ ssl_certificate.owner }}"
     group: "{{ ssl_certificate.group }}"
-    mode: 0400
+    mode: "0400"
   register: new_privatekey_generated
 
 - name: Convert private key to PKCS8 for use by JDBC # noqa no-changed-when
@@ -34,7 +34,7 @@
     privatekey_path: "{{ ssl_certificate.privatekey_filename }}"
     csr_path: "{{ ssl_certificate.csr_filename }}"
     provider: "{{ ssl_certificate.provider }}"
-    mode: 0400
+    mode: "0400"
     owner: "{{ ssl_certificate.owner }}"
     group: "{{ ssl_certificate.group }}"
 
@@ -43,7 +43,7 @@
     path: "{{ ssl_certificate.pk8_filename }}"
     owner: "{{ ssl_certificate.owner }}"
     group: "{{ ssl_certificate.owner }}"
-    mode: 0400
+    mode: "0400"
   when: new_privatekey_generated.changed and ssl_certificate.use_pk8
 
 - name: Copy certificate to Ansible cache
