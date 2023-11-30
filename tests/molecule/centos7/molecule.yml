@@ -11,7 +11,7 @@ driver:
 
 platforms:
   - name: instance
-    hostname: molecule.instnace.local
+    hostname: molecule.instance.local
     image: ${MOLECULE_DOCKER_IMAGE:-geerlingguy/docker-centos7-ansible:latest}
     required: true
     command: ""

@@ -197,6 +197,6 @@
 - name: Configure cron job for automatic postgres backups
   ansible.builtin.include_tasks: configure_cron_backup.yml
 
-- name: Create databse
+- name: Create database
   ansible.builtin.include_tasks:
     file: create_database.yml

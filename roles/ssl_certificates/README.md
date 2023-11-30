@@ -50,7 +50,7 @@ The following values **must be included** in the `ssl_certificate` dictionary:
 
 ### Optional variables
 
-The following are **optional** vaules for the `ssl_certificate` dictionary:
+The following are **optional** values for the `ssl_certificate` dictionary:
 
 `cache_filename`: location to copy the self-signed certificate to
 

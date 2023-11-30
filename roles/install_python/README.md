@@ -9,7 +9,7 @@ If you would like to run Ansible Molecule to test this role, the requirements ar
 
 ## Role Variables
 
-`install_python` is a dictionary that contains the following varialbes:
+`install_python` is a dictionary that contains the following variables:
 
 `version`: the version of Python to install. This defaults to `"3"`.
 

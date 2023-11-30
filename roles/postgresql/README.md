@@ -25,7 +25,7 @@ See [this example](molecule/resources/inventory/host_vars/db/vars) `host_vars` f
 
 See [this example](molecule/resources/inventory/host_vars/web/vars) `host_vars` file.
 
-### Required varaibles for both the server and client
+### Required variables for both the server and client
 
 `postgresql_rpm_gpg_key_pgdg`: URL from which to download the RPM GPP key; not needed for CentOS 7
 
