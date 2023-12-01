@@ -1,5 +1,5 @@
 ---
-- name: Install firewalld
+- name: Setup for roles
   hosts: all
   gather_facts: true
   tasks:
@@ -16,3 +16,17 @@
             path: /etc/firewalld/firewalld.conf
             regexp: "^FirewallBackend="
             line: FirewallBackend=iptables
+
+    - name: Setup for PostgreSQL
+      tags: postgresql
+      block:
+        - name: Install crontabs
+          ansible.builtin.yum:
+            name: cronie
+            state: present
+
+        - name: Start crontabs service
+          ansible.builtin.service:
+            name: crond.service
+            state: started
+            enabled: true
