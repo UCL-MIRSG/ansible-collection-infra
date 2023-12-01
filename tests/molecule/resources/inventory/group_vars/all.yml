@@ -1,5 +1,6 @@
 ---
 external_storage_drive: "/storage/molecule"
+selinux_enabled: false
 
 # mirsg.infrastructure.provision
 server_locale: "en_GB.UTF-8"
@@ -20,3 +21,17 @@ public_zone_ports:
   - "8080"
 internal_zone_ports:
   - "5432"
+
+# mirsg.infrastructure.postgresql
+postgresql_rpm_gpg_key_pgdg: "https://www.postgresql.org/download/keys/RPM-GPG-KEY-PGDG"
+postgresql_use_ssl: false
+postgresql_database:
+  database_name: "database"
+  user_name: "user"
+  user_password: "password"
+postgresql_connection:
+  host: "molecule.instance.local"
+  port: 5432
+  client_ip: 0.0.0.0
+  listen_addresses: "'*'"
+  subnet_mask: 255.255.255.255
