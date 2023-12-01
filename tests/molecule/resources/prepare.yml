@@ -18,10 +18,15 @@
             line: FirewallBackend=iptables
 
     - name: Setup for PostgreSQL
-      ansible.builtin.include_tasks:
-        file: prepare/postgresql.yml
-        apply:
-          tags:
-            - postgresql
-      tags:
-        - postgresql
+      tags: postgresql
+      block:
+        - name: Install crontabs
+          ansible.builtin.yum:
+            name: cronie
+            state: present
+
+        - name: Start crontabs service
+          ansible.builtin.service:
+            name: crond.service
+            state: started
+            enabled: true
