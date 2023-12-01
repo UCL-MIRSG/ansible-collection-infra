@@ -1,0 +1,13 @@
+name: Test PostgreSQL
+on:
+  pull_request:
+    paths:
+      - "roles/postgresql/**"
+      - ".github/workflows/molecule.yml"
+      - ".github/workflows/molecule-postgresql.yml"
+
+jobs:
+  molecule-postgresql:
+    uses: ./.github/workflows/molecule.yml
+    with:
+      run-tags: provision, postgresql
