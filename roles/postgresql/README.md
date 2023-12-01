@@ -1,15 +1,10 @@
-# Ansible Role: mirsg.postgresql
+# Ansible Role: mirsg.infrastructure.postgresql
 
 This role will install and configure a PostgreSQL database on a server.
 
 This role is tested on the following operating systems:
 
 - CentOS 7
-- Rocky Linux 8
-
-## Requirements
-
-If you would like to run Ansible Molecule to test this role, the requirements are in [`requirements.txt`](https://github.com/UCL-MIRSG/ansible-role-postgresql/blob/main/requirements.txt).
 
 ## Role Variables
 
@@ -17,24 +12,47 @@ There are several **optional** variables for the PostgreSQL server. See the [def
 
 There are also several **required** variables you will need to set before using this role.
 
+### Variables required by both the server and client
+
+| Name                          | Description                                                         |
+| ----------------------------- | ------------------------------------------------------------------- |
+| `postgresql_rpm_gpg_key_pgdg` | URL from which to download the RPM GPP key; not needed for CentOS 7 |
+| `postgresql_use_ssl`          | Whether to use SSL                                                  |
+
 ### Required variables for the PostgreSQL server
 
-See [this example](molecule/resources/inventory/host_vars/db/vars) `host_vars` file.
+| Name                                                | Description                                                                                                  |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `postgresql_database.database_name`                 | Name of the database to create                                                                               |
+| `postgresql_database.user_name`                     | User for the database                                                                                        |
+| `postgresql_database.user_password`                 | Password for the database (this should be stored in an Ansible Vault)                                        |
+| `postgresql_connection.host`                        | Hostname of the server                                                                                       |
+| `postgresql_connection.port`                        | Port that PostgreSQL is exposed on (should be 5432)                                                          |
+| `postgresql_connection.port`                        | Port that PostgreSQL is exposed on (should be 5432)                                                          |
+| `postgresql_connection.client_ip`                   | IP address from which to allow incoming connections                                                          |
+| `postgresql_connection.client_certificate_filename` | Where to copy the client certificate to on the server; only required if using `postgresql_use_ssl` is `true` |
+| `postgresql_connection.listen_address`              | IP address(es) the server should listen on                                                                   |
+| `postgresql_connection.listen_address`              | Subnet mask to apply to `postgresql_connection.client_ip` for incoming connections                           |
 
-### Required variables for the PostgreSQL client
+Note, if `postgresql_use_ssl` is set to `true`, you will also need to define a `postgresql_ssl_certificate` variable
+for generating the server certificate.
+See the [`mirsg.infrastructure.ssl_certificates` README](../ssl_certificates/README.md) for a description of how to
+define this variable.
 
-See [this example](molecule/resources/inventory/host_vars/web/vars) `host_vars` file.
+### Required variables for the PostgreSQL client
 
-### Required variables for both the server and client
+| Name                                                          | Description                                           |
+| ------------------------------------------------------------- | ----------------------------------------------------- |
+| `postgresql_client_configuration.server_certificate_filename` | Where to copy the server certificate to on the client |
 
-`postgresql_rpm_gpg_key_pgdg`: URL from which to download the RPM GPP key; not needed for CentOS 7
-
-`postgresql_use_ssl:` boolean; whether to use SSL
+Note, if `postgresql_use_ssl` is set to `true`, you can use [`mirsg.infrastructure.ssl_certificates`](../ssl_certificates/README.md) to generate an SSL certificate.
 
 ## Example Playbook
 
-To use this role you must first stop any running PostgreSQL service and, if necessary, create a SSL certificate
-for the client:
+To use this role with a dual-server setup (a dartase `db` and a web server `web`) you must first:
+
+- stop any running PostgreSQL service
+- create a SSL certificate for the client if using SSL:
 
 ```yaml
 - name: Disable default postgresl module and install rpm key
@@ -83,13 +101,5 @@ You can then use this role to install and configure PostgreSQL on a server:
   tasks:
     - name: Create and setup a postgresql database
       ansible.builtin.include_role:
-        name: "mirsg.postgresql"
+        name: "mirsg.infrastructure.postgresql"
 ```
-
-## License
-
-[BSD 3-Clause License](https://github.com/UCL-MIRSG/ansible-role-postgresql/blob/main/LICENSE).
-
-## Author Information
-
-This role was created by the [Medical Imaging Research Software Group](https://www.ucl.ac.uk/advanced-research-computing/expertise/research-software-development/medical-imaging-research-software-group) at [UCL](https://www.ucl.ac.uk/).
