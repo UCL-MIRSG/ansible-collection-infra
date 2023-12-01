@@ -1,5 +1,5 @@
 ---
-- name: Install firewalld
+- name: Setup for roles
   hosts: all
   gather_facts: true
   tasks:
@@ -16,3 +16,12 @@
             path: /etc/firewalld/firewalld.conf
             regexp: "^FirewallBackend="
             line: FirewallBackend=iptables
+
+    - name: Setup for PostgreSQL
+      ansible.builtin.include_tasks:
+        file: prepare/postgresql.yml
+        apply:
+          tags:
+            - postgresql
+      tags:
+        - postgresql
