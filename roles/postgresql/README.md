@@ -28,11 +28,10 @@ There are also several **required** variables you will need to set before using 
 | `postgresql_database.user_password`                 | Password for the database (this should be stored in an Ansible Vault)                                        |
 | `postgresql_connection.host`                        | Hostname of the server                                                                                       |
 | `postgresql_connection.port`                        | Port that PostgreSQL is exposed on (should be 5432)                                                          |
-| `postgresql_connection.port`                        | Port that PostgreSQL is exposed on (should be 5432)                                                          |
 | `postgresql_connection.client_ip`                   | IP address from which to allow incoming connections                                                          |
 | `postgresql_connection.client_certificate_filename` | Where to copy the client certificate to on the server; only required if using `postgresql_use_ssl` is `true` |
 | `postgresql_connection.listen_address`              | IP address(es) the server should listen on                                                                   |
-| `postgresql_connection.listen_address`              | Subnet mask to apply to `postgresql_connection.client_ip` for incoming connections                           |
+| `postgresql_connection.subnet_mask`                 | Subnet mask to apply to `postgresql_connection.client_ip` for incoming connections                           |
 
 Note, if `postgresql_use_ssl` is set to `true`, you will also need to define a `postgresql_ssl_certificate` variable
 for generating the server certificate.
