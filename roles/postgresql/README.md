@@ -31,11 +31,6 @@ See [this example](molecule/resources/inventory/host_vars/web/vars) `host_vars` 
 
 `postgresql_use_ssl:` boolean; whether to use SSL
 
-## Dependencies
-
-If `postgresql_use_ssl` is set to `true`, `mirsg.ssl_certificates` must be installed and the `ssl_certificate`
-variable defined for both the client and server.
-
 ## Example Playbook
 
 To use this role you must first stop any running PostgreSQL service and, if necessary, create a SSL certificate
@@ -73,7 +68,7 @@ for the client:
 
     - name: Create self-signed SSL certificate for the client
       ansible.builtin.include_role:
-        name: "mirsg.ssl_certificates"
+        name: "mirsg.infrastructure.ssl_certificates"
       vars:
         ssl_certificate: "{{ postgresql_client_ssl_certificate }}"
 ```

@@ -158,7 +158,7 @@
   block:
     - name: Generate postgresql server certificate
       ansible.builtin.include_role:
-        name: mirsg.ssl_certificates
+        name: mirsg.infrastructure.ssl_certificates
       vars:
         ssl_certificate: "{{ postgresql_ssl_certificate }}" # noqa: var-naming[no-role-prefix]
 
