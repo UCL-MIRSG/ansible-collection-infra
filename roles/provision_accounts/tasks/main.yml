@@ -1,0 +1,12 @@
+---
+# tasks file for provision_accounts
+
+- name: Create OS user accounts from variables
+  ansible.builtin.user:
+    user: "{{ item.username }}"
+    state: present
+    groups: "{{ os_users_groups }}"
+    append: true
+    password: "{{ item.crypted_password }}"
+    update_password: always
+  loop: "{{ os_users }}"
