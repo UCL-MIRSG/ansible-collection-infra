@@ -47,3 +47,10 @@ postgresql_connection:
   client_ip: 0.0.0.0
   listen_addresses: "'*'"
   subnet_mask: 255.255.255.255
+
+# mirsg.infrastructure.provision_accounts
+os_users:
+  - username: test-user
+    crypted_password: $6$TSoIGqmpZJw24vqP$lrhHcIeuv3oi8kpBu3SVyqPeTLuXi5TJf5u7hUOY0vRb4MXWTp1Z/gsjAwC28EQrVnKOJwpw00tN8ExM6AoIC.
+
+os_users_groups: "wheel"
