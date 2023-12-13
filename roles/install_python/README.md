@@ -1,11 +1,7 @@
-# Ansible Role: mirsg.install_python
+# Ansible Role: mirsg.infrastructure.install_python
 
 This role installs Python, pip, and setuptools on Debian and RedHat operating systems. It will also update pip to the latest version or a
 user-specified version, and then install user-specified Python packages using pip.
-
-## Requirements
-
-If you would like to run Ansible Molecule to test this role, the requirements are in [`requirements.txt`](https://github.com/UCL-MIRSG/ansible-role-install-python/blob/main/requirements.txt).
 
 ## Role Variables
 
@@ -29,10 +25,6 @@ The packages listed in `install_python.system_packages` will be installed by the
 
 `pip_packages`: list of Python packages to be installed by pip. This defaults to `[]`.
 
-## Dependencies
-
-There are no Ansible-Galaxy dependencies for this role.
-
 ## Example Playbook
 
 This role will install Python on a managed host. To used this role, add it to the list of roles in a play:
@@ -43,11 +35,3 @@ This role will install Python on a managed host. To used this role, add it to th
   roles:
     - mirsg.install_python
 ```
-
-## License
-
-[BSD 3-Clause License](https://github.com/UCL-MIRSG/ansible-role-install-python/blob/main/LICENSE).
-
-## Author Information
-
-This role was created by the [Medical Imaging Research Software Group](https://www.ucl.ac.uk/advanced-research-computing/expertise/research-software-development/medical-imaging-research-software-group) at [UCL](https://www.ucl.ac.uk/).

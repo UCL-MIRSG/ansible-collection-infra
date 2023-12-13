@@ -1,0 +1,13 @@
+name: Test Python
+on:
+  pull_request:
+    paths:
+      - "roles/install_python/**"
+      - ".github/workflows/molecule.yml"
+      - ".github/workflows/molecule-python.yml"
+
+jobs:
+  molecule-firewalld:
+    uses: ./.github/workflows/molecule.yml
+    with:
+      run-tags: python
