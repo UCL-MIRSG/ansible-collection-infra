@@ -62,7 +62,7 @@ collection. To support running the tests with Molecule 6, the Molecule configura
 `ansible_collections/mirsg/infrastructure/tests`. To run the tests you must be in this directory:
 
 ```
-cd ansible_collections/mirsg/infrastructure
+cd ansible_collections/mirsg/infrastructure/tests
 ```
 
 This collection is tested using a
