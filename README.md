@@ -104,12 +104,11 @@ molecule playbooks. If the deployment fails, the container is not destroyed.
 
 #### Access the container
 
-Once the command has finished running, you can access the container using its
-[names defined in the scenario](tests/molecule/centos7/molecule.yml). To access the
-container (named `instance`):
+Once the command has finished running, you can access the container using the name
+of the scenario. To access the container for the `centos7` scenario:
 
 ```
-docker exec -it instance /bin/bash
+molecule login -s centos7
 ```
 
 #### Destroy the container
