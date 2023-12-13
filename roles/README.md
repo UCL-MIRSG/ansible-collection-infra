@@ -109,4 +109,4 @@ jobs:
 
 This uses the [`.github/workflows/molecule.yml` reusable workflow](.github/workflows/molecule.yml) to run
 molecule on the collection. Specifying `run-tags: my_role` will set `MOLECULE_RUN_TAGS` to `my_role` in the
-reusable workflow, and so only `mirsg.infrastructure.my_role` will be the only role ran during the tests.
+reusable workflow, and so `mirsg.infrastructure.my_role` will be the only role to run during the tests.
