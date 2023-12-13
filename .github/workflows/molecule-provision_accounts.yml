@@ -1,8 +1,8 @@
-name: Test provision
+name: Test provision_accounts
 on:
   pull_request:
     paths:
-      - "roles/provision/**"
+      - "roles/provision_accounts/**"
       - ".github/workflows/molecule.yml"
       - ".github/workflows/molecule-provision_accounts.yml"
 
