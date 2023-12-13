@@ -19,7 +19,7 @@ You can also include it in a `requirements.yml` file and install it via
 
 ```yaml
 collections:
-  - name: mirsg.xnat
+  - name: mirsg.infrastructure
     source: https://github.com/UCL-MIRSG/ansible-collection-infra.git
     version: main
 ```
