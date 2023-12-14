@@ -7,10 +7,9 @@ configure infrastructure for deploying XNAT and OMERO.
 
 ### Playbooks
 
-| Name                                                         | Description                                                |
-| ------------------------------------------------------------ | ---------------------------------------------------------- |
-| [setup_user_accounts.yml](playbooks/setup_user_accounts.yml) | Create OS user accounts a group of servers `target`, which |
-| defaults to `all`.                                           |
+| Name                                                         | Description                                                                   |
+| ------------------------------------------------------------ | ----------------------------------------------------------------------------- |
+| [setup_user_accounts.yml](playbooks/setup_user_accounts.yml) | Create OS user accounts a group of servers `target`, which defaults to `all`. |
 
 ## External requirements
 
