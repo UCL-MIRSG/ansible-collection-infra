@@ -1,12 +1,12 @@
 - name: Restart prometheus
   community.docker.docker_container:
-    name: "{{ prometheus.container_name }}"
+    name: "{{ monitoring_server_prometheus.container_name }}"
     state: started
     restart: true
 
 - name: Restart grafana
   community.docker.docker_container:
-    name: "{{ grafana.container_name }}"
+    name: "{{ monitoring_server_grafana.container_name }}"
     state: started
     restart: true
 
