@@ -7,7 +7,7 @@ After=syslog.target network.target
 User= {{ monitoring_client_owner }}
 Group= {{ monitoring_client_group }}
 
-ExecStart={{ monitoring_client_node_exporter.install_dir }}/node_exporter --web.config={{ monitoring_client_node_exporter.web_config_file }}
+ExecStart={{ monitoring_client_node_exporter_install_dir }}/node_exporter --web.config={{ monitoring_client_node_exporter_web_config }}
 
 [Install]
 WantedBy=multi-user.target
