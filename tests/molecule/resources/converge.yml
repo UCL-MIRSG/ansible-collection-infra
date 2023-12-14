@@ -7,9 +7,6 @@
     - role: mirsg.infrastructure.provision
       tags: provision
 
-    - role: mirsg.infrastructure.provision_accounts
-      tags: provision_accounts
-
     - role: mirsg.infrastructure.install_python
       tags: python
 
@@ -18,3 +15,7 @@
 
     - role: mirsg.infrastructure.postgresql
       tags: postgresql
+
+- name: Provision infrastructure with playbooks
+  ansible.builtin.import_playbook: mirsg.infrastructure.setup_user_accounts
+  tags: provision_accounts
