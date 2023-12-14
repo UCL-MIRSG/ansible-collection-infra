@@ -1,26 +1,26 @@
 ---
 - name: Ensure monitoring cert dir exists on client
   ansible.builtin.file:
-    path: "{{ monitoring_client.cert_dir }}"
+    path: "{{ monitoring_client_cert_dir }}"
     state: directory
-    owner: "{{ monitoring_client.owner }}"
-    group: "{{ monitoring_client.group }}"
+    owner: "{{ monitoring_client_owner }}"
+    group: "{{ monitoring_client_group }}"
     mode: "0700"
 
 - name: Copy monitoring server certificate to client
   ansible.builtin.copy:
     src: "{{ monitoring_temp_files_cert_dir }}/ca.pem"
-    dest: "{{ monitoring_client.server_ca_cert_file }}"
-    owner: "{{ monitoring_client.owner }}"
-    group: "{{ monitoring_client.group }}"
+    dest: "{{ monitoring_client_server_ca_cert_file }}"
+    owner: "{{ monitoring_client_owner }}"
+    group: "{{ monitoring_client_group }}"
     mode: "0600"
 
 - name: Copy signed monitoring client certificate to client
   ansible.builtin.copy:
     src: "{{ monitoring_temp_files_cert_dir }}/{{ ansible_host }}.cert"
-    dest: "{{ monitoring_client.ssl_cert_file }}"
-    owner: "{{ monitoring_client.owner }}"
-    group: "{{ monitoring_client.group }}"
+    dest: "{{ monitoring_client_ssl_cert_file }}"
+    owner: "{{ monitoring_client_owner }}"
+    group: "{{ monitoring_client_group }}"
     mode: "0600"
 
 - name: Install and configure Node exporter

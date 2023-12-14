@@ -4,10 +4,10 @@ Documentation=https://prometheus.io/
 After=syslog.target network.target
 
 [Service]
-User= {{ monitoring_client.owner }}
-Group= {{ monitoring_client.group }}
+User= {{ monitoring_client_owner }}
+Group= {{ monitoring_client_group }}
 
-ExecStart={{ node_exporter.install_dir }}/node_exporter --web.config={{ node_exporter.web_config_file }}
+ExecStart={{ monitoring_client_node_exporter.install_dir }}/node_exporter --web.config={{ monitoring_client_node_exporter.web_config_file }}
 
 [Install]
 WantedBy=multi-user.target

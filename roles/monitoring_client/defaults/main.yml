@@ -1,0 +1,26 @@
+---
+monitoring_client_node_export_version:
+  node_exporter: 1.1.2
+
+monitoring_client_node_exporter:
+  binary_url: >
+    https://github.com/prometheus/node_exporter/releases/download/v
+    {{ monitoring_client_node_export_version }}/node_exporter-
+    {{ monitoring_client_node_export_version }}.linux-amd64.tar.gz"
+  install_dir: "/usr/bin/node_exporter"
+  service_config_file: "/etc/systemd/system/node_exporter.service"
+  web_config_file: /usr/bin/node_exporter/web.yml
+  port: 9100
+  ssl_key_file: "/usr/bin/node_exporter/node_exporter.key"
+  ssl_cert_file: "/usr/bin/node_exporter/node_exporter.crt"
+
+monitoring_client_owner: root
+monitoring_client_group: root
+monitoring_client_cert_dir: /root/monitoring_certs
+monitoring_client_ssl_key_file: "/root/monitoring_certs/key.pem"
+monitoring_client_ssl_csr_file: "/root/monitoring_certs/monitoring.csr"
+monitoring_client_ssl_pk8_file: "/root/monitoring_certs/monitoring.pk8"
+monitoring_client_ssl_cert_file: "/root/monitoring_certs/cert.pem"
+monitoring_client_server_ca_cert_file: "/root/monitoring_certs/ca.pem"
+monitoring_client_exporter_username: "prometheus"
+monitoring_client_exporter_password: ""

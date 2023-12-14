@@ -3,19 +3,19 @@
   ansible.builtin.file:
     owner: "{{ monitoring_client.owner }}"
     group: "{{ monitoring_client.group }}"
-    path: "{{ node_exporter.install_dir }}"
+    path: "{{ monitoring_client_node_exporter.install_dir }}"
     state: directory
     mode: "0777"
 
 - name: Download and unarchive node_exporter
   ansible.builtin.unarchive:
-    src: "{{ node_exporter.binary_url }}"
-    dest: "{{ node_exporter.install_dir }}"
+    src: "{{ monitoring_client_node_exporter.binary_url }}"
+    dest: "{{ monitoring_client_node_exporter.install_dir }}"
     remote_src: true
     owner: "{{ monitoring_client.owner }}"
     group: "{{ monitoring_client.group }}"
     extra_opts: "--strip-components=1"
-    creates: "{{ node_exporter.install_dir }}/node_exporter"
+    creates: "{{ monitoring_client_node_exporter.install_dir }}/node_exporter"
 
 - name: Copy monitoring client crt and key files to node_exporter folder
   ansible.builtin.copy:
@@ -27,14 +27,14 @@
     remote_src: true
   with_items:
     - src: "{{ monitoring_client.ssl_key_file }}"
-      dest: "{{ node_exporter.ssl_key_file }}"
+      dest: "{{ monitoring_client_node_exporter.ssl_key_file }}"
     - src: "{{ monitoring_client.ssl_cert_file }}"
       dest: "{{ node_exporter.ssl_cert_file }}"
 
-- name: Copy node_exporter service file
+- name: Copy monitoring_client_node_exporter service file
   ansible.builtin.template:
-    src: templates/node_exporter.service.j2
-    dest: "{{ node_exporter.service_config_file }}"
+    src: templates/monitoring_client_node_exporter.service.j2
+    dest: "{{ monitoring_client_node_exporter.service_config_file }}"
     mode: "0644"
   when: ansible_service_mgr == "systemd"
 
@@ -69,7 +69,7 @@
 - name: Copy node_exporter web config file
   ansible.builtin.template:
     src: templates/node_exporter_web.yml.j2
-    dest: "{{ node_exporter.web_config_file }}"
+    dest: "{{ monitoring_client_node_exporter.web_config_file }}"
     mode: "0644"
   notify:
     - Restart node_exporter
