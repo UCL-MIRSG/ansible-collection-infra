@@ -7,7 +7,7 @@ global:
     monitor: 'mirsg-monitor'
 
 rule_files:
-  - {{ prometheus.rules }}
+  - {{ monitoring_server_prometheus.rules }}
 
 scrape_configs:
   # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
@@ -24,12 +24,12 @@ scrape_configs:
       metrics_path: /cadvisor/metrics
       static_configs:
       - targets:
-        - {{ cadvisor.container_name }}:8080
+        - {{ monitoring_server_cadvisor.container_name }}:8080
 
     - job_name: node
       scheme: https
       tls_config:
-        ca_file: {{ prometheus.ca_cert }}
+        ca_file: {{ monitoring_server_prometheus.ca_cert }}
       basic_auth:
         username: {{ monitoring_client.exporter_auth.username }}
         password: {{ monitoring_client.exporter_auth.password }}
@@ -56,11 +56,11 @@ scrape_configs:
         - source_labels: [__param_target]
           target_label: instance
         - target_label: __address__
-          replacement: {{ blackbox_exporter.container_name }}:9115 # Blackbox exporter.
+          replacement: {{ monitoring_server_blackbox_exporter.container_name }}:9115 # Blackbox exporter.
 
 alerting:
   alertmanagers:
   - path_prefix: "alertmanager/"
     static_configs:
     - targets:
-      - {{ alertmanager.container_name }}:9093
+      - {{ monitoring_server_alertmanager.container_name }}:9093
