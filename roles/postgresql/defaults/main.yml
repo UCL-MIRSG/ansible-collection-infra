@@ -9,7 +9,10 @@ postgresql_data_directory: "/var/lib/pgsql/{{ postgresql_version }}/data"
 # mirsg.postgresql - download and install
 postgresql_install:
   disable_gpg_check: false
-  rpm: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-{{ ansible_facts['distribution_major_version'] }}-{{ ansible_facts['architecture'] }}/pgdg-redhat-repo-latest.noarch.rpm"
+  rpm: >-
+    https://download.postgresql.org/pub/repos/yum/reporpms/EL-{{
+    ansible_facts['distribution_major_version'] }}-{{
+    ansible_facts['architecture'] }}/pgdg-redhat-repo-latest.noarch.rpm
   yum_package: "{{ postgresql_package_name }}-server"
   yum_contrib_package: "{{ postgresql_package_name }}-contrib"
 
