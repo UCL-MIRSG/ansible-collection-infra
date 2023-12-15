@@ -29,6 +29,7 @@ You can also include it in a `requirements.yml` file and install it via
 collections:
   - name: mirsg.infrastructure
     source: https://github.com/UCL-MIRSG/ansible-collection-infra.git
+    type: git
     version: main
 ```
 
