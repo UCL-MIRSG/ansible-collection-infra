@@ -67,9 +67,9 @@ provisioner:
       hosts: ../resources/role/inventory/hosts.yml
       group_vars: ../resources/role/inventory/group_vars/
   playbooks:
-    converge: ../resources/converge.yml
-    prepare: ../resources/prepare.yml
-    verify: ../resources/verify.yml
+    converge: ../resources/role/converge.yml
+    prepare: ../resources/shared/prepare.yml
+    verify: ../resources/role/verify.yml
   env:
     ANSIBLE_VERBOSITY: "1"
 
