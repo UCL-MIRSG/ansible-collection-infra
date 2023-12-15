@@ -12,14 +12,6 @@
     create_home: false
     system: true
 
-- name: Create ca-cert
-  ansible.builtin.include_tasks: ca-cert.yml
-  when: monitoring_server_create_ca_cert
-  notify: Restart docker
-
-- name: Create client certs
-  ansible.builtin.include_tasks: client-certs.yml
-
 - name: Install Docker SDK for Python
   ansible.builtin.pip:
     name:

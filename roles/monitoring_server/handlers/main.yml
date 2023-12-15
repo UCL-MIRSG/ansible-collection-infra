@@ -18,5 +18,5 @@
 
 - name: Restart docker
   ansible.builtin.service:
-    name: "{{ docker.service_name }}"
+    name: "{{ docker_service_name }}"
     state: restarted
