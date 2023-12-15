@@ -9,7 +9,7 @@
 
 - name: Copy monitoring server certificate to client
   ansible.builtin.copy:
-    src: "{{ monitoring_temp_files_cert_dir }}/ca.pem"
+    src: "{{ monitoring_client_certificate_cache_directory }}/ca.pem"
     dest: "{{ monitoring_client_server_ca_cert_file }}"
     owner: "{{ monitoring_client_owner }}"
     group: "{{ monitoring_client_group }}"
@@ -17,7 +17,7 @@
 
 - name: Copy signed monitoring client certificate to client
   ansible.builtin.copy:
-    src: "{{ monitoring_temp_files_cert_dir }}/{{ ansible_host }}.cert"
+    src: "{{ monitoring_client_certificate_cache_directory }}/{{ ansible_host }}.cert"
     dest: "{{ monitoring_client_ssl_cert_file }}"
     owner: "{{ monitoring_client_owner }}"
     group: "{{ monitoring_client_group }}"
