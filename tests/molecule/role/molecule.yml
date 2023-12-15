@@ -1,0 +1,64 @@
+---
+dependency:
+  name: galaxy
+  options:
+    force: true
+    role-file: "${MOLECULE_SCENARIO_DIRECTORY}/../../../meta/requirements.yml"
+    requirements-file: "${MOLECULE_SCENARIO_DIRECTORY}/../../../meta/requirements.yml"
+
+driver:
+  name: docker
+
+platforms:
+  - name: instance
+    hostname: molecule.instance.local
+    image: ${MOLECULE_DOCKER_IMAGE:-geerlingguy/docker-centos7-ansible:latest}
+    required: true
+    command: ""
+    cgroupns_mode: host
+    privileged: true
+    pre_build_image: ${MOLECULE_PRE_BUILD_IMAGE:-true}
+    volumes:
+      - ./molecule-data:/storage/molecule
+    keep_volumes: false
+    groups:
+      - all
+      - molecule
+      - centos7
+    docker_networks:
+      - name: molecule
+        ipam_config:
+          - subnet: "192.168.56.0/24"
+            gateway: "192.168.56.1"
+    networks:
+      - name: molecule
+        ipv4_address: "192.168.56.2"
+
+provisioner:
+  name: ansible
+  log: true
+  config_options:
+    defaults:
+      callbacks_enabled: profile_tasks, timer, yaml
+    tags:
+      run: ${MOLECULE_RUN_TAGS:-all}
+  inventory:
+    links:
+      hosts: ../resources/role/inventory/hosts.yml
+      group_vars: ../resources/role/inventory/group_vars/
+  playbooks:
+    converge: ../resources/converge.yml
+    prepare: ../resources/prepare.yml
+    verify: ../resources/verify.yml
+  env:
+    ANSIBLE_VERBOSITY: "1"
+
+verifier:
+  name: ansible
+  env:
+    ANSIBLE_VERBOSITY: "1"
+
+lint: |
+  set -e
+  yamllint .
+  ansible-lint .
