@@ -3,6 +3,14 @@
 This repository contains the `mirsg.infrastructure` Ansible Collection. This collection can be used to
 configure infrastructure for deploying XNAT and OMERO.
 
+## Included content
+
+### Playbooks
+
+| Name                                                         | Description                                                                   |
+| ------------------------------------------------------------ | ----------------------------------------------------------------------------- |
+| [setup_user_accounts.yml](playbooks/setup_user_accounts.yml) | Create OS user accounts a group of servers `target`, which defaults to `all`. |
+
 ## External requirements
 
 Before using this collection and its playbooks, you must install the
@@ -27,8 +35,8 @@ collections:
 ## Testing this collection
 
 We use [Ansible Molecule](https://ansible.readthedocs.io/projects/molecule/) and its
-[Docker plugin](https://github.com/ansible-community/molecule-plugins) to test the roles in
-this collection.
+[Docker plugin](https://github.com/ansible-community/molecule-plugins) to test the roles
+and playbooks in this collection.
 
 If you would like to run the tests locally you will need to:
 

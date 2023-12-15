@@ -1,6 +1,5 @@
 ---
 # tasks file for provision_accounts
-
 - name: Create OS user accounts from variables
   ansible.builtin.user:
     user: "{{ item.username }}"
