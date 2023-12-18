@@ -1,0 +1,24 @@
+name: Test install_monitoring playbook
+on:
+  pull_request:
+    paths:
+      - "roles/monitoring_client/**"
+      - "roles/monitoring_server/**"
+      - ".github/workflows/molecule.yml"
+      - ".github/workflows/molecule-monitoring.yml"
+
+jobs:
+  molecule-monitoring:
+    runs-on: ubuntu-latest
+    env:
+      MOLECULE_RUN_TAGS: monitoring
+      PY_COLORS: 1
+      ANSIBLE_FORCE_COLOR: 1
+
+    steps:
+      - name: Run `molecule test`
+        uses: UCL-MIRSG/.github/actions/molecule-test@v0.38.0
+        with:
+          scenario: monitoring
+          checkout_path: ansible_collections/mirsg/infrastructure
+          tests_path: ansible_collections/mirsg/infrastructure/tests
