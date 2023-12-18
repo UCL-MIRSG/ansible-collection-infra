@@ -21,11 +21,11 @@
     image: "{{ monitoring_server_alertmanager.image }}"
     state: started
     user: "{{ monitoring_server_uid }}:{{ monitoring_server_gid }}"
-    command: "{% for key in monitoring_server_alertmanager.commandline_args %}--{{ key }}={{ alertmanager.commandline_args[key] }} {% endfor %}"
+    command: "{% for key in monitoring_server_alertmanager.commandline_args %}--{{ key }}={{ monitoring_server_alertmanager.commandline_args[key] }} {% endfor %}"
     networks:
       - name: monitor-net
     volumes:
-      - "{{ monitoring_server_alertmanager.external_data_dir }}:{{ alertmanager.volume }}"
+      - "{{ monitoring_server_alertmanager.external_data_dir }}:{{ monitoring_server_alertmanager.volume }}"
     restart_policy: always
   notify:
     - Restart prometheus

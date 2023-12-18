@@ -9,7 +9,7 @@
 
 - name: Copy server cert to prometheus bind mount
   ansible.builtin.copy:
-    src: "{{ monitoring_temp_files_cert_dir }}/ca.pem"
+    src: "{{ monitoring_server_certificate_cache_directory }}/ca.pem"
     dest: "{{ monitoring_server_prometheus.external_data_dir }}/ca.pem"
     owner: "{{ monitoring_server_owner }}"
     group: "{{ monitoring_server_group }}"
@@ -39,11 +39,11 @@
 - name: Start prometheus container
   community.docker.docker_container:
     name: "{{ monitoring_server_prometheus.container_name }}"
-    hostname: "{{ prometheus.container_name }}"
+    hostname: "{{ monitoring_server_prometheus.container_name }}"
     image: "{{ monitoring_server_prometheus.image }}"
     user: "{{ monitoring_server_uid }}:{{ monitoring_server_gid }}"
     state: started
-    command: "{% for key in monitoring_server_prometheus.commandline_args %}--{{ key }}={{ prometheus.commandline_args[key] }} {% endfor %}"
+    command: "{% for key in monitoring_server_prometheus.commandline_args %}--{{ key }}={{ monitoring_server_prometheus.commandline_args[key] }} {% endfor %}"
     networks:
       - name: monitor-net
     volumes:

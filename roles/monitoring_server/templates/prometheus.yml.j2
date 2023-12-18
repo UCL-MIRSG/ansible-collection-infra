@@ -31,11 +31,11 @@ scrape_configs:
       tls_config:
         ca_file: {{ monitoring_server_prometheus.ca_cert }}
       basic_auth:
-        username: {{ monitoring_client.exporter_auth.username }}
-        password: {{ monitoring_client.exporter_auth.password }}
+        username: {{ monitoring_client_exporter_username }}
+        password: {{ monitoring_client_exporter_password }}
       static_configs:
       - targets:
-        {% for client in monitoring_service_clients %}
+        {% for client in monitoring_server_client_hostnames %}
         - {{ client }}:9100
         {% endfor %}
 
@@ -46,8 +46,8 @@ scrape_configs:
         module: [http_2xx]
       static_configs:
         - targets:
-          {% for xnat in monitoring_service_xnat_instances %}
-          - {{ xnat }}
+          {% for web in monitoring_server_web_clients %}
+          - {{ web }}
           {% endfor %}
 
       relabel_configs:

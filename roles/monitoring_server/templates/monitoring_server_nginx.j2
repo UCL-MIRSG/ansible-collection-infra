@@ -65,7 +65,7 @@ http {
         listen 443 ssl default_server;
 {% endif %}
 
-{% if ipv6_enabled %}
+{% if monitoring_server_nginx.ipv6_enabled %}
         listen [::]:80 default_server;
     {% if monitoring_server_use_ssl %}
         listen [::]:443 ssl default_server;
@@ -91,12 +91,12 @@ http {
 
 {% if monitoring_server_use_ssl %}
         listen {{ monitoring_server_nginx.https_port }} ssl http2;
-    {% if ipv6_enabled %}
+    {% if monitoring_server_nginx.ipv6_enabled %}
         listen [::]:{{ monitoring_server_nginx.https_port }} ssl http2;
     {% endif %}
 {% else %}
         listen {{ monitoring_server_nginx.http_port }};
-    {% if ipv6_enabled %}
+    {% if monitoring_server_nginx.ipv6_enabled %}
         listen [::]:{{ monitoring_server_nginx.http_port }};
     {% endif %}
 {% endif %}

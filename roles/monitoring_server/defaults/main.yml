@@ -20,9 +20,19 @@ monitoring_server_server_cert: "{{ monitoring_server_certificate_directory }}/se
 # mirsg.monitoring_server client certificates
 monitoring_server_client_hostnames: [] # list of hostnames of clients that will connect to the server
 monitoring_server_client_certificate_directory: "{{ monitoring_server_certificate_directory }}/client_certs"
-monitoring_server_client_certificate_cache_directory: "{{ lookup('env', 'HOME') }}/ansible_persistent_files/monitoring_server_certificates"
+monitoring_server_certificate_cache_directory: "{{ lookup('env', 'HOME') }}/ansible_persistent_files/monitoring_server_certificates"
 
 monitoring_server_storage_root: /data/monitoring
+
+monitoring_server_smtp_enabled: false
+monitoring_server_smtp_hostname: ""
+monitoring_server_smtp_port: "25"
+monitoring_server_smtp_protocol: "smtp"
+monitoring_server_smtp_auth: ""
+monitoring_server_smtp_username: ""
+monitoring_server_smtp_password: ""
+monitoring_server_smtp_start_tls: "false"
+ssl_trust: "*"
 
 monitoring_server_alertmanager:
   container_name: alertmanager
@@ -65,9 +75,11 @@ monitoring_server_nginx:
   owner: root
   group: root
   log_folder: /var/log/nginx
-  http_port: 80
-  https_port: 443
+  http_port:
+  https_port: 44380
   certs_dir: /etc/nginx/ssl
+  diffie_helman_size_bits: 2048
+  ipv6_enabled: false
   dh_params_file: /etc/nginx/ssl/dhparam.pem
   conf_file: /etc/nginx/nginx.conf
   ssl_cert_file: /etc/nginx/ssl/server.cert
@@ -84,3 +96,4 @@ monitoring_server_prometheus:
     config.file: /prometheus/prometheus.yml
     storage.tsdb.path: /prometheus/data
     web.external-url: /prometheus/
+

@@ -1,4 +1,22 @@
 ---
+- name: Find limited web servers in monitoring_server_client_hostnames list
+  ansible.builtin.set_fact:
+    # loop through the list and concatenate the result
+    # the default([]) means use the empty list if list doesn't exist
+    # add to this the ansible group corresponding to the given item
+    # then perform the intersection with the monitoring_service and web group
+    # then get the URL from the host
+    # and prepend https:// to the start of each entry
+    monitoring_server_web_clients: >
+      {{
+      group_names |
+      intersect(groups['web']) |
+      map('regex_replace', '^', 'https://')
+      }}
+  loop:
+    - "{{ monitoring_server_client_hostnames }}"
+  when: monitoring_server_client_hostnames is defined
+
 - name: Add monitoring_server group
   ansible.builtin.group:
     name: "{{ monitoring_server_group }}"

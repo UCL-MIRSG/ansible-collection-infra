@@ -22,9 +22,9 @@
     image: "{{ monitoring_server_blackbox_exporter.image }}"
     state: started
     user: "{{ monitoring_server_uid }}:{{ monitoring_server_gid }}"
-    command: "{% for key in monitoring_server_blackbox_exporter.commandline_args %}--{{ key }}={{ blackbox_exporter.commandline_args[key] }} {% endfor %}"
+    command: "{% for key in monitoring_server_blackbox_exporter.commandline_args %}--{{ key }}={{ monitoring_server_blackbox_exporter.commandline_args[key] }} {% endfor %}"
     networks:
       - name: monitor-net
     volumes:
-      - "{{ monitoring_server_blackbox_exporter.external_data_dir }}/blackbox-exporter.yml:{{ blackbox_exporter.volume }}/blackbox-exporter.yml"
+      - "{{ monitoring_server_blackbox_exporter.external_data_dir }}/blackbox-exporter.yml:{{ monitoring_server_blackbox_exporter.volume }}/blackbox-exporter.yml"
     restart_policy: always

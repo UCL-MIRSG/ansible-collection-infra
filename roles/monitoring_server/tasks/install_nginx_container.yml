@@ -1,7 +1,7 @@
 ---
 - name: Ensure python-passlib is installed
   ansible.builtin.yum:
-    name: "python-passlib"
+    name: python-passlib
     state: installed
 
 - name: Ensure nginx certs directory exists on host
@@ -37,16 +37,16 @@
   notify:
     - Restart nginx
 
-- name: Generate Diffie-Hellman (DH) parameters with bits - {{ diffie_helman_size_bits }}
+- name: Generate Diffie-Hellman (DH) parameters with bits - {{ monitoring_server_nginx.diffie_helman_size_bits }}
   community.crypto.openssl_dhparam:
     path: "{{ monitoring_server_nginx.dh_params_file }}"
-    size: "{{ diffie_helman_size_bits }}"
+    size: "{{ monitoring_server_nginx.diffie_helman_size_bits }}"
   notify:
     - Restart nginx
 
 - name: Copy nginx config file
   ansible.builtin.template:
-    src: "monitoring_server_nginx.j2"
+    src: monitoring_server_nginx.j2
     dest: "{{ monitoring_server_nginx.conf_file }}"
     owner: "{{ monitoring_server_nginx.owner }}"
     group: "{{ monitoring_server_nginx.group }}"
@@ -67,7 +67,7 @@
       - "80:80"
       - "443:443"
     volumes:
-      - "/etc/nginx/.htpasswd:/etc/nginx/.htpasswd"
+      - /etc/nginx/.htpasswd:/etc/nginx/.htpasswd
       - "{{ monitoring_server_nginx.conf_file }}:/etc/nginx/nginx.conf:ro"
       - "{{ monitoring_server_nginx.certs_dir }}:/etc/nginx/ssl"
       - "{{ monitoring_server_nginx.log_folder }}:/var/log/nginx"

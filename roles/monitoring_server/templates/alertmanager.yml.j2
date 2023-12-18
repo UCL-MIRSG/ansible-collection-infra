@@ -1,10 +1,10 @@
 global:
   # The smarthost and SMTP sender used for mail notifications.
-  smtp_smarthost: {{ smtp.hostname }}:{{ smtp.port }}
+  smtp_smarthost: {{ monitoring_server_smtp_hostname }}:{{ monitoring_server_smtp_port }}
   smtp_from: {{ monitoring_server_admin_email }}
-  smtp_auth_username: {{ smtp.username }}
-  smtp_auth_password: {{ smtp.password }}
-  smtp_require_tls: {{ smtp.start_tls }}
+  smtp_auth_username: {{ monitoring_server_smtp_username }}
+  smtp_auth_password: {{ monitoring_server_smtp_password }}
+  smtp_require_tls: {{ monitoring_server_smtp_start_tls }}
 
 # The directory from which notification templates are read.
 templates:
