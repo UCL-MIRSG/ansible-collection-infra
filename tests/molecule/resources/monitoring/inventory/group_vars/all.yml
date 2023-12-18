@@ -1,0 +1,20 @@
+---
+ansible_cache_dir: "{{ lookup('env', 'HOME') }}/ansible_persistent_files"
+
+external_storage_drive: "/storage/molecule"
+selinux_enabled: false
+
+# mirsg.infrastructure.provision
+server_locale: "en_GB.UTF-8"
+
+# mirsg.infrastructure.install_python
+install_python:
+  version: "2"
+  pip_version: "20.3.4"
+  pip_executable: "pip"
+  system_packages:
+    - python
+    - python-pip
+    - python-setuptools
+  pip_packages:
+    - cryptography

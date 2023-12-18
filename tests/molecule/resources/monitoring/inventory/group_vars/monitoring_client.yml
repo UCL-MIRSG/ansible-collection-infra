@@ -1,0 +1,2 @@
+monitoring_client_certificate_cache_directory: "{{ docker_client_certificate_cache_directory }}"
+monitoring_client_exporter_password: password
