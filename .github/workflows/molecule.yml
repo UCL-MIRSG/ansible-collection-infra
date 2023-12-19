@@ -9,6 +9,12 @@ on:
 jobs:
   molecule:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        scenario:
+          - centos7_roles
+          - rocky9_roles
     env:
       MOLECULE_RUN_TAGS: ${{ inputs.run-tags }}
       PY_COLORS: 1
@@ -18,6 +24,6 @@ jobs:
       - name: Run `molecule test`
         uses: UCL-MIRSG/.github/actions/molecule-test@v0.38.0
         with:
-          scenario: roles
+          scenario: ${{ matrix.scenario }}
           checkout_path: ansible_collections/mirsg/infrastructure
           tests_path: ansible_collections/mirsg/infrastructure/tests
