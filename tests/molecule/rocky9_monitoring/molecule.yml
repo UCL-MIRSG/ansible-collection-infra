@@ -10,58 +10,8 @@ driver:
   name: docker
 
 platforms:
-  - name: centos7_mclient
-    hostname: centos7.mclient.local
-    image: ${MOLECULE_DOCKER_IMAGE:-geerlingguy/docker-centos7-ansible:latest}
-    required: true
-    command: ""
-    cgroupns_mode: host
-    privileged: true
-    pre_build_image: ${MOLECULE_PRE_BUILD_IMAGE:-true}
-    volumes:
-      - ${MOLECULE_SCENARIO_DIRECTORY}/molecule-data:/storage/molecule
-    keep_volumes: false
-    groups:
-      - all
-      - monitoring_client
-      - centos7_monitoring_service
-    docker_networks:
-      - name: monitoring
-        ipam_config:
-          - subnet: 192.168.57.0/24
-            gateway: 192.168.57.1
-    networks:
-      - name: monitoring
-        ipv4_address: 192.168.57.2
-    etc_hosts:
-      centos7.mserv.local: 192.168.57.3
-
-  - name: centos7_mserv
-    hostname: centos7.mserv.local
-    image: geerlingguy/docker-centos7-ansible:latest
-    required: true
-    command: ""
-    cgroupns_mode: host
-    privileged: true
-    pre_build_image: true
-    volumes:
-      - ${MOLECULE_SCENARIO_DIRECTORY}/molecule-data:/storage/molecule
-    keep_volumes: false
-    groups:
-      - all
-      - monitoring_server
-      - centos7_monitoring_service
-    networks:
-      - name: monitoring
-        ipv4_address: 192.168.57.3
-    exposed_ports:
-      - 80
-      - 443
-    extra_hosts:
-      centos7.mclient.local: 192.168.57.2
-
-  - name: rocky9-mclient
-    hostname: rocky9.mclient.local
+  - name: mclient
+    hostname: molecule.mclient.local
     image: ${MOLECULE_DOCKER_IMAGE:-geerlingguy/docker-rockylinux9-ansible:latest}
     required: true
     command: ""
@@ -75,7 +25,7 @@ platforms:
     groups:
       - all
       - molecule
-      - centos7_monitoring_service
+      - monitoring_service
     docker_networks:
       - name: monitoring
         ipam_config:
@@ -83,12 +33,12 @@ platforms:
             gateway: 192.168.57.1
     networks:
       - name: monitoring
-        ipv4_address: 192.168.57.4
+        ipv4_address: 192.168.57.2
     etc_hosts:
-      rocky9.mserv.local: 192.168.57.5
+      molecule.mserv.local: 192.168.57.3
 
-  - name: rocky9-mserv
-    hostname: rocky9.mserv.local
+  - name: mserv
+    hostname: molecule.mserv.local
     image: geerlingguy/docker-rockylinux9-ansible:latest
     required: true
     command: ""
@@ -103,15 +53,14 @@ platforms:
       - all
       - monitoring_service
       - monitoring_server
-      - rocky9
     networks:
       - name: monitoring
-        ipv4_address: 192.168.57.5
+        ipv4_address: 192.168.57.3
     exposed_ports:
       - 80
       - 443
     extra_hosts:
-      rocky9.mclient.local: 192.168.57.4
+      molecule.mclient.local: 192.168.57.2
 
 provisioner:
   name: ansible

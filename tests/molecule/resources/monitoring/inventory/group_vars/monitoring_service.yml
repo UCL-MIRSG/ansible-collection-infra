@@ -1,13 +1,13 @@
 monitoring_server_certificate_cache_directory: "{{ lookup('env', 'HOME') }}/ansible_persistent_files/monitoring_server_certificates"
 monitoring_client_certificate_cache_directory: "{{ monitoring_server_certificate_cache_directory }}"
-monitoring_server_ssl_cert: "/etc/ssl/certs/{{ hostvars['centos7_mserv']['hostname'] }}.cert"
-monitoring_server_ssl_key: "/etc/ssl/certs/{{ hostvars['centos7_mserv']['hostname'] }}.key"
+monitoring_server_ssl_cert: "/etc/ssl/certs/{{ hostvars['mserv']['hostname'] }}.cert"
+monitoring_server_ssl_key: "/etc/ssl/certs/{{ hostvars['mserv']['hostname'] }}.key"
 monitoring_server_client_hostnames:
   - "{{ hostvars['centos7_mclient']['hostname'] }}"
 
 docker_client_certificate_cache_directory: "{{ monitoring_server_certificate_cache_directory }}"
-docker_server_hostname: "{{ hostvars['centos7_mserv']['hostname'] }}"
-docker_server_ip: "{{ hostvars['centos7_mserv']['ansible_ip'] }}"
+docker_server_hostname: "{{ hostvars['mserv']['hostname'] }}"
+docker_server_ip: "{{ hostvars['mserv']['ansible_ip'] }}"
 docker_server_port: "2376"
 docker_service_name: docker
 docker_generate_certificates: true # generate TLS certs for clients
@@ -25,4 +25,4 @@ monitoring_client_server_ca_cert_file: /root/monitoring_certs/ca.pem
 monitoring_client_exporter_username: prometheus
 monitoring_client_exporter_password: prometheus
 
-monitoring_client_certificate_file: "{{ hostvars['centos7_mclient']['hostname'] }}.cert"
+monitoring_client_certificate_file: "{{ hostvars['mclient']['hostname'] }}.cert"

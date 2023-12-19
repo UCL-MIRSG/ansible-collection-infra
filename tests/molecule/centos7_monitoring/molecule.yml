@@ -10,8 +10,8 @@ driver:
   name: docker
 
 platforms:
-  - name: centos7_mclient
-    hostname: centos7.mclient.local
+  - name: mclient
+    hostname: molecule.mclient.local
     image: ${MOLECULE_DOCKER_IMAGE:-geerlingguy/docker-centos7-ansible:latest}
     required: true
     command: ""
@@ -19,12 +19,12 @@ platforms:
     privileged: true
     pre_build_image: ${MOLECULE_PRE_BUILD_IMAGE:-true}
     volumes:
-      - ${MOLECULE_SCENARIO_DIRECTORY}/molecule-data:/storage/molecule
+      - ./molecule-data:/storage/molecule
     keep_volumes: false
     groups:
       - all
       - monitoring_client
-      - centos7_monitoring_service
+      - monitoring_service
     docker_networks:
       - name: monitoring
         ipam_config:
@@ -36,8 +36,8 @@ platforms:
     etc_hosts:
       centos7.mserv.local: 192.168.57.3
 
-  - name: centos7_mserv
-    hostname: centos7.mserv.local
+  - name: mserv
+    hostname: molecule.mserv.local
     image: geerlingguy/docker-centos7-ansible:latest
     required: true
     command: ""
@@ -45,12 +45,12 @@ platforms:
     privileged: true
     pre_build_image: true
     volumes:
-      - ${MOLECULE_SCENARIO_DIRECTORY}/molecule-data:/storage/molecule
+      - ./molecule-data:/storage/molecule
     keep_volumes: false
     groups:
       - all
       - monitoring_server
-      - centos7_monitoring_service
+      - monitoring_service
     networks:
       - name: monitoring
         ipv4_address: 192.168.57.3
@@ -58,7 +58,7 @@ platforms:
       - 80
       - 443
     extra_hosts:
-      centos7.mclient.local: 192.168.57.2
+      molecule.mclient.local: 192.168.57.2
 
 provisioner:
   name: ansible
