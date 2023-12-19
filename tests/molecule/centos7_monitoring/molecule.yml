@@ -1,0 +1,88 @@
+---
+dependency:
+  name: galaxy
+  options:
+    force: true
+    role-file: ${MOLECULE_SCENARIO_DIRECTORY}/../../../meta/requirements.yml
+    requirements-file: ${MOLECULE_SCENARIO_DIRECTORY}/../../../meta/requirements.yml
+
+driver:
+  name: docker
+
+platforms:
+  - name: centos7_mclient
+    hostname: centos7.mclient.local
+    image: ${MOLECULE_DOCKER_IMAGE:-geerlingguy/docker-centos7-ansible:latest}
+    required: true
+    command: ""
+    cgroupns_mode: host
+    privileged: true
+    pre_build_image: ${MOLECULE_PRE_BUILD_IMAGE:-true}
+    volumes:
+      - ${MOLECULE_SCENARIO_DIRECTORY}/molecule-data:/storage/molecule
+    keep_volumes: false
+    groups:
+      - all
+      - monitoring_client
+      - centos7_monitoring_service
+    docker_networks:
+      - name: monitoring
+        ipam_config:
+          - subnet: 192.168.57.0/24
+            gateway: 192.168.57.1
+    networks:
+      - name: monitoring
+        ipv4_address: 192.168.57.2
+    etc_hosts:
+      centos7.mserv.local: 192.168.57.3
+
+  - name: centos7_mserv
+    hostname: centos7.mserv.local
+    image: geerlingguy/docker-centos7-ansible:latest
+    required: true
+    command: ""
+    cgroupns_mode: host
+    privileged: true
+    pre_build_image: true
+    volumes:
+      - ${MOLECULE_SCENARIO_DIRECTORY}/molecule-data:/storage/molecule
+    keep_volumes: false
+    groups:
+      - all
+      - monitoring_server
+      - centos7_monitoring_service
+    networks:
+      - name: monitoring
+        ipv4_address: 192.168.57.3
+    exposed_ports:
+      - 80
+      - 443
+    extra_hosts:
+      centos7.mclient.local: 192.168.57.2
+
+provisioner:
+  name: ansible
+  log: true
+  config_options:
+    defaults:
+      callbacks_enabled: profile_tasks, timer, yaml
+  inventory:
+    links:
+      hosts: ../resources/monitoring/inventory/hosts.yml
+      group_vars: ../resources/monitoring/inventory/group_vars/
+      host_vars: ../resources/monitoring/inventory/host_vars/
+  playbooks:
+    converge: ../resources/monitoring/converge.yml
+    prepare: ../resources/shared/prepare.yml
+  env:
+    ANSIBLE_VERBOSITY: "1"
+
+verifier:
+  name: ansible
+  env:
+    ANSIBLE_VERBOSITY: "1"
+
+lint: |
+  set -e
+  yamllint .
+  ansible-lint .
