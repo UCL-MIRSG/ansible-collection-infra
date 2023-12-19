@@ -1,8 +1,16 @@
 ---
-- name: Ensure python-passlib is installed
+- name: Ensure passlib is installed on centos7
   ansible.builtin.yum:
     name: python-passlib
-    state: installed
+    state: present
+  when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] is version("7")
+
+- name: Ensure passlib is installed on rocky9
+  ansible.builtin.yum:
+    name: python3-passlib
+    state: present
+  when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] is version("9")
+
 
 - name: Ensure nginx certs directory exists on host
   ansible.builtin.file:
