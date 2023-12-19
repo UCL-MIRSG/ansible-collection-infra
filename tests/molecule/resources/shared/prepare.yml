@@ -17,6 +17,11 @@
             regexp: "^FirewallBackend="
             line: FirewallBackend=iptables
 
+        - name: Ensure firewalld service is started
+          ansible.builtin.systemd:
+            name: firewalld
+            state: started
+
     - name: Setup for PostgreSQL
       tags: postgresql
       block:
