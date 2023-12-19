@@ -18,6 +18,6 @@ jobs:
       - name: Run `molecule test`
         uses: UCL-MIRSG/.github/actions/molecule-test@v0.38.0
         with:
-          scenario: role
+          scenario: roles
           checkout_path: ansible_collections/mirsg/infrastructure
           tests_path: ansible_collections/mirsg/infrastructure/tests
