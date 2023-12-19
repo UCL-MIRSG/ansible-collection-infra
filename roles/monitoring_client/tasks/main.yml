@@ -23,5 +23,13 @@
     group: "{{ monitoring_client_group }}"
     mode: "0600"
 
+- name: Copy signed monitoring client key to client
+  ansible.builtin.copy:
+    src: "{{ monitoring_client_certificate_cache_directory }}/key.pem"
+    dest: "{{ monitoring_client_ssl_key_file }}"
+    owner: "{{ monitoring_client_owner }}"
+    group: "{{ monitoring_client_group }}"
+    mode: "0600"
+
 - name: Install and configure Node exporter
   ansible.builtin.include_tasks: install_node_exporter.yml
