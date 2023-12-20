@@ -9,9 +9,7 @@ on:
 
 jobs:
   molecule-monitoring:
-    runs-on: [self-hosted, mirsg-linux]
-    container: python:3.12-slim-bullseye
-
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: true
       matrix:
@@ -29,13 +27,15 @@ jobs:
         with:
           path: ansible_collections/mirsg/infrastructure
 
-      - name: Install dependencies
-        run: |
-          apt-get update && apt-get -y install git rsync
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
 
-      - name: Install Python dependencies
+      - name: Install test dependencies
         shell: bash
         run: |
+          sudo apt-get update && sudo apt-get -y install rsync
           python3 -m pip install --upgrade pip
           python3 -m pip install \
           ansible \
