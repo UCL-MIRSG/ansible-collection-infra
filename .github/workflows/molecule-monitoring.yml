@@ -10,8 +10,13 @@ on:
 jobs:
   molecule-monitoring:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        scenario:
+          - centos7_monitoring
+          - rocky9_monitoring
     env:
-      MOLECULE_RUN_TAGS: monitoring
       PY_COLORS: 1
       ANSIBLE_FORCE_COLOR: 1
 
@@ -19,6 +24,6 @@ jobs:
       - name: Run `molecule test`
         uses: UCL-MIRSG/.github/actions/molecule-test@v0.38.0
         with:
-          scenario: monitoring
+          scenario: ${{ matrix.scenario }}
           checkout_path: ansible_collections/mirsg/infrastructure
           tests_path: ansible_collections/mirsg/infrastructure/tests
