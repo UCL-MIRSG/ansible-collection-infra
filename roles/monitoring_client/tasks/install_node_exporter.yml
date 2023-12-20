@@ -85,7 +85,11 @@
 
 - name: Open internal node_exporter port to monitoring server
   ansible.posix.firewalld:
-    rich_rule: "rule family=ipv4 source address={{ monitoring_client_monitoring_server_ip }}/32 port protocol=tcp port={{ monitoring_client_node_exporter_port }} accept"
+    rich_rule: >
+      "rule family=ipv4 source
+      address={{ monitoring_client_monitoring_server_ip }}/32
+      port protocol=tcp port={{ monitoring_client_node_exporter_port }}
+      accept"
     zone: internal
     permanent: true
     immediate: true

@@ -11,7 +11,6 @@
     state: present
   when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] is version("9")
 
-
 - name: Ensure nginx certs directory exists on host
   ansible.builtin.file:
     path: "{{ monitoring_server_nginx.certs_dir }}"

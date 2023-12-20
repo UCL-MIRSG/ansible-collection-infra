@@ -96,4 +96,3 @@ monitoring_server_prometheus:
     config.file: /prometheus/prometheus.yml
     storage.tsdb.path: /prometheus/data
     web.external-url: /prometheus/
-

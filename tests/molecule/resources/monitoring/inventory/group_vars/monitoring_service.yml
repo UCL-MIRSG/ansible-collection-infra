@@ -29,5 +29,3 @@ docker_service_name: docker
 docker_generate_certificates: true # generate TLS certs for clients
 docker_client_hostnames: "{{ monitoring_server_client_hostnames }}"
 docker_tls_verify: true
-
-
