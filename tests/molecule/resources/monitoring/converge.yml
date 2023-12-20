@@ -3,6 +3,7 @@
   hosts: monitoring_server
   become: true
   gather_facts: true
+  tags: monitoring
   roles:
     - role: mirsg.infrastructure.ssl_certificates
       vars:
