@@ -66,6 +66,8 @@ provisioner:
   config_options:
     defaults:
       callbacks_enabled: profile_tasks, timer, yaml
+    tags:
+      run: ${MOLECULE_RUN_TAGS:-all}
   inventory:
     links:
       hosts: ../resources/monitoring/inventory/hosts.yml

@@ -4,7 +4,9 @@
   gather_facts: true
   tasks:
     - name: Install and configure firewalld
-      tags: firewalld
+      tags:
+        - firewalld
+        - monitoring
       block:
         - name: Install firewalld
           ansible.builtin.package:
