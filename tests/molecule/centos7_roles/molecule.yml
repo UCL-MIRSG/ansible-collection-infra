@@ -3,8 +3,8 @@ dependency:
   name: galaxy
   options:
     force: true
-    role-file: "${MOLECULE_SCENARIO_DIRECTORY}/../../../meta/requirements.yml"
-    requirements-file: "${MOLECULE_SCENARIO_DIRECTORY}/../../../meta/requirements.yml"
+    role-file: ${MOLECULE_SCENARIO_DIRECTORY}/../../../meta/requirements.yml
+    requirements-file: ${MOLECULE_SCENARIO_DIRECTORY}/../../../meta/requirements.yml
 
 driver:
   name: docker
@@ -28,11 +28,11 @@ platforms:
     docker_networks:
       - name: molecule
         ipam_config:
-          - subnet: "192.168.56.0/24"
-            gateway: "192.168.56.1"
+          - subnet: 192.168.56.0/24
+            gateway: 192.168.56.1
     networks:
       - name: molecule
-        ipv4_address: "192.168.56.2"
+        ipv4_address: 192.168.56.2
 
 provisioner:
   name: ansible

@@ -13,7 +13,8 @@ jobs:
       fail-fast: true
       matrix:
         scenario:
-          - centos7
+          - centos7_roles
+          - rocky9_roles
     env:
       MOLECULE_RUN_TAGS: ${{ inputs.run-tags }}
       PY_COLORS: 1
