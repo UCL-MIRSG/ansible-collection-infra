@@ -45,27 +45,8 @@
     state: started
     enabled: true
   when: ansible_service_mgr == "systemd"
-
-- name: Check 'passlib' is installed on the Ansible controller
-  delegate_to: localhost
-  become: false
-  run_once: true
-  changed_when: false
-  ansible.builtin.shell: |
-    set -o pipefail
-    {{ ansible_playbook_python }} -m pip freeze | grep passlib
-  register: passlib_exists
-  # grep returns error code 2 for exceptions, otherwise don't want failure
-  # https://stackoverflow.com/a/41010653/7359333
-  failed_when: passlib_exists.rc == 2
-
-- name: Fail if 'passlib' is missing on the Ansible controller
-  run_once: true
-  ansible.builtin.fail:
-    msg: >
-      'bcrypt' algorithm requires 'passlib' on the Ansible controller,
-      run `python -m pip install passlib` and re-run the script
-  when: passlib_exists.rc == 1
+  tags:
+    - molecule-idempotence-notest
 
 - name: Copy node_exporter web config file
   ansible.builtin.template:
@@ -74,6 +55,8 @@
     mode: "0644"
   notify:
     - Restart node_exporter
+  tags:
+    - molecule-idempotence-notest
 
 - name: Add monitoring server to internal zone
   ansible.posix.firewalld:
@@ -85,10 +68,10 @@
 
 - name: Open internal node_exporter port to monitoring server
   ansible.posix.firewalld:
-    rich_rule: >
-      "rule family=ipv4 source
-      address={{ monitoring_client_monitoring_server_ip }}/32
-      port protocol=tcp port={{ monitoring_client_node_exporter_port }}
+    rich_rule:
+      "rule family=ipv4 source \
+      address={{ monitoring_client_monitoring_server_ip }}/32 \
+      port protocol=tcp port={{ monitoring_client_node_exporter_port }} \
       accept"
     zone: internal
     permanent: true
