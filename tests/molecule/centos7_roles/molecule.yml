@@ -10,8 +10,8 @@ driver:
   name: docker
 
 platforms:
-  - name: centos7
-    hostname: molecule.centos7.local
+  - name: instance
+    hostname: molecule.instance.local
     image: ${MOLECULE_DOCKER_IMAGE:-geerlingguy/docker-centos7-ansible:latest}
     required: true
     command: ""
@@ -19,7 +19,7 @@ platforms:
     privileged: true
     pre_build_image: ${MOLECULE_PRE_BUILD_IMAGE:-true}
     volumes:
-      - ${MOLECULE_SCENARIO_DIRECTORY}/molecule-data:/storage/molecule
+      - ./molecule-data:/storage/molecule
     keep_volumes: false
     groups:
       - all
@@ -34,26 +34,6 @@ platforms:
       - name: molecule
         ipv4_address: 192.168.56.2
 
-  - name: rocky9
-    hostname: molecule.rocky9.local
-    image: ${MOLECULE_DOCKER_IMAGE:-geerlingguy/docker-rockylinux9-ansible:latest}
-    required: true
-    command: ""
-    cgroupns_mode: host
-    privileged: true
-    pre_build_image: ${MOLECULE_PRE_BUILD_IMAGE:-true}
-    volumes:
-      - ${MOLECULE_SCENARIO_DIRECTORY}/molecule-data:/storage/molecule
-      - /sys/fs/cgroup:/sys/fs/cgroup:rw
-    keep_volumes: false
-    groups:
-      - all
-      - molecule
-      - rocky9
-    networks:
-      - name: molecule
-        ipv4_address: 192.168.56.3
-
 provisioner:
   name: ansible
   log: true
@@ -64,12 +44,12 @@ provisioner:
       run: ${MOLECULE_RUN_TAGS:-all}
   inventory:
     links:
-      hosts: ../resources/roles/inventory/hosts.yml
-      group_vars: ../resources/roles/inventory/group_vars/
+      hosts: ../resources/inventory/hosts.yml
+      group_vars: ../resources/inventory/group_vars/
   playbooks:
-    converge: ../resources/roles/converge.yml
-    prepare: ../resources/shared/prepare.yml
-    verify: ../resources/roles/verify.yml
+    converge: ../resources/converge.yml
+    prepare: ../resources/prepare.yml
+    verify: ../resources/verify.yml
   env:
     ANSIBLE_VERBOSITY: "1"
 
