@@ -35,6 +35,8 @@
     mode: "0644"
   notify:
     - Restart prometheus
+  tags:
+    - molecule-idempotence-notest
 
 - name: Start prometheus container
   community.docker.docker_container:
