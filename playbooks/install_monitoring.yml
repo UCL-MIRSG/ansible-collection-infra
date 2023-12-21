@@ -3,9 +3,20 @@
   hosts: monitoring_server
   become: true
   gather_facts: true
+  pre_tasks:
+    - name: Generate list of docker clients from `monitoring_client` group
+      ansible.builtin.set_fact:
+        docker_client_hostnames: >
+          {{
+          item |
+          map('extract', hostvars, monitoring_server_hostname_extractor)
+          }}
+      loop:
+        - "{{ groups['monitoring_client'] | default([]) }}"
+      failed_when: docker_client_hostnames | length == 0
 
   roles:
-    # - role: mirsg.infrastructure.provision
+    - role: mirsg.infrastructure.provision
     - role: mirsg.infrastructure.install_python
     - role: mirsg.infrastructure.docker
     - role: mirsg.infrastructure.monitoring_server
