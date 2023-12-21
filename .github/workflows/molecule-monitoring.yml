@@ -51,4 +51,3 @@ jobs:
         run: |
           cd ansible_collections/mirsg/infrastructure/tests
           molecule test --scenario-name  ${{ matrix.scenario }}
-

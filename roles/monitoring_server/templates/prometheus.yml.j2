@@ -1,5 +1,5 @@
 global:
-  scrape_interval:     60s # By default, scrape targets every 60 seconds.
+  scrape_interval: 60s # By default, scrape targets every 60 seconds.
 
   # Attach these labels to any time series or alerts when communicating with
   # external systems (federation, remote storage, Alertmanager).
@@ -12,51 +12,51 @@ rule_files:
 scrape_configs:
   # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
 
-    - job_name: 'prometheus'
-      # Override the global default and scrape targets from this job every 5 seconds.
-      scrape_interval: 5s
-      metrics_path: /prometheus/metrics
-      static_configs:
-        - targets: ['localhost:9090']
+  - job_name: 'prometheus'
+    # Override the global default and scrape targets from this job every 5 seconds.
+    scrape_interval: 5s
+    metrics_path: /prometheus/metrics
+    static_configs:
+      - targets: ['localhost:9090']
 
-    - job_name: cadvisor
-      scrape_interval: 5s
-      metrics_path: /cadvisor/metrics
-      static_configs:
-      - targets:
-        - {{ monitoring_server_cadvisor.container_name }}:8080
+  - job_name: cadvisor
+    scrape_interval: 5s
+    metrics_path: /cadvisor/metrics
+    static_configs:
+    - targets:
+      - {{ monitoring_server_cadvisor.container_name }}:8080
 
-    - job_name: node
-      scheme: https
-      tls_config:
-        ca_file: {{ monitoring_server_prometheus.ca_cert }}
-      basic_auth:
-        username: {{ monitoring_client_exporter_username }}
-        password: {{ monitoring_client_exporter_password }}
-      static_configs:
+  - job_name: node
+    scheme: https
+    tls_config:
+      ca_file: {{ monitoring_server_prometheus.ca_cert }}
+    basic_auth:
+      username: {{ monitoring_client_exporter_username }}
+      password: {{ monitoring_client_exporter_password }}
+    static_configs:
+    - targets:
+      {% for client in monitoring_server_client_hostnames %}
+      - {{ client }}:9100
+      {% endfor %}
+
+  - job_name: blackbox
+    metrics_path: /probe
+    scrape_interval: 5m
+    params:
+      module: [http_2xx]
+    static_configs:
       - targets:
-        {% for client in monitoring_server_client_hostnames %}
-        - {{ client }}:9100
+        {% for web in monitoring_server_web_clients %}
+        - {{ web }}
         {% endfor %}
 
-    - job_name: blackbox
-      metrics_path: /probe
-      scrape_interval: 5m
-      params:
-        module: [http_2xx]
-      static_configs:
-        - targets:
-          {% for web in monitoring_server_web_clients %}
-          - {{ web }}
-          {% endfor %}
-
-      relabel_configs:
-        - source_labels: [__address__]
-          target_label: __param_target
-        - source_labels: [__param_target]
-          target_label: instance
-        - target_label: __address__
-          replacement: {{ monitoring_server_blackbox_exporter.container_name }}:9115 # Blackbox exporter.
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: {{ monitoring_server_blackbox_exporter.container_name }}:9115 # Blackbox exporter.
 
 alerting:
   alertmanagers:

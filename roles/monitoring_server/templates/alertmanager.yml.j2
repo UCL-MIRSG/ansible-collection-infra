@@ -8,7 +8,7 @@ global:
 
 # The directory from which notification templates are read.
 templates:
-- '{{ monitoring_server_alertmanager.volume }}/template/*.tmpl'
+  - '{{ monitoring_server_alertmanager.volume }}/template/*.tmpl'
 
 # The root route on which each incoming alert enters.
 route:
@@ -34,6 +34,6 @@ route:
   receiver: mirsg-admin-email
 
 receivers:
-- name: 'mirsg-admin-email'
-  email_configs:
-  - to: {{ monitoring_server_notification_email }}
+  - name: 'mirsg-admin-email'
+    email_configs:
+    - to: {{ monitoring_server_notification_email }}

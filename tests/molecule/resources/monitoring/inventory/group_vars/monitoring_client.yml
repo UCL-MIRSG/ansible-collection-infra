@@ -8,4 +8,3 @@ monitoring_client_ssl_csr_file: /root/monitoring_certs/monitoring.csr
 monitoring_client_ssl_pk8_file: /root/monitoring_certs/monitoring.pk8
 monitoring_client_ssl_cert_file: /root/monitoring_certs/cert.pem
 monitoring_client_server_ca_cert_file: /root/monitoring_certs/ca.pem
-
