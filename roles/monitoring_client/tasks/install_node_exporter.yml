@@ -65,6 +65,8 @@
     permanent: true
     immediate: true
     state: enabled
+  tags:
+    - molecule-notest
 
 - name: Open internal node_exporter port to monitoring server
   ansible.posix.firewalld:
@@ -76,3 +78,5 @@
     permanent: true
     immediate: true
     state: enabled
+  tags:
+    - molecule-notest
