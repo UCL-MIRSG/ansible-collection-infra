@@ -1,2 +1,11 @@
-monitoring_client_certificate_cache_directory: "{{ docker_client_certificate_cache_directory }}"
-monitoring_client_exporter_password: password
+# mirsg.infrastructure.monitoring_client
+monitoring_client_monitoring_server_ip: "{{ hostvars['mserv']['ansible_ip'] }}"
+monitoring_client_owner: root
+monitoring_client_group: root
+monitoring_client_cert_dir: /root/monitoring_certs
+monitoring_client_ssl_key_file: /root/monitoring_certs/key.pem
+monitoring_client_ssl_csr_file: /root/monitoring_certs/monitoring.csr
+monitoring_client_ssl_pk8_file: /root/monitoring_certs/monitoring.pk8
+monitoring_client_ssl_cert_file: /root/monitoring_certs/cert.pem
+monitoring_client_server_ca_cert_file: /root/monitoring_certs/ca.pem
+
