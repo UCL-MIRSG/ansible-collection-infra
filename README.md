@@ -53,7 +53,7 @@ To test a collection, Molecule requires that it is in the path
 `ansible_collections/<namespace>/<collection name>`. This means when you clone this repository you
 must ensure it is in the path `ansible_collections/mirsg/infrastructure`. The simplest way to do this is:
 
-```
+```shell
 git clone git@github.com:UCL-MIRSG/ansible-collection-infra.git ansible_collections/mirsg/infrastructure
 ```
 
@@ -62,7 +62,7 @@ git clone git@github.com:UCL-MIRSG/ansible-collection-infra.git ansible_collecti
 Before running the tests you'll need to install Molecule, the Docker plugin, and the Python Docker
 Engine API using `pip`:
 
-```
+```shell
 python -m pip install molecule 'molecule-plugins[docker]' docker
 ```
 
@@ -72,17 +72,16 @@ Molecue 6.0 requires that the test configuration is not in the top-level directo
 collection. To support running the tests with Molecule 6, the Molecule configuration is in
 `ansible_collections/mirsg/infrastructure/tests`. To run the tests you must be in this directory:
 
-```
+```shell
 cd ansible_collections/mirsg/infrastructure/tests
 ```
 
-This collection is tested using a
-[Molecule scenario](https://ansible.readthedocs.io/projects/molecule/getting-started/#molecule-scenarios) -
-that runs on CentOS 7 and Rocky 9. The available roles are in the molecule subdirectory.
+This collection contains [molecule scenarios](https://ansible.readthedocs.io/projects/molecule/getting-started/#molecule-scenarios)
+that allow testing of the individual roles in the collection as well as the playbook for installing a monitoring service. There are scenarios that run the tests on both CentOS 7 and Rocky 9.
 
-To run the tests for this CentOS 7 sceneraio:
+To run the CentOS 7 tests for the roles:
 
-```
+```shell
 molecule test -s centos7_roles
 ```
 
@@ -90,11 +89,11 @@ This command will:
 
 - install the required Ansible roles and collections
 - create a CentOS 7 container
-- `tests/molecule/resources/prepare.yml` playbook to do any required setup for the roles
-- run the `tests/molecule/resources/converge.yml` playbook, which will run the roles in this collection
-- run `tests/molecule/resources/converge.yml` a second time to check the roles are
+- `tests/molecule/resources/shared/prepare.yml` playbook to do any required setup for the roles
+- run the `tests/molecule/resources/roles/converge.yml` playbook, which will run the roles in this collection
+- run `tests/molecule/resources/roles/converge.yml` a second time to check the roles are
   [idempotent](https://docs.ansible.com/ansible/latest/reference_appendices/glossary.html#term-Idempotency)
-- run `tests/molecule/resources/verify.yml`
+- run `tests/molecule/resources/roles/verify.yml`
 - destroy the CentOS 7 container
 
 ### Inspecting the Container
@@ -106,7 +105,7 @@ command is invoked.
 If you would like to be able to access the test container, you should instead
 use the `molecule converge` command. To run this on CentOS 7:
 
-```
+```shell
 molecule converge -s centos7_roles
 ```
 
@@ -118,7 +117,7 @@ molecule playbooks. If the deployment fails, the container is not destroyed.
 Once the command has finished running, you can access the container using the name
 of the scenario. To access the container for the `centos7` scenario:
 
-```
+```shell
 molecule login -s centos7_roles
 ```
 
@@ -127,7 +126,7 @@ molecule login -s centos7_roles
 If you use the `molecule converge` command, you must remember to destroy the container, network,
 and volumes yourself. You can do this using the `molecule destroy` command:
 
-```
+```shell
 molecule destroy -s centos7_roles
 ```
 
