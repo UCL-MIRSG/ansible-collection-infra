@@ -1,3 +1,7 @@
+monitoring_server_certificate_cache_directory: "{{ docker_client_certificate_cache_directory }}"
+monitoring_server_ssl_cert: "/etc/ssl/certs/{{ hostvars['mserv']['hostname'] }}.cert"
+monitoring_server_ssl_key: "/etc/ssl/certs/{{ hostvars['mserv']['hostname'] }}.key"
+
 monitoring_server_admin_username: mirsg_service
 monitoring_server_admin_password: password
 monitoring_server_admin_email: admin@monitoring.org
@@ -13,6 +17,7 @@ monitoring_server_cert_owner: root
 monitoring_server_cert_group: root
 monitoring_server_cert_dir: /root/monitoring_certs
 monitoring_server_client_cert_dir: /root/monitoring_certs/client_certs
+monitoring_server_hostname_extractor: "hostname"
 
 monitoring_server_grafana:
   container_name: grafana
