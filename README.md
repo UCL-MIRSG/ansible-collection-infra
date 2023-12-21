@@ -1,4 +1,6 @@
-# mirsg.infrastructure Ansible Collection
+# mirs
+
+.infrastructure Ansible Collection
 
 This repository contains the `mirsg.infrastructure` Ansible Collection. This collection can be used to
 configure infrastructure for deploying XNAT and OMERO.
@@ -43,6 +45,8 @@ If you would like to run the tests locally you will need to:
 
 - clone this repository
 - install Ansible Molecule and other test requirements
+- install and start the [Docker Engine](https://docs.docker.com/engine/install/) if you have not done so already
+- if necessary, add your user to the docker group in order to access the Docker Engine
 - run the tests using Molecule
 
 ### Clone this repository
@@ -76,12 +80,12 @@ cd ansible_collections/mirsg/infrastructure/tests
 
 This collection is tested using a
 [Molecule scenario](https://ansible.readthedocs.io/projects/molecule/getting-started/#molecule-scenarios) -
-that runs on CentOS 7.
+that runs on CentOS 7 and Rocky 9. The available roles are in the molecule subdirectory.
 
 To run the tests for this CentOS 7 sceneraio:
 
 ```
-molecule test -s centos7
+molecule test -s centos7_roles
 ```
 
 This command will:
@@ -105,7 +109,7 @@ If you would like to be able to access the test container, you should instead
 use the `molecule converge` command. To run this on CentOS 7:
 
 ```
-molecule converge -s centos7
+molecule converge -s centos7_roles
 ```
 
 This will install necessary Ansible roles and collections, create the test container, and run the
@@ -117,7 +121,7 @@ Once the command has finished running, you can access the container using the na
 of the scenario. To access the container for the `centos7` scenario:
 
 ```
-molecule login -s centos7
+molecule login -s centos7_roles
 ```
 
 #### Destroy the container
@@ -126,7 +130,7 @@ If you use the `molecule converge` command, you must remember to destroy the con
 and volumes yourself. You can do this using the `molecule destroy` command:
 
 ```
-molecule destroy -s centos7
+molecule destroy -s centos7_roles
 ```
 
 ### Integration tests
