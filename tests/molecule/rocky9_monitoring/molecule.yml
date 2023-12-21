@@ -24,18 +24,18 @@ platforms:
     keep_volumes: false
     groups:
       - all
-      - molecule
+      - monitoring_client
       - monitoring_service
     docker_networks:
       - name: monitoring
         ipam_config:
-          - subnet: 192.168.57.0/24
-            gateway: 192.168.57.1
+          - subnet: 192.168.56.0/24
+            gateway: 192.168.56.1
     networks:
       - name: monitoring
-        ipv4_address: 192.168.57.2
+        ipv4_address: 192.168.56.2
     etc_hosts:
-      molecule.mserv.local: 192.168.57.3
+      molecule.mserv.local: 192.168.56.3
 
   - name: mserv
     hostname: molecule.mserv.local
@@ -55,12 +55,12 @@ platforms:
       - monitoring_server
     networks:
       - name: monitoring
-        ipv4_address: 192.168.57.3
+        ipv4_address: 192.168.56.3
     exposed_ports:
       - 80
       - 443
-    extra_hosts:
-      molecule.mclient.local: 192.168.57.2
+    etc_hosts:
+      molecule.mclient.local: 192.168.56.2
 
 provisioner:
   name: ansible
