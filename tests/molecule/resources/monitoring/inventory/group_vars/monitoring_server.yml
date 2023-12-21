@@ -1,4 +1,3 @@
-monitoring_server_certificate_cache_directory: "{{ docker_client_certificate_cache_directory }}"
 monitoring_server_ssl_cert: "/etc/ssl/certs/{{ hostvars['mserv']['hostname'] }}.cert"
 monitoring_server_ssl_key: "/etc/ssl/certs/{{ hostvars['mserv']['hostname'] }}.key"
 
