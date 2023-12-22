@@ -8,7 +8,7 @@
       map('extract', hostvars, monitoring_server_hostname_extractor)
       }}
   loop:
-    - "{{ groups['monitoring_client'] | default([]) }}"
+    - "{{ groups[monitoring_server_client_group] | default([]) }}"
   failed_when: monitoring_server_client_hostnames | length == 0
 
 - name: Find web servers in `monitoring_client` group
@@ -23,7 +23,7 @@
       map('regex_replace', '^', 'https://')
       }}
   loop:
-    - "{{ groups['monitoring_client'] | default([]) }}"
+    - "{{ groups[monitoring_server_client_group] | default([]) }}"
   failed_when: monitoring_server_web_clients | length == 0
 
 - name: Add monitoring_server group

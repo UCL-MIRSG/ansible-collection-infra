@@ -4,24 +4,21 @@ monitoring_server_gid: 595
 monitoring_server_uid: 595
 monitoring_server_cert_owner: root
 monitoring_server_cert_group: root
+monitoring_server_storage_root: /data/monitoring
 
+# mirsg.monitoring_server CA and server certificate
+monitoring_server_certificate_cache_directory: "{{ lookup('env', 'HOME') }}/ansible_persistent_files/monitoring_server_certificates"
 monitoring_server_certificate_directory: /root/monitoring_certs
-
-# mirsg.monitoring_server CA certificate
 monitoring_server_ca_key: "{{ monitoring_server_certificate_directory }}/ca.key"
 monitoring_server_ca_csr: "{{ monitoring_server_certificate_directory }}/ca.csr"
 monitoring_server_ca_cert: "{{ monitoring_server_certificate_directory }}/ca.pem"
-
-# mirsg.monitoring_server server certificate
 monitoring_server_server_key: "{{ monitoring_server_certificate_directory }}/server-key.pem"
 monitoring_server_server_csr: "{{ monitoring_server_certificate_directory }}/server.csr"
 monitoring_server_server_cert: "{{ monitoring_server_certificate_directory }}/server-cert.pem"
 
-# mirsg.monitoring_server client certificates
+# mirsg.monitoring_server client related
 monitoring_server_client_certificate_directory: "{{ monitoring_server_certificate_directory }}/client_certs"
-monitoring_server_certificate_cache_directory: "{{ lookup('env', 'HOME') }}/ansible_persistent_files/monitoring_server_certificates"
-
-monitoring_server_storage_root: /data/monitoring
+monitoring_server_client_group: "monitoring_client"
 
 monitoring_server_smtp_enabled: false
 monitoring_server_smtp_hostname: ""
@@ -45,14 +42,6 @@ monitoring_server_alertmanager:
     storage.path: /alertmanager/data
     config.file: /alertmanager/alertmanager.yml
 
-monitoring_server_blackbox_exporter:
-  container_name: blackbox-exporter
-  image: prom/blackbox-exporter
-  external_data_dir: "{{ monitoring_server_storage_root }}/prometheus"
-  volume: /blackbox-exporter
-  commandline_args:
-    config.file: /blackbox-exporter/blackbox-exporter.yml
-
 monitoring_server_cadvisor:
   container_name: cadvisor
   image: gcr.io/cadvisor/cadvisor:latest
@@ -66,9 +55,9 @@ monitoring_server_grafana:
   external_datasource: "{{ monitoring_server_storage_root }}/grafana/datasources.yml"
   volume_datasource: /etc/grafana/provisioning/datasources/datasources.yml
   environment_variables:
-    GF_SECURITY_ADMIN_USER: "{{ xnat_service_admin.username }}"
-    GF_SECURITY_ADMIN_PASSWORD: "{{ vault_grafana_admin_password }}"
-    GF_SERVER_DOMAIN: "{{ ansible_host }}"
+    GF_SECURITY_ADMIN_USER: "{{ monitoring_server_grafana_username }}"
+    GF_SECURITY_ADMIN_PASSWORD: "{{ monitoring_server_grafana_password }}"
+    GF_SERVER_DOMAIN: "{{ monitoring_server_grafana_host }}"
     GF_SERVER_ROOT_URL: "%(protocol)s://%(domain)s:%(http_port)s/grafana/"
     GF_SERVER_SERVE_FROM_SUB_PATH: "true"
 
@@ -76,11 +65,10 @@ monitoring_server_nginx:
   owner: root
   group: root
   log_folder: /var/log/nginx
-  http_port:
-  https_port: 44380
+  http_port: 80
+  https_port: 443
   certs_dir: /etc/nginx/ssl
   diffie_helman_size_bits: 2048
-  ipv6_enabled: false
   dh_params_file: /etc/nginx/ssl/dhparam.pem
   conf_file: /etc/nginx/nginx.conf
   ssl_cert_file: /etc/nginx/ssl/server.cert
