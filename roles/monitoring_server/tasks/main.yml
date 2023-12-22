@@ -17,13 +17,11 @@
     # also in the `web` group
     monitoring_server_web_clients: >
       {{
-      item |
+      groups[monitoring_server_client_group] |
       intersect(groups['web']) |
       map('extract', hostvars, monitoring_server_hostname_extractor) |
       map('regex_replace', '^', 'https://')
       }}
-  loop:
-    - "{{ groups[monitoring_server_client_group] | default([]) }}"
   failed_when: monitoring_server_web_clients | length == 0
 
 - name: Add monitoring_server group
