@@ -24,7 +24,6 @@ http {
     gzip on;
     gzip_disable "msie6";
 
-{% if monitoring_server_use_ssl %}
     # SSL parameters must be specified outside of the server block.
     # Otherwise may only use the nginx may end up using parameters specified in
     # the default_server block even if a different serer is matched
@@ -52,58 +51,30 @@ http {
     # Enable HSTS - this requests browsers to only contact the server using TLS
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
 
-{% endif %}
-
-
     # Default server block for connections that do not match the expected host names.
     # Note that nginx only uses server_name for disambiguation purposes; if
     # there is no matching server_name then nginx will use the default_server
     # regardless of its value of server_name
     server {
         listen 80 default_server;
-{% if monitoring_server_use_ssl %}
         listen 443 ssl default_server;
-{% endif %}
-
-{% if monitoring_server_nginx.ipv6_enabled %}
-        listen [::]:80 default_server;
-    {% if monitoring_server_use_ssl %}
-        listen [::]:443 ssl default_server;
-    {% endif %}
-{% endif %}
-
         server_name _;
-
         return 444;
     }
 
-{% if monitoring_server_use_ssl %}
     # Redirect to https
     server {
         listen {{ monitoring_server_nginx.http_port }};
 
         server_name {{ ansible_host }};
-        return 301 https://{{ ansible_host }}:{{ monitoring_server_nginx.https_port }}$request_uri;
+        return 301 https://{{ monitoring_server_hostname }}:{{ monitoring_server_nginx.https_port }}$request_uri;
     }
-{% endif %}
 
     server {
-
-{% if monitoring_server_use_ssl %}
         listen {{ monitoring_server_nginx.https_port }} ssl http2;
-    {% if monitoring_server_nginx.ipv6_enabled %}
-        listen [::]:{{ monitoring_server_nginx.https_port }} ssl http2;
-    {% endif %}
-{% else %}
-        listen {{ monitoring_server_nginx.http_port }};
-    {% if monitoring_server_nginx.ipv6_enabled %}
-        listen [::]:{{ monitoring_server_nginx.http_port }};
-    {% endif %}
-{% endif %}
-
 
         # Note: server_name is only used for disambiguation
-        server_name     {{ ansible_host }};
+        server_name     {{ monitoring_server_hostname }};
 
         proxy_set_header Host               $http_host;
         proxy_set_header X-Real-IP          $remote_addr;
