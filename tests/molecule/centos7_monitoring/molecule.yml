@@ -76,6 +76,7 @@ provisioner:
   playbooks:
     converge: ../resources/monitoring/converge.yml
     prepare: ../resources/shared/prepare.yml
+    verify: ../resources/monitoring/verify.yml
   env:
     ANSIBLE_VERBOSITY: "1"
 
