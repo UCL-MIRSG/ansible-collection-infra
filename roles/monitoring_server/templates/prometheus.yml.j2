@@ -31,8 +31,8 @@ scrape_configs:
     tls_config:
       ca_file: {{ monitoring_server_prometheus.ca_cert }}
     basic_auth:
-      username: {{ monitoring_client_exporter_username }}
-      password: {{ monitoring_client_exporter_password }}
+      username: {{ monitoring_server_client_exporter_username }}
+      password: {{ monitoring_server_client_exporter_password }}
     static_configs:
     - targets:
       {% for client in monitoring_server_client_hostnames %}
