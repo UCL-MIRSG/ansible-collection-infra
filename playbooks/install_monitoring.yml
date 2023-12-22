@@ -12,7 +12,7 @@
           map('extract', hostvars, monitoring_server_hostname_extractor)
           }}
       loop:
-        - "{{ groups['monitoring_client'] | default([]) }}"
+        - "{{ groups[monitoring_server_client_group] | default([]) }}"
       failed_when: docker_client_hostnames | length == 0
 
   roles:
