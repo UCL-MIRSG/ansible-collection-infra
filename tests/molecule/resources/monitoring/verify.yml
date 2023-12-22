@@ -11,7 +11,7 @@
 
     - name: Check blackbox exporter container is running
       community.docker.docker_container_info:
-        name: "{{ monitoring_server_blackbox_exporter.container_name }}"
+        name: blackbox-exporter
       register: result
       failed_when: "'exists' not in result.exists"
 
