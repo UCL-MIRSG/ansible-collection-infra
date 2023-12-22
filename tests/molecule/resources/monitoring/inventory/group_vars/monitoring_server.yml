@@ -1,6 +1,6 @@
-monitoring_server_ssl_cert: "/etc/ssl/certs/{{ hostvars['mserv']['hostname'] }}.cert"
-monitoring_server_ssl_key: "/etc/ssl/certs/{{ hostvars['mserv']['hostname'] }}.key"
-
+monitoring_server_hostname: "{{ hostvars['mserv']['hostname'] }}"
+monitoring_server_ssl_cert: "/etc/ssl/certs/{{ monitoring_server_hostname }}.cert"
+monitoring_server_ssl_key: "/etc/ssl/certs/{{ monitoring_server_hostname }}.key"
 monitoring_server_admin_username: mirsg_service
 monitoring_server_admin_password: password
 monitoring_server_admin_email: admin@monitoring.org
@@ -10,25 +10,12 @@ monitoring_server_owner: monitoring
 monitoring_server_group: monitoring
 monitoring_server_uid: 595
 monitoring_server_gid: 595
-monitoring_server_use_ssl: true
 monitoring_server_validate_certs: false
 monitoring_server_cert_owner: root
 monitoring_server_cert_group: root
 monitoring_server_cert_dir: /root/monitoring_certs
 monitoring_server_client_cert_dir: /root/monitoring_certs/client_certs
 monitoring_server_hostname_extractor: "hostname"
-
-monitoring_server_grafana:
-  container_name: grafana
-  image: grafana/grafana
-  external_data_dir: "{{ monitoring_server_storage_root }}/grafana"
-  external_storage_dir: "{{ monitoring_server_storage_root }}/grafana/storage"
-  volume: /var/lib/grafana
-  external_datasource: "{{ monitoring_server_storage_root }}/grafana/datasources.yml"
-  volume_datasource: /etc/grafana/provisioning/datasources/datasources.yml
-  environment_variables:
-    GF_SECURITY_ADMIN_USER: grafana
-    GF_SECURITY_ADMIN_PASSWORD: grafana
-    GF_SERVER_DOMAIN: "{{ ansible_host }}"
-    GF_SERVER_ROOT_URL: "%(protocol)s://%(domain)s:%(http_port)s/grafana/"
-    GF_SERVER_SERVE_FROM_SUB_PATH: "true"
+monitoring_server_grafana_username: grafana
+monitoring_server_grafana_password: grafana
+monitoring_server_grafana_host: "{{ monitoring_server_hostname }}"
