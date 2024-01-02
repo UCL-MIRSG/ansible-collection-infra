@@ -2,7 +2,7 @@ groups:
   - name: tls-expiry
     rules:
       - alert: SSLCertExpiringSoon
-        expr: probe_ssl_earliest_cert_expiry - time() < 86400 * 14
+        expr: probe_ssl_earliest_cert_expiry - time() < 60 * 60 * 24 * 14
         for: 1m
         labels:
           severity: warning
