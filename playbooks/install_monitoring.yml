@@ -8,11 +8,11 @@
       ansible.builtin.set_fact:
         docker_client_hostnames: >
           {{
-          item |
-          map('extract', hostvars, monitoring_server_hostname_extractor)
+          query('inventory_hostnames', ansible_limit | default('')) |
+          intersect(groups['monitoring_client']) |
+          map('extract', hostvars, monitoring_server_hostname_extractor) |
+          list | default([])
           }}
-      loop:
-        - "{{ query('inventory_hostnames', ansible_limit | default([])) | intersect(groups['monitoring_client']) | default([]) }}"
       failed_when: docker_client_hostnames | length == 0
 
   roles:

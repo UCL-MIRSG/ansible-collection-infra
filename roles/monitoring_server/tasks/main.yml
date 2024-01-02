@@ -4,11 +4,11 @@
     # Get hosts in the `monitoring_client`
     monitoring_server_client_hostnames: >
       {{
-      item |
-      map('extract', hostvars, monitoring_server_hostname_extractor)
+      query('inventory_hostnames', ansible_limit | default('')) |
+      intersect(groups['monitoring_client']) |
+      map('extract', hostvars, monitoring_server_hostname_extractor) |
+      list | default([])
       }}
-  loop:
-    - "{{ query('inventory_hostnames', ansible_limit | default([])) | intersect(groups['monitoring_client']) | default([]) }}"
   failed_when: monitoring_server_client_hostnames | length == 0
 
 - name: Find web servers in `monitoring_client` group
@@ -17,7 +17,7 @@
     # also in the `web` group
     monitoring_server_web_clients: >
       {{
-      query('inventory_hostnames', ansible_limit | default([])) |
+      query('inventory_hostnames', ansible_limit | default('')) |
       intersect(groups['monitoring_client']) |
       intersect(groups['web']) |
       map('extract', hostvars, monitoring_server_hostname_extractor) |
