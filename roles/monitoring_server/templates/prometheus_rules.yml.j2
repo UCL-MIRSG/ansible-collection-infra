@@ -13,7 +13,7 @@ groups:
     rules:
       - alert: InstanceDown
         expr: up == 0
-        for: 5m
+        for: 1m
         labels:
           severity: high
         annotations:
