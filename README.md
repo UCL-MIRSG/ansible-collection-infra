@@ -18,11 +18,12 @@ Ansible collections and roles](meta/requirements.yml).
 
 ## Using this collection
 
-You can install this collection using the `ansible-galaxy` command-line tool:
+This collection can be installed using the `ansible-galaxy` command-line tool:
 
-    ansible-galaxy collection install https://github.com/UCL-MIRSG/ansible-collection-infra.git
+ansible-galaxy collection install
+https://github.com/UCL-MIRSG/ansible-collection-infra.git
 
-You can also include it in a `requirements.yml` file and install it via
+It can also be included in a `requirements.yml` file and install it via
 `ansible-galaxy collection install -r requirements.yml` using the format:
 
 ```yaml
@@ -35,11 +36,11 @@ collections:
 
 ## Testing this collection
 
-We use [Ansible Molecule](https://ansible.readthedocs.io/projects/molecule/) and
-its [Docker plugin](https://github.com/ansible-community/molecule-plugins) to
-test the roles and playbooks in this collection.
+[Ansible Molecule](https://ansible.readthedocs.io/projects/molecule/) and its
+[Docker plugin](https://github.com/ansible-community/molecule-plugins) is used
+to test the roles and playbooks in this collection.
 
-If you would like to run the tests locally you will need to:
+To run the tests locally you will need to:
 
 - clone this repository
 - install Ansible Molecule and other test requirements
@@ -63,8 +64,8 @@ git clone git@github.com:UCL-MIRSG/ansible-collection-infra.git ansible_collecti
 
 ### Install Ansible Molecule
 
-Before running the tests you'll need to install Molecule, the Docker plugin, and
-the Python Docker Engine API using `pip`:
+Before running the tests install Molecule, the Docker plugin, and the Python
+Docker Engine API using `pip`:
 
 ```shell
 python -m pip install molecule 'molecule-plugins[docker]' docker
@@ -140,6 +141,13 @@ name of the scenario. To access the container for the `centos7_roles` scenario:
 
 ```shell
 molecule login -s centos7_roles
+```
+
+If testing a role or playbook where Molecule creates multiple containers,
+individual hosts can be accessed using the `--host` flag:
+
+```shell
+molecule login -s centos7_monitoring --host mserv
 ```
 
 #### Destroy the container
