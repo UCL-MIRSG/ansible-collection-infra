@@ -1,6 +1,4 @@
-# mirs
-
-.infrastructure Ansible Collection
+# mirsg.infrastructure Ansible Collection
 
 This repository contains the `mirsg.infrastructure` Ansible Collection. This collection can be used to
 configure infrastructure for deploying XNAT and OMERO.
