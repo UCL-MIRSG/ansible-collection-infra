@@ -1,6 +1,6 @@
 ---
 - name: Set up monitoring server
-  hosts: monitoring_server
+  hosts: monitoring_host
   become: true
   gather_facts: true
   pre_tasks:
