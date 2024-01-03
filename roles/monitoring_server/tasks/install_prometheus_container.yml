@@ -1,18 +1,18 @@
 ---
-- name: Ensure prometheus data directory exists - {{ prometheus.external_data_dir }}
+- name: Ensure prometheus data directory exists - {{ monitoring_server_prometheus.external_data_dir }}
   ansible.builtin.file:
-    path: "{{ prometheus.external_data_dir }}"
-    owner: "{{ monitoring_server.owner }}"
-    group: "{{ monitoring_server.group }}"
+    path: "{{ monitoring_server_prometheus.external_data_dir }}"
+    owner: "{{ monitoring_server_owner }}"
+    group: "{{ monitoring_server_group }}"
     state: directory
     mode: "0700"
 
 - name: Copy server cert to prometheus bind mount
   ansible.builtin.copy:
-    src: "{{ monitoring_temp_files_cert_dir }}/ca.pem"
-    dest: "{{ prometheus.external_data_dir }}/ca.pem"
-    owner: "{{ monitoring_server.owner }}"
-    group: "{{ monitoring_server.group }}"
+    src: "{{ monitoring_server_certificate_cache_directory }}/ca.pem"
+    dest: "{{ monitoring_server_prometheus.external_data_dir }}/ca.pem"
+    owner: "{{ monitoring_server_owner }}"
+    group: "{{ monitoring_server_group }}"
     mode: "0644"
   notify:
     - Restart prometheus
@@ -20,9 +20,9 @@
 - name: Copy prometheus rules file
   ansible.builtin.copy:
     src: templates/prometheus_rules.yml.j2
-    dest: "{{ prometheus.external_data_dir }}/rules.yml"
-    owner: "{{ monitoring_server.owner }}"
-    group: "{{ monitoring_server.group }}"
+    dest: "{{ monitoring_server_prometheus.external_data_dir }}/rules.yml"
+    owner: "{{ monitoring_server_owner }}"
+    group: "{{ monitoring_server_group }}"
     mode: "0644"
   notify:
     - Restart prometheus
@@ -30,22 +30,24 @@
 - name: Copy prometheus config file
   ansible.builtin.template:
     src: templates/prometheus.yml.j2
-    dest: "{{ prometheus.external_data_dir }}/prometheus.yml"
+    dest: "{{ monitoring_server_prometheus.external_data_dir }}/prometheus.yml"
     owner: root
     mode: "0644"
   notify:
     - Restart prometheus
+  tags:
+    - molecule-idempotence-notest
 
 - name: Start prometheus container
   community.docker.docker_container:
-    name: "{{ prometheus.container_name }}"
-    hostname: "{{ prometheus.container_name }}"
-    image: "{{ prometheus.image }}"
-    user: "{{ monitoring_server.uid }}:{{ monitoring_server.gid }}"
+    name: "{{ monitoring_server_prometheus.container_name }}"
+    hostname: "{{ monitoring_server_prometheus.container_name }}"
+    image: "{{ monitoring_server_prometheus.image }}"
+    user: "{{ monitoring_server_uid }}:{{ monitoring_server_gid }}"
     state: started
-    command: "{% for key in prometheus.commandline_args %}--{{ key }}={{ prometheus.commandline_args[key] }} {% endfor %}"
+    command: "{% for key in monitoring_server_prometheus.commandline_args %}--{{ key }}={{ monitoring_server_prometheus.commandline_args[key] }} {% endfor %}"
     networks:
       - name: monitor-net
     volumes:
-      - "{{ prometheus.external_data_dir }}:{{ prometheus.volume }}"
+      - "{{ monitoring_server_prometheus.external_data_dir }}:{{ monitoring_server_prometheus.volume }}"
     restart_policy: always

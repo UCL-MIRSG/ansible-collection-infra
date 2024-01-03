@@ -1,36 +1,40 @@
 ---
-- name: Find limited XNAT instances that exist in monitoring_service group
+- name: Build `monitoring_server_client_hostnames` from `monitoring_client` group
   ansible.builtin.set_fact:
-    # loop through the list and concatenate the result
-    # the default([]) means use the empty list if list doesn't exist
-    # add to this the ansible group corresponding to the given item
-    # then perform the intersection with the monitoring_service and web group
-    # then get the URL from the host
-    # and prepend https:// to the start of each entry
-    monitoring_service_xnat_instances: >
+    # Get hosts in the `monitoring_client`
+    monitoring_server_client_hostnames: >
       {{
-      monitoring_service_xnat_instances |
-      default([]) +
-      groups[item] |
-      intersect(groups['monitoring_service']) |
+      query('inventory_hostnames', ansible_limit | default('')) |
+      intersect(groups['monitoring_client']) |
+      map('extract', hostvars, monitoring_server_hostname_extractor) |
+      list | default([])
+      }}
+  failed_when: monitoring_server_client_hostnames | length == 0
+
+- name: Find web servers in `monitoring_client` group
+  ansible.builtin.set_fact:
+    # Get any hosts in the `monitoring_client` that are
+    # also in the `web` group
+    monitoring_server_web_clients: >
+      {{
+      query('inventory_hostnames', ansible_limit | default('')) |
+      intersect(groups['monitoring_client']) |
       intersect(groups['web']) |
-      map('extract', hostvars, 'ansible_host') |
+      map('extract', hostvars, monitoring_server_hostname_extractor) |
       map('regex_replace', '^', 'https://')
       }}
-  with_items:
-    # converts the string to a list
-    - "{{ ansible_limit.split(',') }}"
+  failed_when: monitoring_server_web_clients | length == 0
 
 - name: Add monitoring_server group
   ansible.builtin.group:
-    name: "{{ monitoring_server.group }}"
-    gid: "{{ monitoring_server.gid }}"
+    name: "{{ monitoring_server_group }}"
+    gid: "{{ monitoring_server_gid }}"
 
-- name: Add "monitoring_server" user
+- name: Add monitoring_server user
   ansible.builtin.user:
-    name: "{{ monitoring_server.owner }}"
-    group: "{{ monitoring_server.group }}"
-    uid: "{{ monitoring_server.uid }}"
+    name: "{{ monitoring_server_owner }}"
+    group: "{{ monitoring_server_group }}"
+    uid: "{{ monitoring_server_uid }}"
     create_home: false
     system: true
 
@@ -44,7 +48,7 @@
 - name: Ensure docker service restarts after Docker SDK is installed
   ansible.builtin.meta: flush_handlers
 
-- name: "Create a network"
+- name: Create a network
   community.docker.docker_network:
     name: monitor-net
 

@@ -3,4 +3,4 @@ datasources:
   - name: Prometheus
     type: prometheus
     access: proxy
-    url: http://{{ prometheus.container_name }}:9090/prometheus
+    url: http://{{ monitoring_server_prometheus.container_name }}:9090/prometheus

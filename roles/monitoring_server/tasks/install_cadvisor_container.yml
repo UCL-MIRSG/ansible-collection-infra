@@ -1,11 +1,11 @@
 ---
 - name: Start cadvisor container
   community.docker.docker_container:
-    name: "{{ cadvisor.container_name }}"
-    hostname: "{{ cadvisor.container_name }}"
-    image: "{{ cadvisor.image }}"
+    name: "{{ monitoring_server_cadvisor.container_name }}"
+    hostname: "{{ monitoring_server_cadvisor.container_name }}"
+    image: "{{ monitoring_server_cadvisor.image }}"
     state: started
-    user: "{{ monitoring_server.uid }}:{{ monitoring_server.gid }}"
+    user: "{{ monitoring_server_uid }}:{{ monitoring_server_gid }}"
     networks:
       - name: monitor-net
     command:

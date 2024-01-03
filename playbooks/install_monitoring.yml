@@ -1,0 +1,40 @@
+---
+- name: Set up monitoring server
+  hosts: monitoring_host
+  become: true
+  gather_facts: true
+  pre_tasks:
+    - name: Generate list of docker clients from `monitoring_client` group
+      ansible.builtin.set_fact:
+        docker_client_hostnames: >
+          {{
+          query('inventory_hostnames', ansible_limit | default('')) |
+          intersect(groups['monitoring_client']) |
+          map('extract', hostvars, monitoring_server_hostname_extractor) |
+          list | default([])
+          }}
+      failed_when: docker_client_hostnames | length == 0
+
+  roles:
+    - role: mirsg.infrastructure.provision
+    - role: mirsg.infrastructure.install_python
+    - role: mirsg.infrastructure.docker
+    - role: mirsg.infrastructure.monitoring_server
+
+- name: Set up monitoring clients
+  hosts: monitoring_client
+  become: true
+  gather_facts: true
+
+  roles:
+    - role: mirsg.infrastructure.monitoring_client
+    - role: mirsg.infrastructure.firewalld
+      vars:
+        internal_zone_sources:
+          - "{{ monitoring_client_monitoring_server_ip }}"
+        rich_rules:
+          - zone: "internal"
+            rule: "family=ipv4 source \
+              address={{ monitoring_client_monitoring_server_ip }}/32 \
+              port protocol=tcp \
+              port={{ monitoring_client_node_exporter_port }} accept"

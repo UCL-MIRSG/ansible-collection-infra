@@ -1,9 +1,9 @@
 ---
-- name: Ensure grafana's directory exists - {{ grafana.external_data_dir }}
+- name: Ensure grafana's directory exists - {{ monitoring_server_grafana.external_data_dir }}
   ansible.builtin.file:
-    path: "{{ grafana.external_data_dir }}"
-    owner: "{{ monitoring_server.owner }}"
-    group: "{{ monitoring_server.group }}"
+    path: "{{ monitoring_server_grafana.external_data_dir }}"
+    owner: "{{ monitoring_server_owner }}"
+    group: "{{ monitoring_server_group }}"
     mode: "0700"
     state: directory
   notify:
@@ -11,33 +11,33 @@
 
 - name: Ensure grafana's storage directory exists
   ansible.builtin.file:
-    path: "{{ grafana.external_storage_dir }}"
+    path: "{{ monitoring_server_grafana.external_storage_dir }}"
     state: directory
-    owner: "{{ monitoring_server.owner }}"
-    group: "{{ monitoring_server.group }}"
+    owner: "{{ monitoring_server_owner }}"
+    group: "{{ monitoring_server_group }}"
     mode: "0744"
 
 - name: Copy datasource file to grafana
   ansible.builtin.template:
     src: templates/datasources.yml.j2
-    dest: "{{ grafana.external_datasource }}"
-    owner: "{{ monitoring_server.owner }}"
-    group: "{{ monitoring_server.group }}"
+    dest: "{{ monitoring_server_grafana.external_datasource }}"
+    owner: "{{ monitoring_server_owner }}"
+    group: "{{ monitoring_server_group }}"
     mode: "0644"
   notify:
     - Restart grafana
 
 - name: Start Grafana container
   community.docker.docker_container:
-    name: "{{ grafana.container_name }}"
-    hostname: "{{ grafana.container_name }}"
-    image: "{{ grafana.image }}"
+    name: "{{ monitoring_server_grafana.container_name }}"
+    hostname: "{{ monitoring_server_grafana.container_name }}"
+    image: "{{ monitoring_server_grafana.image }}"
     state: started
-    user: "{{ monitoring_server.uid }}:{{ monitoring_server.gid }}"
+    user: "{{ monitoring_server_uid }}:{{ monitoring_server_gid }}"
     volumes:
-      - "{{ grafana.external_storage_dir }}:{{ grafana.volume }}"
-      - "{{ grafana.external_datasource }}:{{ grafana.volume_datasource }}"
+      - "{{ monitoring_server_grafana.external_storage_dir }}:{{ monitoring_server_grafana.volume }}"
+      - "{{ monitoring_server_grafana.external_datasource }}:{{ monitoring_server_grafana.volume_datasource }}"
     networks:
       - name: monitor-net
-    env: "{{ grafana.environment_variables }}"
+    env: "{{ monitoring_server_grafana.environment_variables }}"
     restart_policy: always
