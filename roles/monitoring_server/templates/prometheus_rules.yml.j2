@@ -9,6 +9,16 @@ groups:
         annotations:
           description: "TLS certificate will expire in {{ $value | humanizeDuration }} (instance {{ $labels.instance }})"
 
+  - name: endpoint-down
+    rules:
+      - alert: EndpointDown
+        expr: probe_success == 0
+        for: 1m
+        labels:
+          severity: "critical"
+        annotations:
+          summary: "Endpoint {{ $labels.instance }} down"
+
   - name: vm-down-detector
     rules:
       - alert: InstanceDown
@@ -20,12 +30,13 @@ groups:
           summary: "{{ $labels.job }} instance {{ $labels.instance }} down"
           description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes."
 
-  - name: endpoint-down
+  - name: high-inode-usage
     rules:
-      - alert: EndpointDown
-        expr: probe_success == 0
-        for: 1m
+      - alert: NodeInodeUsageHigh
+        expr: 100 - node_filesystem_files_free/node_filesystem_files*100 > 80
+        for: 0m
         labels:
-          severity: "critical"
+          severity: warning
         annotations:
-          summary: "Endpoint {{ $labels.instance }} down"
+          summary: Instance inode usage high (Instance:{{ $labels.instance }})
+          description: "The used file nodes(inodes) of the filesystem(filesystem:{{ $labels.mountpoint }}) is more than 80%，value: {{ $labels.value }}%"
