@@ -52,7 +52,7 @@ platforms:
     groups:
       - all
       - monitoring_service
-      - monitoring_server
+      - monitoring_host
     networks:
       - name: monitoring
         ipv4_address: 192.168.56.3

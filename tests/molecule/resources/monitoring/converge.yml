@@ -1,6 +1,6 @@
 ---
 - name: Create monitoring server certs
-  hosts: monitoring_server
+  hosts: monitoring_host
   become: true
   gather_facts: true
   tags: monitoring

@@ -49,7 +49,7 @@ platforms:
     keep_volumes: false
     groups:
       - all
-      - monitoring_server
+      - monitoring_host
       - monitoring_service
     networks:
       - name: monitoring
