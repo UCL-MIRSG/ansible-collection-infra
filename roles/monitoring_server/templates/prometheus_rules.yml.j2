@@ -9,7 +9,7 @@ groups:
         annotations:
           description: "TLS certificate will expire in {{ $value | humanizeDuration }} (instance {{ $labels.instance }})"
 
-  - name: endpoint-down
+  - name: down-detector
     rules:
       - alert: EndpointDown
         expr: probe_success == 0
@@ -19,8 +19,6 @@ groups:
         annotations:
           summary: "Endpoint {{ $labels.instance }} down"
 
-  - name: vm-down-detector
-    rules:
       - alert: InstanceDown
         expr: up == 0
         for: 5m
