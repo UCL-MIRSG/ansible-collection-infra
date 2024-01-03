@@ -1,5 +1,5 @@
 - name: Monitoring verify
-  hosts: monitoring_server
+  hosts: monitoring_host
   become: true
   gather_facts: true
   tasks:
