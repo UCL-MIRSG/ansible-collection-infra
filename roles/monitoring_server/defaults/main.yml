@@ -38,7 +38,7 @@ monitoring_server_alertmanager:
   external_data_dir: "{{ monitoring_server_storage_root }}/alertmanager"
   volume: /alertmanager
   commandline_args:
-    web.external-url: "https://{{ ansible_host }}/alertmanager/"
+    web.external-url: "https://{{ monitoring_server_hostname }}/alertmanager/"
     storage.path: /alertmanager/data
     config.file: /alertmanager/alertmanager.yml
 
