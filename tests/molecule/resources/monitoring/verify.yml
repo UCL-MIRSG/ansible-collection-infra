@@ -1,0 +1,40 @@
+- name: Monitoring verify
+  hosts: monitoring_host
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Check alertmanager exporter container is running
+      community.docker.docker_container_info:
+        name: "{{ monitoring_server_alertmanager.container_name }}"
+      register: result
+      failed_when: "'exists' not in result.exists"
+
+    - name: Check blackbox exporter container is running
+      community.docker.docker_container_info:
+        name: blackbox-exporter
+      register: result
+      failed_when: "'exists' not in result.exists"
+
+    - name: Check cadvisor container is running
+      community.docker.docker_container_info:
+        name: "{{ monitoring_server_cadvisor.container_name }}"
+      register: result
+      failed_when: "'exists' not in result.exists"
+
+    - name: Check Grafana container is running
+      community.docker.docker_container_info:
+        name: "{{ monitoring_server_grafana.container_name }}"
+      register: result
+      failed_when: "'exists' not in result.exists"
+
+    - name: Check nginx container is running
+      community.docker.docker_container_info:
+        name: nginx
+      register: result
+      failed_when: "'exists' not in result.exists"
+
+    - name: Check Prometheus container is running
+      community.docker.docker_container_info:
+        name: "{{ monitoring_server_prometheus.container_name }}"
+      register: result
+      failed_when: "'exists' not in result.exists"

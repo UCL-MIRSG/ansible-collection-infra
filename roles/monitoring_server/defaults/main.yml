@@ -1,0 +1,87 @@
+monitoring_server_owner: monitoring
+monitoring_server_group: monitoring
+monitoring_server_gid: 595
+monitoring_server_uid: 595
+monitoring_server_cert_owner: root
+monitoring_server_cert_group: root
+monitoring_server_storage_root: /data/monitoring
+
+# mirsg.monitoring_server CA and server certificate
+monitoring_server_certificate_cache_directory: "{{ lookup('env', 'HOME') }}/ansible_persistent_files/monitoring_server_certificates"
+monitoring_server_certificate_directory: /root/monitoring_certs
+monitoring_server_ca_key: "{{ monitoring_server_certificate_directory }}/ca.key"
+monitoring_server_ca_csr: "{{ monitoring_server_certificate_directory }}/ca.csr"
+monitoring_server_ca_cert: "{{ monitoring_server_certificate_directory }}/ca.pem"
+monitoring_server_server_key: "{{ monitoring_server_certificate_directory }}/server-key.pem"
+monitoring_server_server_csr: "{{ monitoring_server_certificate_directory }}/server.csr"
+monitoring_server_server_cert: "{{ monitoring_server_certificate_directory }}/server-cert.pem"
+
+# mirsg.monitoring_server client related
+monitoring_server_client_certificate_directory: "{{ monitoring_server_certificate_directory }}/client_certs"
+monitoring_server_client_group: "monitoring_client"
+
+monitoring_server_smtp_enabled: false
+monitoring_server_smtp_hostname: ""
+monitoring_server_smtp_port: "25"
+monitoring_server_smtp_protocol: "smtp"
+monitoring_server_smtp_auth: ""
+monitoring_server_smtp_username: ""
+monitoring_server_smtp_password: ""
+monitoring_server_smtp_start_tls: "false"
+ssl_trust: "*"
+
+monitoring_server_hostname_extractor: "ansible_host"
+
+monitoring_server_alertmanager:
+  container_name: alertmanager
+  image: prom/alertmanager
+  external_data_dir: "{{ monitoring_server_storage_root }}/alertmanager"
+  volume: /alertmanager
+  commandline_args:
+    web.external-url: "https://{{ ansible_host }}/alertmanager/"
+    storage.path: /alertmanager/data
+    config.file: /alertmanager/alertmanager.yml
+
+monitoring_server_cadvisor:
+  container_name: cadvisor
+  image: gcr.io/cadvisor/cadvisor:latest
+
+monitoring_server_grafana:
+  container_name: grafana
+  image: grafana/grafana
+  external_data_dir: "{{ monitoring_server_storage_root }}/grafana"
+  external_storage_dir: "{{ monitoring_server_storage_root }}/grafana/storage"
+  volume: /var/lib/grafana
+  external_datasource: "{{ monitoring_server_storage_root }}/grafana/datasources.yml"
+  volume_datasource: /etc/grafana/provisioning/datasources/datasources.yml
+  environment_variables:
+    GF_SECURITY_ADMIN_USER: "{{ monitoring_server_grafana_username }}"
+    GF_SECURITY_ADMIN_PASSWORD: "{{ monitoring_server_grafana_password }}"
+    GF_SERVER_DOMAIN: "{{ monitoring_server_grafana_host }}"
+    GF_SERVER_ROOT_URL: "%(protocol)s://%(domain)s:%(http_port)s/grafana/"
+    GF_SERVER_SERVE_FROM_SUB_PATH: "true"
+
+monitoring_server_nginx:
+  owner: root
+  group: root
+  log_folder: /var/log/nginx
+  http_port: 80
+  https_port: 443
+  certs_dir: /etc/nginx/ssl
+  diffie_helman_size_bits: 2048
+  dh_params_file: /etc/nginx/ssl/dhparam.pem
+  conf_file: /etc/nginx/nginx.conf
+  ssl_cert_file: /etc/nginx/ssl/server.cert
+  ssl_key_file: /etc/nginx/ssl/server.key
+
+monitoring_server_prometheus:
+  image: prom/prometheus
+  container_name: prometheus
+  external_data_dir: "{{ monitoring_server_storage_root }}/prometheus"
+  volume: /prometheus
+  ca_cert: /prometheus/ca.pem
+  rules: /prometheus/rules.yml
+  commandline_args:
+    config.file: /prometheus/prometheus.yml
+    storage.tsdb.path: /prometheus/data
+    web.external-url: /prometheus/

@@ -28,7 +28,7 @@ install_python2:
   pip_packages:
     - cryptography
 
-install_python: "{{ install_python_3 }}" # default to Python 3
+install_python: "{{ install_python3 }}" # default to Python 3
 
 # mirsg.infrastructure.firewalld
 allow_public_access: true
