@@ -15,7 +15,7 @@ groups:
         expr: probe_success == 0
         for: 1m
         labels:
-          severity: "critical"
+          severity: critical
         annotations:
           summary: "Endpoint {{ $labels.instance }} down"
 
@@ -30,7 +30,7 @@ groups:
 
   - name: metrics
     rules:
-      - alert: NodeInodeUsageHigh
+      - alert: InodeUsageHigh
         expr: 100 - node_filesystem_files_free/node_filesystem_files*100 > 80
         for: 0m
         labels:
@@ -39,20 +39,20 @@ groups:
           summary: Instance inode usage high (Instance:{{ $labels.instance }})
           description: "The used file nodes(inodes) of the filesystem(filesystem:{{ $labels.mountpoint }}) is more than 80%, value: {{ $labels.value }}%"
 
-      - alert: NodeMemoryUsageHigh
+      - alert: MemoryUsageHigh
         expr: 100- node_memory_MemAvailable_bytes/node_memory_MemTotal_bytes*100 > 80
         for: 5m
         labels:
           severity: warning
         annotations:
-          summary: Node memory usage high (Instance:{{ $labels.instance }})
-          description: "Node memory usage more than 80% within 5 minutus, value:{{ $labels.value }}%"
+          summary: Instance memory usage high (Instance:{{ $labels.instance }})
+          description: "Instance memory usage more than 80% within 5 minutus, value:{{ $labels.value }}%"
 
-      - alert: NodeCpuLoadHigh
+      - alert: CpuLoadHigh
         expr: 100 - avg by(instance)(rate(node_cpu_seconds_total{mode="idle"}[5m]))*100 > 80
         for: 0m
         labels:
           severity: warning
         annotations:
-          summary: Node cpu load high (Instance:{{ $labels.instance }})
-          description: "Node cpu load more than 80% within 5 minutes, value: {{ $labels.value }}%"
+          summary: Instance cpu load high (Instance:{{ $labels.instance }})
+          description: "Instance cpu load more than 80% within 5 minutes, value: {{ $labels.value }}%"
