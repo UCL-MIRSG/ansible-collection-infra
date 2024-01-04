@@ -1,3 +1,3 @@
 ---
-postgresql_rpm_gpg_key_pgdg: "https://www.postgresql.org/download/keys/RPM-GPG-KEY-PGDG" # not needed for CentOS 7
+postgresql_rpm_gpg_key_pgdg: "https://apt.postgresql.org/pub/repos/yum/keys/PGDG-RPM-GPG-KEY-RHEL" # not needed for CentOS 7
 server_locale: "en_GB.UTF-8"
