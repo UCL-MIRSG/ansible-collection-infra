@@ -31,20 +31,20 @@ install_python2:
 install_python: "{{ install_python3 }}" # default to Python 3
 
 # mirsg.infrastructure.firewalld
-allow_public_access: true
-internal_zone_open_services:
+firewalld_allow_public_access: true
+firewalld_internal_zone_open_services:
   - http
   - https
   - ssh
-public_zone_open_services:
+firewalld_public_zone_open_services:
   - http
   - https
-work_zone_open_services:
+firewalld_work_zone_open_services:
   - http
   - https
-public_zone_ports:
+firewalld_public_zone_ports:
   - "8080"
-internal_zone_ports:
+firewalld_internal_zone_ports:
   - "5432"
 
 # mirsg.infrastructure.postgresql
