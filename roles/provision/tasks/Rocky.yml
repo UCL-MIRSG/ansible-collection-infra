@@ -14,7 +14,7 @@
 - name: Import postgresql rpm key
   ansible.builtin.rpm_key:
     state: present
-    key: "{{ postgresql_rpm_gpg_key_pgdg }}"
+    key: "{{ postgresql_rpm_gpg_key_pgdg[ansible_architecture] }}"
 
 - name: Check if locale already set
   ansible.builtin.shell: |
