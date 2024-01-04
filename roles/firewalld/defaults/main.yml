@@ -1,47 +1,47 @@
 ---
 # defaults file for ../ansible-role-dual-vm-firewalld
-allow_public_access: false
+firewalld_allow_public_access: false
 
 # IP ranges allowing HTTP/HTTPS
-internal_zone_open_services:
+firewalld_internal_zone_open_services:
   - ssh
-public_zone_open_services: []
-work_zone_open_services: []
+firewalld_public_zone_open_services: []
+firewalld_work_zone_open_services: []
 
-internal_zone_closed_services:
+firewalld_internal_zone_closed_services:
   - samba-client
-public_zone_closed_services:
+firewalld_public_zone_closed_services:
   - ssh
-work_zone_closed_services:
+firewalld_work_zone_closed_services:
   - ssh
 
-internal_zone_sources: []
-work_zone_sources: []
-public_zone_sources: []
+firewalld_internal_zone_sources: []
+firewalld_work_zone_sources: []
+firewalld_public_zone_sources: []
 
-internal_zone_ports: []
-public_zone_ports: []
-work_zone_ports: []
+firewalld_internal_zone_ports: []
+firewalld_public_zone_ports: []
+firewalld_work_zone_ports: []
 
-close_zone_services:
-  internal: "{{ internal_zone_closed_services }}"
-  public: "{{ public_zone_closed_services }}"
-  work: "{{ work_zone_closed_services }}"
+firewalld_close_zone_services:
+  internal: "{{ firewalld_internal_zone_closed_services }}"
+  public: "{{ firewalld_public_zone_closed_services }}"
+  work: "{{ firewalld_work_zone_closed_services }}"
 
-open_zone_services:
-  internal: "{{ internal_zone_open_services }}"
-  public: "{{ public_zone_open_services }}"
-  work: "{{ work_zone_open_services }}"
+firewalld_open_zone_services:
+  internal: "{{ firewalld_internal_zone_open_services }}"
+  public: "{{ firewalld_public_zone_open_services }}"
+  work: "{{ firewalld_work_zone_open_services }}"
 
-zone_sources:
-  internal: "{{ internal_zone_sources }}"
-  public: "{{ public_zone_sources }}"
-  work: "{{ work_zone_sources }}"
+firewalld_zone_sources:
+  internal: "{{ firewalld_internal_zone_sources }}"
+  public: "{{ firewalld_public_zone_sources }}"
+  work: "{{ firewalld_work_zone_sources }}"
 
-zone_ports:
-  internal: "{{ internal_zone_ports }}"
-  public: "{{ public_zone_ports }}"
-  work: "{{ work_zone_ports }}"
+firewalld_zone_ports:
+  internal: "{{ firewalld_internal_zone_ports }}"
+  public: "{{ firewalld_public_zone_ports }}"
+  work: "{{ firewalld_work_zone_ports }}"
 
 # rich_rules should be a list of hashes
-rich_rules: []
+firewalld_rich_rules: []
