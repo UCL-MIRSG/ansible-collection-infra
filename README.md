@@ -10,6 +10,7 @@ collection can be used to configure infrastructure for deploying XNAT and OMERO.
 | Name                                                         | Description                                                                   |
 | ------------------------------------------------------------ | ----------------------------------------------------------------------------- |
 | [setup_user_accounts.yml](playbooks/setup_user_accounts.yml) | Create OS user accounts a group of servers `target`, which defaults to `all`. |
+| [install_monitoring.yml](playbooks/install_monitoring.yml)   | Configure a host to collect metrics from client machines.                     |
 
 ## External requirements
 
