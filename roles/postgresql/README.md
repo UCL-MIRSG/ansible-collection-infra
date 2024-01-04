@@ -71,7 +71,7 @@ To use this role with a dual-server setup (a dartase `db` and a web server `web`
         - name: Import postgresql rpm key
           ansible.builtin.rpm_key:
             state: present
-            key: "{{ postgresql_rpm_gpg_key_pgdg }}"
+            key: "{{ postgresql_rpm_gpg_key_pgdg[ansible_architecture] }}"
 
 - name: Create client SSL certificate
   hosts: web
