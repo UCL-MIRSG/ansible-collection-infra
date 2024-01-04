@@ -30,9 +30,14 @@
     - role: mirsg.infrastructure.monitoring_client
     - role: mirsg.infrastructure.firewalld
       vars:
-        internal_zone_sources:
+        firewalld_internal_zone_sources:
           - "{{ monitoring_client_monitoring_server_ip }}"
-        rich_rules:
+        firewalld_public_zone_sources: []
+        firewalld_work_zone_sources: []
+        firewalld_internal_zone_ports: []
+        firewalld_public_zone_ports: []
+        firewalld_work_zone_ports: []
+        firewalld_rich_rules:
           - zone: "internal"
             rule: "family=ipv4 source \
               address={{ monitoring_client_monitoring_server_ip }}/32 \
