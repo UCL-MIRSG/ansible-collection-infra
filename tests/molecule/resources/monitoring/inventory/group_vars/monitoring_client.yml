@@ -9,3 +9,13 @@ monitoring_client_ssl_csr_file: /root/monitoring_certs/monitoring.csr
 monitoring_client_ssl_pk8_file: /root/monitoring_certs/monitoring.pk8
 monitoring_client_ssl_cert_file: /root/monitoring_certs/cert.pem
 monitoring_client_server_ca_cert_file: /root/monitoring_certs/ca.pem
+
+# mirsg.infrastructure.firewalld
+firewalld_internal_zone_sources:
+  - "{{ monitoring_client_monitoring_server_ip }}"
+firewalld_rich_rules:
+  - zone: "internal"
+    rule: "family=ipv4 source \
+      address={{ monitoring_client_monitoring_server_ip }}/32 \
+      port protocol=tcp \
+      port={{ monitoring_client_node_exporter_port }} accept"
