@@ -6,10 +6,21 @@ selinux_enabled: false
 server_locale: "en_GB.UTF-8"
 
 # mirsg.infrastructure.install_python
-install_python:
+install_python3:
+  version: "3"
+  pip_version: "21.3.1"
+  pip_executable: /usr/local/bin/pip3
+  system_packages:
+    - python3
+    - python3-pip
+    - python3-setuptools
+  pip_packages:
+    - cryptography
+
+install_python2:
   version: "2"
   pip_version: "20.3.4"
-  pip_executable: "pip"
+  pip_executable: /usr/bin/pip
   system_packages:
     - python
     - python-pip
@@ -17,21 +28,23 @@ install_python:
   pip_packages:
     - cryptography
 
+install_python: "{{ install_python3 }}" # default to Python 3
+
 # mirsg.infrastructure.firewalld
-allow_public_access: true
-internal_zone_open_services:
+firewalld_allow_public_access: true
+firewalld_internal_zone_open_services:
   - http
   - https
   - ssh
-public_zone_open_services:
+firewalld_public_zone_open_services:
   - http
   - https
-work_zone_open_services:
+firewalld_work_zone_open_services:
   - http
   - https
-public_zone_ports:
+firewalld_public_zone_ports:
   - "8080"
-internal_zone_ports:
+firewalld_internal_zone_ports:
   - "5432"
 
 # mirsg.infrastructure.postgresql
