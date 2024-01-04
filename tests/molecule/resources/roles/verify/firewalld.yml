@@ -30,43 +30,43 @@
   ansible.builtin.assert:
     that:
       - "'{{ item }}' in internal_zone_services.stdout"
-  loop: "{{ internal_zone_open_services }}"
-  when: internal_zone_open_services is defined
+  loop: "{{ firewalld_internal_zone_open_services }}"
+  when: firewalld_internal_zone_open_services is defined
 
 - name: Test that correct services are in public zone
   ansible.builtin.assert:
     that:
       - "'{{ item }}' in public_zone_services.stdout"
-  loop: "{{ public_zone_open_services }}"
-  when: public_zone_open_services is defined
+  loop: "{{ firewalld_public_zone_open_services }}"
+  when: firewalld_public_zone_open_services is defined
 
 - name: Test that correct services are in work zone
   ansible.builtin.assert:
     that:
       - "'{{ item }}' in work_zone_services.stdout"
-  loop: "{{ work_zone_open_services }}"
-  when: work_zone_open_services is defined
+  loop: "{{ firewalld_work_zone_open_services }}"
+  when: firewalld_work_zone_open_services is defined
 
 - name: Test that internal zone is closed to the correct services
   ansible.builtin.assert:
     that:
       - "'{{ item }}' not in internal_zone_services.stdout"
-  loop: "{{ internal_zone_closed_services }}"
-  when: internal_zone_closed_services is defined
+  loop: "{{ firewalld_internal_zone_closed_services }}"
+  when: firewalld_internal_zone_closed_services is defined
 
 - name: Test that public zone is closed to the correct services
   ansible.builtin.assert:
     that:
       - "'{{ item }}' not in public_zone_services.stdout"
-  loop: "{{ public_zone_closed_services }}"
+  loop: "{{ firewalld_public_zone_closed_services }}"
   when: public_zone_closed_services is defined
 
 - name: Test that work zone is closed to the correct services
   ansible.builtin.assert:
     that:
       - "'{{ item }}' not in work_zone_services.stdout"
-  loop: "{{ work_zone_closed_services }}"
-  when: work_zone_closed_services is defined
+  loop: "{{ firewalld_work_zone_closed_services }}"
+  when: firewalld_work_zone_closed_services is defined
 
 - name: Get firewall default zone
   become: true
@@ -80,9 +80,9 @@
 - name: Assert that public is the default zone
   ansible.builtin.assert:
     that: "'public' in firewall_default_zone.stdout"
-  when: allow_public_access
+  when: firewalld_allow_public_access
 
 - name: Assert that drop is the default zone
   ansible.builtin.assert:
     that: "'drop' in firewall_default_zone.stdout"
-  when: not allow_public_access
+  when: not firewalld_allow_public_access

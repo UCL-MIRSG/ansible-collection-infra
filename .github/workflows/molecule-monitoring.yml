@@ -43,7 +43,6 @@ jobs:
           molecule-plugins[docker] \
           docker \
           passlib \
-          bcrypt==4.0.1 \
           requests
 
       - name: Test with molecule
