@@ -14,7 +14,7 @@ jobs:
       fail-fast: true
       matrix:
         scenario:
-          # - centos7_monitoring
+          - centos7_monitoring
           - rocky9_monitoring
     env:
       MOLECULE_RUN_TAGS: monitoring
