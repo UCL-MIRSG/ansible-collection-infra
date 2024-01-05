@@ -14,10 +14,10 @@ There are also several **required** variables you will need to set before using 
 
 ### Variables required by both the server and client
 
-| Name                          | Description                                                         |
-| ----------------------------- | ------------------------------------------------------------------- |
-| `postgresql_rpm_gpg_key_pgdg` | URL from which to download the RPM GPP key; not needed for CentOS 7 |
-| `postgresql_use_ssl`          | Whether to use SSL                                                  |
+| Name                                 | Description                                                         |
+| ------------------------------------ | ------------------------------------------------------------------- |
+| `postgresql_rpm_gpg_key_pgdg_x86_64` | URL from which to download the RPM GPP key; not needed for CentOS 7 |
+| `postgresql_use_ssl`                 | Whether to use SSL                                                  |
 
 ### Required variables for the PostgreSQL server
 
@@ -71,7 +71,7 @@ To use this role with a dual-server setup (a dartase `db` and a web server `web`
         - name: Import postgresql rpm key
           ansible.builtin.rpm_key:
             state: present
-            key: "{{ postgresql_rpm_gpg_key_pgdg[ansible_architecture] }}"
+            key: "{{ postgresql_rpm_gpg_key_pgdg_x86_64 }}"
 
 - name: Create client SSL certificate
   hosts: web

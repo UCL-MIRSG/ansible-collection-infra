@@ -48,7 +48,8 @@ firewalld_internal_zone_ports:
   - "5432"
 
 # mirsg.infrastructure.postgresql
-postgresql_rpm_gpg_key_pgdg: "https://apt.postgresql.org/pub/repos/yum/keys/PGDG-RPM-GPG-KEY-RHEL"
+postgresql_rpm_gpg_key_pgdg_x86_64: >-
+  https://apt.postgresql.org/pub/repos/yum/keys/PGDG-RPM-GPG-KEY-RHEL
 postgresql_use_ssl: false
 postgresql_database:
   database_name: "database"
