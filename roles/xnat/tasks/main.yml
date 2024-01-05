@@ -1,0 +1,42 @@
+---
+- name: Install lxml using pip
+  ansible.builtin.pip:
+    name:
+      - lxml
+  when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] is version('8', '>=')
+
+- name: Ensure dependencies are installed
+  ansible.builtin.yum:
+    name: ["postgresql", "wget"]
+    state: installed
+
+- name: Get postgres server certificate from cache
+  ansible.builtin.copy:
+    src: "{{ database_server_certificate_cache_filename }}"
+    dest: "{{ postgresql_client.server_certificate_filename }}"
+    owner: "{{ postgresql_client_ssl_certificate.owner }}"
+    group: "{{ postgresql_client_ssl_certificate.group }}"
+    mode: "0600"
+
+- name: "Configure XNAT directories"
+  ansible.builtin.include_tasks: directories.yml
+
+- name: "Add or upgrade XNAT code"
+  ansible.builtin.include_tasks: upgrade_xnat.yml
+
+- name: "Add or upgrade plugins"
+  ansible.builtin.include_tasks: plugins.yml
+
+- name: "Add or upgrade pipeline installer"
+  ansible.builtin.include_tasks: pipelines.yml
+  when: xnat_pipeline_engine_enabled
+
+- name: "Configure XNAT settings files"
+  ansible.builtin.include_tasks: settings_files.yml
+
+- name: "Configure LDAP for XNAT"
+  ansible.builtin.include_tasks: ldap.yml
+  when: xnat_ldap_enabled
+
+- name: "XNAT site configuration"
+  ansible.builtin.include_tasks: configure.yml
