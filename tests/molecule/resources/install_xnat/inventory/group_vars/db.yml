@@ -1,0 +1,7 @@
+---
+# mirsg.infrastructure.firewalld
+REMOVED
+  - "{{ xnat_web_server.subnet | default(xnat_web_server.ip + '/32') }}"
+
+firewalld_internal_zone_open_services:
+  - "postgresql"

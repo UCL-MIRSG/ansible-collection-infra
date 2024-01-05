@@ -1,0 +1,35 @@
+---
+- name: Configure the web server and create PostgreSQL client certificate
+  hosts: web
+  become: true
+  gather_facts: true
+
+  roles:
+    - role: mirsg.infrastructure.provision
+    - role: mirsg.infrastructure.install_python
+    - role: mirsg.infrastructure.tomcat
+    - role: mirsg.infrastructure.nginx
+    - role: mirsg.infrastructure.ssl_certificates
+      vars:
+        ssl_certificate: "{{ postgresql_client_ssl_certificate }}" # noqa: var-naming[no-role-prefix]
+      when: postgresql_use_ssl
+
+- name: Set up XNAT database server
+  hosts: db
+  become: true
+  gather_facts: true
+
+  roles:
+    - role: mirsg.infrastructure.provision
+    - role: mirsg.infrastructure.install_python
+    - role: mirsg.infrastructure.postgresql
+    - role: mirsg.infrastructure.firewalld
+
+- name: Install XNAT
+  hosts: web
+  become: true
+  gather_facts: true
+
+  roles:
+    - role: mirsg.infrastructure.xnat
+    - role: mirsg.infrastructure.firewalld

@@ -1,0 +1,23 @@
+---
+# xnat
+package_registry:
+  enabled: false
+  url: ""
+  authentication_header: "Bearer {{ vault_package_registry_token | default(omit) }}"
+
+# Generally this should be set to true
+postgresql_use_ssl: true
+
+# Set this to true if selinux is enabled on the hosting OS
+selinux_enabled: false
+
+# XNAT supports PostgreSQL 11-14
+postgresql_version: "12"
+
+java_keystore:
+  keystore_pass: "{{ vault_keystore_password }}"
+
+# JSON representation of the site-wide anonymisation script: this could be
+# defined in a string, or extracted from a template file e.g. using
+# lookup('template, 'foo.j2') | to_json
+xnat_sitewide_anonymization_script: "{{ xnat_common_config.sitewideAnonymizationScript | to_json }}"

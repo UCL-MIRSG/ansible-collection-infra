@@ -1,0 +1,62 @@
+---
+xnat_version: 1.8.9.2
+xnat_pipeline_version: 1.8.3
+xnat_archive_dir: "{{ xnat_root_dir }}/archive"
+xnat_prearchive_dir: "{{ xnat_root_dir }}/prearchive"
+xnat_cache_dir: "{{ xnat_root_dir }}/cache"
+xnat_build_dir: "{{ xnat_root_dir }}/build"
+xnat_ftp_dir: "{{ xnat_root_dir }}/ftp"
+xnat_pipeline_dir: "{{ xnat_root_dir }}/pipeline"
+xnat_inbox_dir: "{{ xnat_root_dir }}/inbox"
+xnat_plugins_dir: "{{ xnat_home_dir }}/plugins"
+xnat_config_dir: "{{ xnat_home_dir }}/config"
+xnat_logs_dir: "{{ xnat_home_dir }}/logs"
+xnat_work_dir: "{{ xnat_home_dir }}/work"
+xnat_create_data_directory: true
+xnat_link_data_directory: true
+
+# Mail server settings
+xnat_smtp_enabled: false
+xnat_smtp_hostname: ""
+xnat_smtp_port: "2525"
+xnat_smtp_protocol: "smtp"
+xnat_smtp_auth: ""
+xnat_smtp_username: ""
+xnat_smtp_password: "{{ vault_smtp_password | default(omit) }}"
+xnat_smtp_start_tls: "false"
+xnat_smtp_ssl_trust: "*"
+
+# LDAP configuration
+xnat_ldap_enabled: false
+xnat_ldap_name: ""
+xnat_ldap_address: ""
+xnat_ldap_userdn: ""
+xnat_ldap_password: "{{ vault_ldap_password | default(omit) }}"
+xnat_ldap_base: ""
+xnat_ldap_filter: ""
+xnat_ldap_ca_cert: ""
+xnat_ldap_keystore_alias: ""
+
+# Plugins
+xnat_plugin_urls:
+  - "https://api.bitbucket.org/2.0/repositories/xnatdev/xsync/downloads/xsync-plugin-all-1.6.0.jar"
+  - "https://api.bitbucket.org/2.0/repositories/xnatx/ldap-auth-plugin/downloads/ldap-auth-plugin-1.1.0.jar"
+  - "https://api.bitbucket.org/2.0/repositories/xnatdev/container-service/downloads/container-service-3.4.2-fat.jar"
+  - "https://api.bitbucket.org/2.0/repositories/xnatx/xnatx-batch-launch-plugin/downloads/batch-launch-0.6.0.jar"
+  - "https://github.com/VUIIS/dax/raw/main/misc/xnat-plugins/dax-plugin-genProcData-1.4.2.jar"
+  - "https://api.bitbucket.org/2.0/repositories/icrimaginginformatics/ohif-viewer-xnat-plugin/downloads/ohif-viewer-3.6.1.jar"
+  - "https://api.bitbucket.org/2.0/repositories/xnatx/ml-plugin/downloads/ml-plugin-1.0.2.jar"
+  - "https://api.bitbucket.org/2.0/repositories/xnatx/datasets-plugin/downloads/datasets-plugin-1.0.3.jar"
+  - "https://api.bitbucket.org/2.0/repositories/xnatdev/xnat-image-viewer-plugin/downloads/ximgview-plugin-1.0.2.jar"
+  - "https://api.bitbucket.org/2.0/repositories/xnatx/xnatx-dxm-settings-plugin/downloads/dxm-settings-plugin-1.0.jar"
+
+xnat_plugin_bundle_urls: []
+xnat_plugin_packages: []
+xnat_server_specific_plugin_urls: []
+xnat_server_specific_plugin_packages: []
+
+# Path to server logo file
+xnat_config_logo: "/images/logo.png" # use the default XNAT logo
+
+# Pipeline engine
+xnat_pipeline_engine_enabled: true
