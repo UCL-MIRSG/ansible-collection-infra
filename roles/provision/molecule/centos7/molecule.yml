@@ -1,3 +1,27 @@
 ---
 # test this scenario from the roles/provision directory with the command
 # molecule --base-config ../../tests/centos7_base_config.yml test -s centos7
+platforms:
+  - name: instance_one
+    hostname: molecule.instance.local
+    image: ${MOLECULE_DOCKER_IMAGE:-geerlingguy/docker-centos7-ansible:latest}
+    required: true
+    command: ""
+    cgroupns_mode: host
+    privileged: true
+    pre_build_image: ${MOLECULE_PRE_BUILD_IMAGE:-true}
+    volumes:
+      - ./molecule-data:/storage/molecule
+    keep_volumes: false
+    groups:
+      - all
+      - molecule
+      - centos7
+    docker_networks:
+      - name: molecule
+        ipam_config:
+          - subnet: 192.168.56.0/24
+            gateway: 192.168.56.1
+    networks:
+      - name: molecule
+        ipv4_address: 192.168.56.2
