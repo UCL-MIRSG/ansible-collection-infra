@@ -10,8 +10,7 @@
     dest: "{{ java_profile_d }}/java_home.sh"
     mode: "0644"
   when: java_home is defined and java_home != ''
-
-- name: Set the default java version
-  community.general.alternatives:
-    name: java
-    path: "/usr/lib/jvm/{{ java_package }}"
+# - name: Set the default java version
+#   community.general.alternatives:
+#     name: java
+#     path: "/usr/lib/jvm/{{ java_package }}"
