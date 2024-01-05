@@ -14,10 +14,11 @@ There are also several **required** variables you will need to set before using 
 
 ### Variables required by both the server and client
 
-| Name                                 | Description                                                         |
-| ------------------------------------ | ------------------------------------------------------------------- |
-| `postgresql_rpm_gpg_key_pgdg_x86_64` | URL from which to download the RPM GPP key; not needed for CentOS 7 |
-| `postgresql_use_ssl`                 | Whether to use SSL                                                  |
+| Name                                 | Description                                                                         |
+| ------------------------------------ | ----------------------------------------------------------------------------------- |
+| `postgresql_rpm_gpg_key_pgdg_x86_64` | URL from which to download the RPM GPP key for Intel chips; not needed for CentOS 7 |
+| `postgresql_rpm_gpg_key_pgdg_x86_64` | URL from which to download the RPM GPP key for ARM chips; not needed for CentOS 7   |
+| `postgresql_use_ssl`                 | Whether to use SSL                                                                  |
 
 ### Required variables for the PostgreSQL server
 
