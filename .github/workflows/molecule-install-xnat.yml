@@ -3,17 +3,11 @@ on:
   pull_request:
     paths:
       - "roles/xnat/**"
+      - "roles/xnat_container_service/**"
       - ".github/workflows/molecule.yml"
       - ".github/workflows/molecule-install-xnat.yml"
-  push:
-    branches:
-      - main
-  workflow_run:
-    workflows:
-      - Test firewalld
-      - Test PostgreSQL
-    types:
-      - completed
+  release:
+    types: [published]
 
 jobs:
   molecule:
