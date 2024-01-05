@@ -1,0 +1,70 @@
+---
+external_storage_drive: "/storage/molecule"
+selinux_enabled: false
+
+# mirsg.infrastructure.provision
+server_locale: "en_GB.UTF-8"
+
+# mirsg.infrastructure.install_python
+install_python3:
+  version: "3"
+  pip_version: "21.3.1"
+  pip_executable: /usr/local/bin/pip3
+  system_packages:
+    - python3
+    - python3-pip
+    - python3-setuptools
+  pip_packages:
+    - cryptography
+
+install_python2:
+  version: "2"
+  pip_version: "20.3.4"
+  pip_executable: /usr/bin/pip
+  system_packages:
+    - python
+    - python-pip
+    - python-setuptools
+  pip_packages:
+    - cryptography
+
+install_python: "{{ install_python3 }}" # default to Python 3
+
+# mirsg.infrastructure.firewalld
+firewalld_allow_public_access: true
+firewalld_internal_zone_open_services:
+  - http
+  - https
+  - ssh
+firewalld_public_zone_open_services:
+  - http
+  - https
+firewalld_work_zone_open_services:
+  - http
+  - https
+firewalld_public_zone_ports:
+  - "8080"
+firewalld_internal_zone_ports:
+  - "5432"
+
+# mirsg.infrastructure.postgresql
+postgresql_rpm_gpg_key_pgdg_x86_64: >-
+  https://apt.postgresql.org/pub/repos/yum/keys/PGDG-RPM-GPG-KEY-RHEL
+postgresql_use_ssl: false
+postgresql_database:
+  database_name: "database"
+  user_name: "user"
+  user_password: "password"
+postgresql_connection:
+  host: "molecule.instance.local"
+  port: 5432
+  client_ip: 0.0.0.0
+  listen_addresses: "'*'"
+  subnet_mask: 255.255.255.255
+
+# mirsg.infrastructure.provision_accounts
+os_users:
+  - username: test-user
+    crypted_password: $6$TSoIGqmpZJw24vqP$lrhHcIeuv3oi8kpBu3SVyqPeTLuXi5TJf5u7hUOY0vRb4MXWTp1Z/gsjAwC28EQrVnKOJwpw00tN8ExM6AoIC.
+
+os_users_groups: "wheel"
