@@ -1,0 +1,3 @@
+---
+external_storage_drive: "/storage/molecule"
+selinux_enabled: false
