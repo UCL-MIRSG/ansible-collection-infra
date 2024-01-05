@@ -17,6 +17,7 @@
     owner: "{{ postgresql_client_ssl_certificate.owner }}"
     group: "{{ postgresql_client_ssl_certificate.group }}"
     mode: "0600"
+  when: postgresql_use_ssl
 
 - name: "Configure XNAT directories"
   ansible.builtin.include_tasks: directories.yml
