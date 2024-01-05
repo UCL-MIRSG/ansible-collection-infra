@@ -1,7 +1,7 @@
 ---
 - name: Ensure correct Java version is installed - {{ java_package }}
   ansible.builtin.package:
-    name: "{{ java_package }}"
+    name: "{{ java_package }}-{{ java_package_version }}"
     state: installed
 
 - name: Set JAVA_HOME through shell script
