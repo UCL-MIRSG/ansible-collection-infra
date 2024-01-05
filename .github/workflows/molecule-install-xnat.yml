@@ -16,7 +16,7 @@ jobs:
       fail-fast: true
       matrix:
         scenario:
-          # - centos7
+          - centos7_install_xnat
           - rocky9_install_xnat
     env:
       PY_COLORS: 1
