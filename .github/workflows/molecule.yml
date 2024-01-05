@@ -28,6 +28,6 @@ jobs:
         uses: UCL-MIRSG/.github/actions/molecule-test@v0.40.0
         with:
           scenario: ${{ matrix.scenario }}
-          base_config: format('{0}{1}_base_config.yml', ${{ inputs.base_config_path }}, ${{ matrix.scenario }})
+          base_config: ${{ format('{0}{1}_base_config.yml', inputs.base_config_path, matrix.scenario ) }}
           checkout_path: ansible_collections/mirsg/infrastructure
           tests_path: ${{ inputs.tests_path }}
