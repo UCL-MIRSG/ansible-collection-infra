@@ -15,8 +15,6 @@ xnat_home_dir: "{{ xnat_root_dir }}/home"
 database_server_certificate_cache_filename: "{{ ansible_cache_dir }}/pg_certificates/{{ xnat_db.host }}.pg.server.crt"
 database_client_certificate_cache_filename: "{{ ansible_cache_dir }}/pg_certificates/{{ xnat_db.host }}.pg.client.crt"
 
-postgresql_rpm_gpg_key_pgdg: "https://apt.postgresql.org/pub/repos/yum/keys/PGDG-RPM-GPG-KEY-RHEL"
-
 # mirsg.infrastructure.postgresql - download and install - we need to do this on both the web server and the db
 postgresql_install:
   disable_gpg_check: false
