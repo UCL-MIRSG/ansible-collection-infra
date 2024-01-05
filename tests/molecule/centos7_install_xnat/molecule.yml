@@ -1,0 +1,127 @@
+---
+dependency:
+  name: galaxy
+  options:
+    force: true
+    role-file: "${MOLECULE_SCENARIO_DIRECTORY}/../../../meta/requirements.yml"
+    requirements-file: "${MOLECULE_SCENARIO_DIRECTORY}/../../../meta/requirements.yml"
+
+driver:
+  name: docker
+
+platforms:
+  - name: xnat_db
+    hostname: xnat.db.local
+    image: geerlingguy/docker-centos7-ansible:latest
+    required: true
+    command: ""
+    cgroupns_mode: host
+    privileged: true
+    pre_build_image: true
+    volumes:
+      - ./xnat-data:/storage/xnat
+    keep_volumes: false
+    groups:
+      - all
+      - xnat
+      - db
+      - centos7
+    docker_networks:
+      - name: xnat
+        ipam_config:
+          - subnet: "192.168.56.0/24"
+            gateway: "192.168.56.1"
+    networks:
+      - name: xnat
+        ipv4_address: "192.168.56.2"
+    exposed_ports:
+      - "5432"
+    etc_hosts:
+      xnat.web.local: "192.168.56.3"
+      xnat.cserv.local: "192.168.56.4"
+
+  - name: xnat_web
+    hostname: xnat.web.local
+    image: geerlingguy/docker-centos7-ansible:latest
+    required: true
+    command: ""
+    cgroupns_mode: host
+    privileged: true
+    pre_build_image: true
+    volumes:
+      - ./xnat-data:/storage/xnat
+    keep_volumes: false
+    groups:
+      - all
+      - xnat
+      - web
+      - container_service
+      - container_service_client
+      - centos7
+    networks:
+      - name: xnat
+        ipv4_address: "192.168.56.3"
+    exposed_ports:
+      - "80"
+      - "443"
+      - "8080"
+      - "8104"
+    published_ports:
+      - 127.0.0.1:8080:8080
+      - 127.0.0.1:8104:8104
+    etc_hosts:
+      xnat.db.local: "192.168.56.2"
+      xnat.cserv.local: "192.168.56.4"
+
+  - name: xnat_cserv
+    hostname: xnat.cserv.local
+    image: geerlingguy/docker-centos7-ansible:latest
+    required: true
+    command: ""
+    cgroupns_mode: host
+    privileged: true
+    pre_build_image: true
+    volumes:
+      - ./xnat-data:/storage/xnat
+    keep_volumes: false
+    groups:
+      - all
+      - xnat
+      - container_service
+      - container_service_host
+      - centos7
+    networks:
+      - name: xnat
+        ipv4_address: "192.168.56.4"
+    exposed_ports:
+      - "2376"
+    extra_hosts:
+      xnat.db.local: "192.168.56.2"
+      xnat.web.local: "192.168.56.3"
+
+provisioner:
+  name: ansible
+  log: true
+  config_options:
+    defaults:
+      callbacks_enabled: profile_tasks, timer, yaml
+      vault_password_file: "${MOLECULE_SCENARIO_DIRECTORY}/../resources/.vault_password"
+  inventory:
+    links:
+      hosts: ../resources/inventory/hosts.yml
+      group_vars: ../resources/inventory/group_vars/
+  playbooks:
+    prepare: ../resources/prepare.yml
+    converge: ../resources/converge.yml
+  env:
+    ANSIBLE_VERBOSITY: "1"
+
+verifier:
+  name: ansible
+  env:
+    ANSIBLE_VERBOSITY: "1"
+
+lint: |
+  set -e
+  yamllint .
+  ansible-lint .

@@ -1,0 +1,40 @@
+---
+external_storage_drive: "/storage/xnat"
+
+# web server VM
+xnat_web_server:
+  host: "{{ hostvars['xnat_web']['hostname'] }}"
+  url: "http://{{ hostvars['xnat_web']['hostname'] }}"
+  subnet: "192.168.56.0/24"
+  ip: "{{ hostvars['xnat_web']['ansible_ip'] }}"
+  storage_dir: "{{ external_storage_drive }}/data"
+
+# database server VM
+xnat_db:
+  host: "{{ hostvars['xnat_db']['hostname'] }}"
+  port: 5432
+  listen_addresses: "*"
+  postgres_xnat_database: "xnat"
+  postgres_xnat_user: "xnat"
+  postgres_xnat_password: "{{ vault_postgres_xnat_password }}"
+  storage_dir: "{{ external_storage_drive }}/pgsql"
+  data_dir: "{{ external_storage_drive }}/pgsql/{{ postgresql_version }}/data"
+  backups_dir: "{{ external_storage_drive }}/pgsql/backups"
+
+# SSL certificate settings
+ssl:
+  use_ssl: false
+  validate_certs: false
+
+# nginx config
+dicom_port: 8104
+xnat_dicom_port: 8105
+
+# XNAT configuration
+xnat_config:
+  site_name: "MIRSG XNAT"
+  site_description: "<h1>MIRSG XNAT</h1><p>A test instance of XNAT."
+  admin_password: "{{ vault_admin_password }}"
+
+# Configuration for montoring service
+monitoring_service_enabled: false

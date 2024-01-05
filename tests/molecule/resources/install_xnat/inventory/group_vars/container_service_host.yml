@@ -1,0 +1,13 @@
+---
+# mirsg.infrastructure.docker
+docker_generate_certificates: true # generate TLS certs for clients
+docker_client_hostnames:
+  - "{{ hostvars['xnat_web']['hostname'] }}"
+docker_tls_verify: false
+
+# mirsg.infrastructure.firewalld
+internal_zone_sources:
+  - "{{ xnat_web_server.subnet | default(xnat_web_server.ip + '/32') }}"
+
+internal_zone_ports:
+  - "{{ docker_server_port }}"

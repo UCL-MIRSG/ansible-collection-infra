@@ -1,0 +1,14 @@
+---
+# mirsg.container_service
+container_service_name: "Container Service"
+container_service_url: "{{ xnat_web_server.url }}/xapi/docker/server"
+container_service_client_hostname: "{{ hostvars['xnat_web']['hostname'] }}"
+container_service_validate_certs: "{{ ssl.validate_certs }}"
+
+container_service_hostname: "{{ docker_server_hostname }}"
+container_service_ip: "{{ docker_service_ip }}"
+container_service_port: "{{ docker_server_port }}"
+container_service_certificate_cache_directory: "{{ docker_client_certificate_cache_directory }}"
+
+container_service_path_translation_xnat_prefix: "{{ xnat_root_dir }}"
+container_service_path_translation_docker_prefix: "/storage/xnat/data/xnat"

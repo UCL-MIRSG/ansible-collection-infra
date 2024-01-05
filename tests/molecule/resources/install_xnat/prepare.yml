@@ -1,0 +1,36 @@
+---
+- name: Prepare - install and start crontabs on the db
+  hosts: db
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Install crontabs
+      ansible.builtin.yum:
+        name: cronie
+        state: present
+    - name: Start crontabs service
+      ansible.builtin.service:
+        name: crond.service
+        state: started
+        enabled: true
+    - name: Import postgresql RPM GPG key
+      ansible.builtin.rpm_key:
+        state: present
+        key: https://apt.postgresql.org/pub/repos/yum/keys/PGDG-RPM-GPG-KEY-RHEL
+
+- name: Prepare
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Install and configure firewalld
+      block:
+        - name: Install firewalld
+          ansible.builtin.package:
+            name: firewalld
+            state: present
+
+        - name: Change firewalld backend to iptables
+          ansible.builtin.lineinfile:
+            path: /etc/firewalld/firewalld.conf
+            regexp: "^FirewallBackend="
+            line: FirewallBackend=iptables
