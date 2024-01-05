@@ -8,7 +8,9 @@ If you would like to run Ansible Molecule to test this role, the requirements ar
 
 ## Role Variables
 
-`postgresql_rpm_gpg_key_pgdg`: the postgresql key. This is not needed for CentOS 7.
+`postgresql_rpm_gpg_key_pgdg_x86_64`: the postgresql key for Intel chips.
+`postgresql_rpm_gpg_key_pgdg_x86_64`: the postgresql key for ARM chips. These
+are not needed for CentOS 7.
 
 `server_locale`: the sets the user's language, region, etc. This is set to "en_GB.UTF-8"
 
