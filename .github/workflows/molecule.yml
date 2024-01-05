@@ -25,7 +25,7 @@ jobs:
 
     steps:
       - name: Run `molecule test`
-        uses: UCL-MIRSG/.github/actions/molecule-test@v0.38.0
+        uses: UCL-MIRSG/.github/actions/molecule-test@v0.40.0
         with:
           scenario: ${{ matrix.scenario }}
           base_config: format('{0}{1}_base_config.yml', ${{ inputs.base_config_path }}, ${{ matrix.scenario }})
