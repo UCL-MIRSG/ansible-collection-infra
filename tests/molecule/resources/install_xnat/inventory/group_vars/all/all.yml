@@ -1,0 +1,33 @@
+---
+# Bit size for OpenSSL Diffie-Hellman Parameters. Higher bit sizes are more
+# secure, but require exponentially larger times for the one-off parameter
+# generation. Use 4096 for production. These may take 10mins+ to generate but
+# are only generated once per server.
+# For local testing (non-production), use 2096 to speed up deployment.
+diffie_helman_size_bits: 2048
+
+# Support for ipv6
+ipv6_enabled: false
+
+# XNAT configuration shared between all servers
+xnat_common_config:
+  admin_email: "xnatadmin@{{ hostvars['xnat_web']['hostname'] }}"
+  restrictUserListAccessToAdmins: true
+  uiAllowNonAdminProjectCreation: false
+  allowNonAdminsToClaimUnassignedSessions: true
+  reloadPrearcDatabaseOnStartup: true
+  par: false
+  primaryAdminUsername: "{{ xnat_service_admin.username }}"
+  receivedFileUser: "{{ xnat_service_admin.username }}"
+  ipsThatCanSendEmailsThroughRest: "127.0.0.1"
+  sessionXmlRebuilderInterval: "5"
+  # "^.*$" for all IPs
+  enabledProviders: ["localdb"]
+  enableSitewideAnonymizationScript: true
+  sitewideAnonymizationScript: "//\nversion \"6.1\"\nproject != \"Unassigned\" ? (0008,1030) := project\n(0010,0010) := subject\n(0010,0020) := session"
+
+xnat_service_admin:
+  username: "service_admin"
+  firstname: "first"
+  lastname: "name"
+  password: "{{ vault_service_admin_password }}"
