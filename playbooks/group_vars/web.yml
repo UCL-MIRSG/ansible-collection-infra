@@ -66,13 +66,13 @@ java:
 ldap_ca_cert_file_on_client: "{{ xnat.install_downloads }}/certs/ldap-ca.cert"
 
 # mirsg.infrastructure.firewalld
-internal_zone_open_services:
+firewalld_internal_zone_open_services:
   - http
   - https
   - ssh
-public_zone_open_services:
+firewalld_public_zone_open_services:
   - http
   - https
-work_zone_open_services:
+firewalld_work_zone_open_services:
   - http
   - https

@@ -37,6 +37,6 @@ postgresql_ssl_certificate:
   provider: "selfsigned"
   cache_filename: "{{ database_server_certificate_cache_filename }}" # where to store the server certificate in cache
 
-rich_rules:
+firewalld_rich_rules:
   - zone: "internal"
     rule: "family=ipv4 source address={{ xnat_web_server.subnet | default(xnat_web_server.ip + '/32') }} port protocol=tcp port={{ xnat_db.port }} accept"
