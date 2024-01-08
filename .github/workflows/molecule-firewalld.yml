@@ -10,4 +10,4 @@ jobs:
   molecule-firewalld:
     uses: ./.github/workflows/molecule.yml
     with:
-      tests_path: ansible_collections/mirsg/infrastructure/roles/firewalld
+      tests-path: ansible_collections/mirsg/infrastructure/roles/firewalld

@@ -10,4 +10,4 @@ jobs:
   molecule-provision:
     uses: ./.github/workflows/molecule.yml
     with:
-      tests_path: ansible_collections/mirsg/infrastructure/roles/provision
+      tests-path: ansible_collections/mirsg/infrastructure/roles/provision
