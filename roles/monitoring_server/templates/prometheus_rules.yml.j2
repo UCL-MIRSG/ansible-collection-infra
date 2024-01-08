@@ -31,22 +31,22 @@ groups:
   - name: metrics
     rules:
       - alert: MemoryUsageHigh
-        expr: 100- node_memory_MemAvailable_bytes/node_memory_MemTotal_bytes*100 > 80
+        expr: 100- node_memory_MemAvailable_bytes/node_memory_MemTotal_bytes*100 > 90
         for: 5m
         labels:
           severity: warning
         annotations:
           summary: Instance memory usage high (Instance:{{ $labels.instance }})
-          description: "Instance memory usage more than 80% within 5 minutus, value:{{ $labels.value }}%"
+          description: "Instance memory usage more than 90% within 5 minutes, value:{{ $labels.value }}%"
 
       - alert: CpuLoadHigh
-        expr: 100 - avg by(instance)(rate(node_cpu_seconds_total{mode="idle"}[5m]))*100 > 80
+        expr: 100 - avg by(instance)(rate(node_cpu_seconds_total{mode="idle"}[5m]))*100 > 90
         for: 0m
         labels:
           severity: warning
         annotations:
           summary: Instance cpu load high (Instance:{{ $labels.instance }})
-          description: "Instance cpu load more than 80% within 5 minutes, value: {{ $labels.value }}%"
+          description: "Instance cpu load more than 90% within 5 minutes, value: {{ $labels.value }}%"
 
       - alert: FilesystemFull
         expr: 100 - node_filesystem_free_bytes{mountpoint!~"/*|/boot.*|/run.*"}/node_filesystem_size_bytes*100 > 90
@@ -58,10 +58,10 @@ groups:
           description: "The used space of the mounted filestore (mountpoint:{{ $labels.mountpoint }}) is more than 90%, value: {{ $labels.value }}%"
 
       - alert: InodeUsageHigh
-        expr: 100 - node_filesystem_files_free/node_filesystem_files*100 > 80
+        expr: 100 - node_filesystem_files_free/node_filesystem_files*100 > 90
         for: 0m
         labels:
           severity: warning
         annotations:
           summary: Instance inode usage high (Instance:{{ $labels.instance }})
-          description: "The used file nodes(inodes) of the filesystem(filesystem:{{ $labels.mountpoint }}) is more than 80%, value: {{ $labels.value }}%"
+          description: "The used file nodes(inodes) of the filesystem(filesystem:{{ $labels.mountpoint }}) is more than 90%, value: {{ $labels.value }}%"
