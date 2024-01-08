@@ -37,7 +37,7 @@ groups:
           severity: warning
         annotations:
           summary: Instance memory usage high (Instance:{{ $labels.instance }})
-          description: "Instance memory usage more than 90% within 5 minutus, value:{{ $labels.value }}%"
+          description: "Instance memory usage more than 90% within 5 minutes, value:{{ $labels.value }}%"
 
       - alert: CpuLoadHigh
         expr: 100 - avg by(instance)(rate(node_cpu_seconds_total{mode="idle"}[5m]))*100 > 90
