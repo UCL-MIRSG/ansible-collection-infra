@@ -3,7 +3,7 @@ on:
   pull_request:
     paths:
       - "roles/provision/**"
-      - ".github/workflows/molecule.yml"
+      - "**/molecule.yml"
       - ".github/workflows/molecule-provision.yml"
 
 jobs:

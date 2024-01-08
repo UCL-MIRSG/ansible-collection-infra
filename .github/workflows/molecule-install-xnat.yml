@@ -4,7 +4,7 @@ on:
     paths:
       - "roles/xnat/**"
       - "roles/xnat_container_service/**"
-      - ".github/workflows/molecule.yml"
+      - "**/molecule.yml"
       - ".github/workflows/molecule-install-xnat.yml"
   release:
     types: [published]

@@ -97,7 +97,7 @@ on:
   pull_request:
     paths:
       - "roles/my_role/**"
-      - ".github/workflows/molecule.yml"
+      - "**/molecule.yml"
       - ".github/workflows/molecule-my-role.yml"
 
 jobs:

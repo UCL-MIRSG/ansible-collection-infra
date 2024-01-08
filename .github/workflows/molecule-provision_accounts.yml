@@ -4,7 +4,7 @@ on:
     paths:
       - "roles/provision_accounts/**"
       - "playbooks/setup_user_accounts.yml"
-      - ".github/workflows/molecule.yml"
+      - "**/molecule.yml"
       - ".github/workflows/molecule-provision_accounts.yml"
 
 jobs:

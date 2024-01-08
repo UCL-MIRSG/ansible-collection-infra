@@ -3,7 +3,7 @@ on:
   pull_request:
     paths:
       - "roles/install_python/**"
-      - ".github/workflows/molecule.yml"
+      - "**/molecule.yml"
       - ".github/workflows/molecule-python.yml"
 
 jobs:
