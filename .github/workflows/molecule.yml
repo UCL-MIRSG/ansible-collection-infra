@@ -2,6 +2,9 @@ name: Test with Molecule
 on:
   workflow_call:
     inputs:
+      run-tags:
+        type: string
+        default: all
       tests_path:
         required: true
         type: string
@@ -20,6 +23,7 @@ jobs:
           - centos7
           - rocky9
     env:
+      MOLECULE_RUN_TAGS: ${{ inputs.run-tags }}
       PY_COLORS: 1
       ANSIBLE_FORCE_COLOR: 1
 

@@ -10,4 +10,4 @@ jobs:
   molecule-postgresql:
     uses: ./.github/workflows/molecule.yml
     with:
-      run-tags: provision, postgresql
+      tests_path: ansible_collections/mirsg/infrastructure/roles/provision
