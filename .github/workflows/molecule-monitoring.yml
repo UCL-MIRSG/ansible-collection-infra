@@ -4,7 +4,7 @@ on:
     paths:
       - "roles/monitoring_client/**"
       - "roles/monitoring_server/**"
-      - ".github/workflows/molecule.yml"
+      - "**/molecule.yml"
       - ".github/workflows/molecule-monitoring.yml"
 
 jobs:
