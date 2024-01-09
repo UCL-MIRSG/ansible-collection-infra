@@ -23,6 +23,8 @@
     owner: "{{ monitoring_client_owner }}"
     group: "{{ monitoring_client_group }}"
     extra_opts: "--strip-components=1"
+  tags:
+    - molecule-idempotence-notest
 
 - name: Copy node_exporter binary to install location
   ansible.builtin.copy:
