@@ -24,7 +24,6 @@ platforms:
     keep_volumes: false
     groups:
       - all
-      - xnat
       - db
       - rocky9
     docker_networks:
@@ -56,7 +55,6 @@ platforms:
     groups:
       - all
       - xnat
-      - web
       - container_service
       - container_service_client
       - rocky9
@@ -87,7 +85,6 @@ platforms:
     keep_volumes: false
     groups:
       - all
-      - xnat
       - container_service
       - container_service_host
       - rocky9
