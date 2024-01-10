@@ -1,0 +1,19 @@
+---
+# OMERO template configuration files
+
+- name: Remove old configuration script
+  become: true
+  ansible.builtin.file:
+    path: "{{ omero_server_basedir }}/config/omero-server-config-update.sh"
+    state: absent
+
+- name: Configuration 00-omero-server.omero
+  become: true
+  ansible.builtin.template:
+    dest: "{{ omero_server_basedir }}/config/00-omero-server.omero"
+    force: true
+    src: 00-omero-server-omero.j2
+    mode: "0644"
+  notify:
+    - Rewrite omero-server configuration
+    - Restart omero-server
