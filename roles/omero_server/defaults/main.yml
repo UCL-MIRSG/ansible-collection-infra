@@ -1,5 +1,7 @@
 # defaults for omero-server
 ---
+omero_server_database_backupdir: "{{ omero_server_datadir }}/upgrade_backups"
+
 omero_server_release: "5.6.9"
 # omero_server_release: present
 
@@ -58,9 +60,6 @@ omero_server_systemd_environment: {}
 
 # List of additional Python packages to be installed into virtualenv
 omero_server_python_addons: []
-
-# If non-empty dump the OMERO database to this directory before upgrading
-omero_server_database_backupdir: ""
 
 # If true disable anonymous ciphers and use self-signed certificates
 omero_server_selfsigned_certificates: false

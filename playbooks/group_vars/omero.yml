@@ -43,17 +43,7 @@ omero_common_basedir: /opt/omero
 # ome.omero_server
 omero_server_database_backupdir: "{{ omero_server.storage_dir }}/upgrade_backups"
 omero_server_basedir: "{{ omero_common_basedir }}/server"
-omero_server_system_managedrepo_group: omero
-# OS user for installing OMERO.server
-omero_server_system_user: "omero-server"
-omero_server_system_user_manage: false
-# set rootpassword in vault
 omero_server_rootpassword: "{{ vault_omero_rootpassword }}"
-# do we need this? to do with client/server verification
-# docs say that web cert can be reused
-# https://docs.openmicroscopy.org/omero/5.6.3/sysadmins/client-server-ssl.html?highlight=certificates
-omero_server_selfsigned_certificates: true
-
 omero_server_dbhost: "{{ omero_server.dbhost }}"
 omero_server_dbuser: "{{ omero_db.postgresql_user }}"
 omero_server_dbname: "{{ omero_db.postgresql_database }}"
