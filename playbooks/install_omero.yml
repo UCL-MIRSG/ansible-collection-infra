@@ -1,0 +1,51 @@
+---
+- name: Prepare OMERO.server VM for installation
+  hosts: omero
+  become: true
+  pre_tasks:
+    - name: Create omero_server_system_user and home directory if they don't exist
+      when: "'omero' in group_names"
+      block:
+        - name: Create omero server system user
+          become: true
+          ansible.builtin.user:
+            name: "{{ omero_server_system_user }}"
+            home: "{{ omero_server_basedir }}"
+            createhome: false
+            state: present
+            system: true
+            uid: "{{ omero_server_system_uid | default(omit) }}"
+
+    - name: Create a directory for upgrade backups
+      ansible.builtin.file:
+        path: "{{ omero_server_database_backupdir }}"
+        owner: "{{ omero_server_system_user }}"
+        group: "{{ omero_server_system_user }}"
+        state: directory
+        mode: "0755"
+  roles:
+    - role: mirsg.infrastructure.provision
+    - role: mirsg.infrastructure.install_python
+    - role: mirsg.infrastructure.ssl_certificates
+      vars:
+        ssl_certificate: "{{ postgresql_client_ssl_certificate }}" # noqa: var-naming[no-role-prefix]
+      when: postgresql_use_ssl
+
+- name: Install and configure PostgreSQL database
+  hosts: db
+  become: true
+  roles:
+    - role: mirsg.infrastructure.provision
+    - role: mirsg.infrastructure.install_python
+    - role: mirsg.infrastructure.postgresql
+    - role: mirsg.infrastructure.firewalld
+
+- name: Install OMERO.server + OMERO.web
+  hosts: omero
+  become: true
+  roles:
+    - role: omero_server
+    - role: ome.omero_web
+    - role: ome.omero_user
+    - role: nginx
+    - role: mirsg.infrastructure.firewalld

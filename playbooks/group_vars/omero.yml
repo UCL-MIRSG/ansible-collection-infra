@@ -1,0 +1,144 @@
+---
+java_keystore_path: "/usr/lib/jvm/jre/lib/security/cacerts/"
+
+ldap_ca_cert_file_on_client: "{{ omero_server_basedir }}/certs/ldap-ca.cert"
+postgresql_client:
+  server_certificate_filename: "/opt/omero/server/.postgresql/root.crt" # where to copy the server certificate to on the client
+
+# mirsg.ssl_certificates
+postgresql_client_ssl_certificate:
+  owner: "{{ omero_server_system_user }}"
+  group: "{{ omero_server_system_user }}"
+  certificate_directory: "/opt/omero/server/.postgresql"
+  privatekey_filename: "/opt/omero/server/.postgresql/postgresql.key"
+  use_pk8: true
+  pk8_filename: "/opt/omero/server/.postgresql/postgresql.pk8"
+  csr_filename: "/opt/omero/server/.postgresql/postgresql.csr"
+  csr_common_name: "{{ omero_server.host }}"
+  certificate_filename: "/opt/omero/server/.postgresql/postgresql.crt"
+  provider: "selfsigned"
+  cache_filename: "{{ database_client_certificate_cache_filename }}" # where to store the client certificate in cache
+
+# firewalld
+firewalld_internal_zone_open_services:
+  - http
+  - https
+  - ssh
+firewalld_public_zone_open_services:
+  - http
+  - https
+firewalld_work_zone_open_services:
+  - http
+  - https
+firewalld_internal_zone_ports:
+  - "4063"
+  - "4064"
+firewalld_work_zone_ports:
+  - "4063"
+  - "4064"
+
+# ome.common
+omero_common_basedir: /opt/omero
+
+# ome.omero_server
+omero_server_database_backupdir: "{{ omero_server.storage_dir }}/upgrade_backups"
+omero_server_basedir: "{{ omero_common_basedir }}/server"
+omero_server_system_managedrepo_group: omero
+# OS user for installing OMERO.server
+omero_server_system_user: "omero-server"
+omero_server_system_user_manage: false
+# set rootpassword in vault
+omero_server_rootpassword: "{{ vault_omero_rootpassword }}"
+# do we need this? to do with client/server verification
+# docs say that web cert can be reused
+# https://docs.openmicroscopy.org/omero/5.6.3/sysadmins/client-server-ssl.html?highlight=certificates
+omero_server_selfsigned_certificates: true
+
+omero_server_dbhost: "{{ omero_server.dbhost }}"
+omero_server_dbuser: "{{ omero_db.postgresql_user }}"
+omero_server_dbname: "{{ omero_db.postgresql_database }}"
+omero_server_dbpassword: "{{ omero_db.postgresql_password }}"
+omero_server_datadir: "{{ omero_server.storage_dir }}"
+omero_server_config_set:
+  omero.db.poolsize: "{{ omero_db.poolsize }}"
+  omero.db.properties: "ssl={{ postgresql_use_ssl }}&\
+    sslmode={{ postgresql_ssl_mode }}"
+  omero.ldap.config: "{{ ldap.enabled }}"
+  omero.ldap.base: "{{ ldap.base }}"
+  omero.ldap.username: "{{ ldap.userdn }}"
+  omero.ldap.password: "{{ ldap.password | default('') }}"
+  omero.ldap.user_filter: "{{ ldap.filter }}"
+  omero.ldap.new_user_group: "{{ ldap.new_user_group }}"
+  omero.ldap.urls: "{{ ldap.address }}"
+  omero.security.ignore_case: true
+  omero.security.keyStore: "{{ java_keystore_path }}"
+  omero.security.trustStore: "{{ java_keystore_path }}"
+  omero.security.keyStorePassword: "{{ java_keystore_pass }}"
+  omero.security.trustStorePassword: "{{ java_keystore_pass }}"
+
+# ome.omero_web
+# don't install nginx using ome.omero_web role
+# nginx conf and ssl certs will be handled in
+# internal nginx role
+omero_web_setup_nginx: false
+# add plugins - iviewer is the most
+# important and will also be required
+# set omero_web_apps_packages in inventory group_vars
+omero_web_apps_packages:
+  - omero-mapr==0.5.0
+  - omero-iviewer==0.11.3
+  - omero-gallery==3.4.2
+  - omero-figure==4.4.3
+omero_web_apps_names:
+  - omero_mapr
+  - omero_iviewer
+  - omero_gallery
+  - omero_figure
+omero_web_apps_config_append:
+  omero.web.open_with:
+    - - omero_iviewer
+      - omero_iviewer_index
+      - script_url: omero_iviewer/openwith.js
+        supported_objects:
+          - image
+          - dataset
+          - well
+        label: OMERO.iviewer
+omero_web_config_set:
+  omero.web.viewer.view: omero_iviewer.views.index
+  # is it possible to put this in inventory group_vars?
+  omero.web.mapr.config:
+    - menu: "organism"
+      config:
+        default:
+          - "Organism"
+        all:
+          - "Organism"
+        ns:
+          - "openmicroscopy.org/mapr/organism"
+        label: "Organism"
+        wildcard:
+          enabled: true
+
+nginx:
+  owner: root
+  group: root
+  log_folder: "/var/log/nginx"
+  http_port: 80
+  https_port: 443
+  certs_dir: "/etc/nginx/ssl"
+  ssl_cert_file: "/etc/nginx/ssl/server.cert"
+  ssl_key_file: "/etc/nginx/ssl/server.key"
+  logrotate_backlog_size: 366
+  logrotate_interval: "daily"
+
+# ome.omero_user
+omero_user_system: omero-server
+omero_user_admin_user: root
+omero_user_admin_pass: "{{ omero_server_rootpassword }}"
+omero_user_create:
+  - login: "{{ omero_service_admin.login }}"
+    firstname: "{{ omero_service_admin.firstname }}"
+    lastname: "{{ omero_service_admin.lastname }}"
+    password: "{{ omero_service_admin.password }}"
+    groups: "--group-name system"
