@@ -55,10 +55,10 @@ Add the `converge.yml` playbook to the `molecule/` folder,
 and create folders for the `centos7` and `rocky9` scenarios. See
 [`mirsg.infrastructure.firewalld` for an example](./firewalld/).
 
-If necessary, add [inventory `group_vars`](./firewalld/molecule/resources/inventory/group_vars/)
+If necessary, add inventory `group_vars` under a `resources` subfolder: `my-role/molecule/resources/inventory/group_vars`.
 for your role.
 
-You may also need to add [`prepare`](./firewalld/molecule/resources/prepare.yml) or
+You may also need to add `prepare` or
 [`verify`](./firewalld/molecule/resources/prepare.yml) steps for your role.
 
 ### Add a GitHub Workflow
