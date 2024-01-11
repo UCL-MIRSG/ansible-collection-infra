@@ -10,4 +10,4 @@ jobs:
   molecule-postgresql:
     uses: ./.github/workflows/molecule.yml
     with:
-      tests-path: ansible_collections/mirsg/infrastructure/roles/provision
+      tests-path: ansible_collections/mirsg/infrastructure/roles/postgresql
