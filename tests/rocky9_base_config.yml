@@ -3,8 +3,8 @@ dependency:
   name: galaxy
   options:
     force: true
-    role-file: ${MOLECULE_SCENARIO_DIRECTORY}/../../../meta/requirements.yml
-    requirements-file: ${MOLECULE_SCENARIO_DIRECTORY}/../../../meta/requirements.yml
+    role-file: ${MOLECULE_SCENARIO_DIRECTORY}/../../../../meta/requirements.yml
+    requirements-file: ${MOLECULE_SCENARIO_DIRECTORY}/../../../../meta/requirements.yml
 
 driver:
   name: docker
@@ -45,12 +45,11 @@ provisioner:
       run: ${MOLECULE_RUN_TAGS:-all}
   inventory:
     links:
-      hosts: ../resources/roles/inventory/hosts.yml
-      group_vars: ../resources/roles/inventory/group_vars/
+      group_vars: ../resources/inventory/group_vars/
   playbooks:
-    converge: ../resources/roles/converge.yml
-    prepare: ../resources/shared/prepare.yml
-    verify: ../resources/roles/verify.yml
+    prepare: ../resources/prepare.yml
+    converge: ../resources/converge.yml
+    verify: ../resources/converge.yml
   env:
     ANSIBLE_VERBOSITY: "1"
 
