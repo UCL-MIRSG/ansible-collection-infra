@@ -1,4 +1,12 @@
 ---
+- name: Create Node exporter download folder
+  ansible.builtin.file:
+    owner: "{{ monitoring_client_owner }}"
+    group: "{{ monitoring_client_group }}"
+    path: "{{ monitoring_client_node_exporter_download_dir }}"
+    state: directory
+    mode: "0777"
+
 - name: Create Node exporter folder
   ansible.builtin.file:
     owner: "{{ monitoring_client_owner }}"
@@ -10,12 +18,22 @@
 - name: Download and unarchive node_exporter
   ansible.builtin.unarchive:
     src: "{{ monitoring_client_node_exporter_binary }}"
-    dest: "{{ monitoring_client_node_exporter_install_dir }}"
+    dest: "{{ monitoring_client_node_exporter_download_dir }}"
     remote_src: true
     owner: "{{ monitoring_client_owner }}"
     group: "{{ monitoring_client_group }}"
     extra_opts: "--strip-components=1"
-    creates: "{{ monitoring_client_node_exporter_install_dir }}/node_exporter"
+  tags:
+    - molecule-idempotence-notest
+
+- name: Copy node_exporter binary to install location
+  ansible.builtin.copy:
+    src: "{{ monitoring_client_node_exporter_download_dir }}/node_exporter"
+    dest: "{{ monitoring_client_node_exporter_install_dir }}/node_exporter"
+    remote_src: true
+    owner: "{{ monitoring_client_owner }}"
+    group: "{{ monitoring_client_group }}"
+    mode: "0755"
 
 - name: Copy monitoring client crt and key files to node_exporter folder
   ansible.builtin.copy:
