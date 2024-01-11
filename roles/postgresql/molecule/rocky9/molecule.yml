@@ -1,3 +1,3 @@
 ---
-# test this scenario from the roles/provision directory with the command
+# test this scenario from the roles/postgresql directory with the command
 # molecule --base-config ../../tests/rocky9_base_config.yml test --scenario rocky9

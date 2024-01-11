@@ -59,7 +59,7 @@ If necessary, add inventory `group_vars` under a `resources` subfolder: `my-role
 for your role.
 
 You may also need to add `prepare` or
-[`verify`](./firewalld/molecule/resources/prepare.yml) steps for your role.
+`verify` playbooks for your role. These can be added to the `resources` subfolder if you have multiple scenarios that will share the playbooks, or in the default scenario folder.
 
 ### Add a GitHub Workflow
 
@@ -79,7 +79,7 @@ on:
       - ".github/workflows/molecule-my-role.yml"
 
 jobs:
-  molecule-firewalld:
+  molecule-my_role:
     uses: ./.github/workflows/molecule.yml
     with:
       tests-path: ansible_collections/mirsg/infrastructure/roles/my_role
