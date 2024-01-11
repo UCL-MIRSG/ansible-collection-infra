@@ -81,7 +81,7 @@ folder of each role. Molecule base configurations are used to reduce to amount
 of duplication in the setup for testing each role. There are two base configurations
 that correspond to two [Molecule
 scenarios](https://ansible.readthedocs.io/projects/molecule/getting-started/#molecule-scenarios)
-one for testing on CentOS 7 and another for testing on Rocky 9. The base configurations
+one for testing on CentOS 7 and another for testing on RockyLinux 9. The base configurations
 are in the `ansible_collections/mirsg/infrastructure/tests` folder.
 
 To run the tests for a specific role, first navigate the the role directory, e.g.
