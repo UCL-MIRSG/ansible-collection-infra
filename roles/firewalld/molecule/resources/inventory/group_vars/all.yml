@@ -1,0 +1,17 @@
+---
+# mirsg.infrastructure.firewalld
+firewalld_allow_public_access: true
+firewalld_internal_zone_open_services:
+  - http
+  - https
+  - ssh
+firewalld_public_zone_open_services:
+  - http
+  - https
+firewalld_work_zone_open_services:
+  - http
+  - https
+firewalld_public_zone_ports:
+  - "8080"
+firewalld_internal_zone_ports:
+  - "5432"

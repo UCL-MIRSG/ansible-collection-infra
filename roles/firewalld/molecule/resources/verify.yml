@@ -1,0 +1,92 @@
+---
+- name: Verify firewalld setup
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Get services in internal zone
+      become: true
+      ansible.builtin.shell: |
+        set -o pipefail
+        firewall-cmd --list-services --zone=internal
+      register: internal_zone_services
+      changed_when: false
+      failed_when: false
+
+    - name: Get services in public zone
+      become: true
+      ansible.builtin.shell: |
+        set -o pipefail
+        firewall-cmd --list-services --zone=public
+      register: public_zone_services
+      changed_when: false
+      failed_when: false
+
+    - name: Get services in work zone
+      become: true
+      ansible.builtin.shell: |
+        set -o pipefail
+        firewall-cmd --list-services --zone=work
+      register: work_zone_services
+      changed_when: false
+      failed_when: false
+
+    - name: Test that correct services are in internal zone
+      ansible.builtin.assert:
+        that:
+          - "'{{ item }}' in internal_zone_services.stdout"
+      loop: "{{ firewalld_internal_zone_open_services }}"
+      when: firewalld_internal_zone_open_services is defined
+
+    - name: Test that correct services are in public zone
+      ansible.builtin.assert:
+        that:
+          - "'{{ item }}' in public_zone_services.stdout"
+      loop: "{{ firewalld_public_zone_open_services }}"
+      when: firewalld_public_zone_open_services is defined
+
+    - name: Test that correct services are in work zone
+      ansible.builtin.assert:
+        that:
+          - "'{{ item }}' in work_zone_services.stdout"
+      loop: "{{ firewalld_work_zone_open_services }}"
+      when: firewalld_work_zone_open_services is defined
+
+    - name: Test that internal zone is closed to the correct services
+      ansible.builtin.assert:
+        that:
+          - "'{{ item }}' not in internal_zone_services.stdout"
+      loop: "{{ firewalld_internal_zone_closed_services }}"
+      when: firewalld_internal_zone_closed_services is defined
+
+    - name: Test that public zone is closed to the correct services
+      ansible.builtin.assert:
+        that:
+          - "'{{ item }}' not in public_zone_services.stdout"
+      loop: "{{ firewalld_public_zone_closed_services }}"
+      when: public_zone_closed_services is defined
+
+    - name: Test that work zone is closed to the correct services
+      ansible.builtin.assert:
+        that:
+          - "'{{ item }}' not in work_zone_services.stdout"
+      loop: "{{ firewalld_work_zone_closed_services }}"
+      when: firewalld_work_zone_closed_services is defined
+
+    - name: Get firewall default zone
+      become: true
+      ansible.builtin.shell: |
+        set -o pipefail
+        firewall-cmd --get-default-zone
+      register: firewall_default_zone
+      changed_when: false
+      failed_when: false
+
+    - name: Assert that public is the default zone
+      ansible.builtin.assert:
+        that: "'public' in firewall_default_zone.stdout"
+      when: firewalld_allow_public_access
+
+    - name: Assert that drop is the default zone
+      ansible.builtin.assert:
+        that: "'drop' in firewall_default_zone.stdout"
+      when: not firewalld_allow_public_access
