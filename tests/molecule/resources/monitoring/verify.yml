@@ -1,4 +1,5 @@
-- name: Monitoring verify
+---
+- name: Check monitoring host
   hosts: monitoring_host
   become: true
   gather_facts: true
@@ -38,3 +39,16 @@
         name: "{{ monitoring_server_prometheus.container_name }}"
       register: result
       failed_when: "'exists' not in result.exists"
+
+- name: Check monitoring client
+  hosts: monitoring_client
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Populate service facts
+      ansible.builtin.service_facts:
+
+    - name: Ensure that node exporter has started
+      ansible.builtin.assert:
+        that:
+          - monitoring_client_node_export_service_name in ansible_facts.services
