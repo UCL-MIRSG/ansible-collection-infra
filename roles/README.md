@@ -15,15 +15,6 @@ scenarios](https://ansible.readthedocs.io/projects/molecule/getting-started/#mol
 one for testing on CentOS 7 and another for testing on RockyLinux 9. The base configurations
 are in the `ansible_collections/mirsg/infrastructure/tests` folder.
 
-Playbooks are tested at the collection level, i.e. their configuration is in the
-top-level `tests` folder for the collection. For each playbook, there are two
-Molecule scenerios - one for CentOS 7 and one for Rocky 9, e.g.
-
-- `ansible_collections/mirsg/infrastructure/tests/molecule/centos7_monitoring`
-- `ansible_collections/mirsg/infrastructure/tests/molecule/rocky9_monitoring`
-  Both scenarios share a [single converge playbook](../tests/molecule/resources/monitoring/converge.yml)
-  that will run the relevant playbook.
-
 ## Adding a new role
 
 To add a new role to this collection, you will need to:
