@@ -18,10 +18,11 @@ are in the `ansible_collections/mirsg/infrastructure/tests` folder.
 Playbooks are tested at the collection level, i.e. their configuration is in the
 top-level `tests` folder for the collection. For each playbook, there are two
 Molecule scenerios - one for CentOS 7 and one for Rocky 9, e.g.
+
 - `ansible_collections/mirsg/infrastructure/tests/molecule/centos7_monitoring`
 - `ansible_collections/mirsg/infrastructure/tests/molecule/rocky9_monitoring`
-Both scenarios share a [single converge playbook](../tests/molecule/resources/monitoring/converge.yml)
-that will run the relevant playbook.
+  Both scenarios share a [single converge playbook](../tests/molecule/resources/monitoring/converge.yml)
+  that will run the relevant playbook.
 
 ## Adding a new role
 
@@ -62,7 +63,6 @@ mkdir my_roles/molecule
 Add the `converge.yml` playbook to the `molecule/` folder,
 and create folders for the `centos7` and `rocky9` scenarios. See
 [`mirsg.infrastructure.firewalld` for an example](./firewalld/).
-
 
 If necessary, add [inventory `group_vars`](./firewalld/molecule/resources/inventory/group_vars/)
 for your role.
