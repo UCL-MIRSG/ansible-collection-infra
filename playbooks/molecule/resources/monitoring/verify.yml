@@ -22,7 +22,7 @@
       ansible.builtin.assert:
         that:
           - item.exists
-          - item.container.State.Status == "running"
+          - item.container.State.Running
       loop: "{{ container_info.results }}"
 
 - name: Check monitoring client
