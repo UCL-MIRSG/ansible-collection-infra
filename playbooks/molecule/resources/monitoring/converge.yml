@@ -3,19 +3,6 @@
   hosts: monitoring_host
   become: true
   gather_facts: true
-  tags: monitoring
-  pre_tasks:
-    - name: Check the major Python version for the OS
-      block:
-        - name: Check default version
-          ansible.builtin.include_role:
-            name: mirsg.infrastructure.install_python
-            tasks_from: check_default_version
-
-        - name: Set install_python variable based on the version to be installed
-          ansible.builtin.set_fact:
-            install_python: "{{ install_python2 if default_python_version is version('2') else install_python3 }}"
-
   roles:
     - role: mirsg.infrastructure.ssl_certificates
       vars:
@@ -23,4 +10,3 @@
 
 - name: Install Monitoring Service
   ansible.builtin.import_playbook: mirsg.infrastructure.install_monitoring
-  tags: monitoring

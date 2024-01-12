@@ -16,7 +16,6 @@ jobs:
           - centos7_monitoring
           - rocky9_monitoring
     env:
-      MOLECULE_RUN_TAGS: monitoring
       PY_COLORS: 1
       ANSIBLE_FORCE_COLOR: 1
 

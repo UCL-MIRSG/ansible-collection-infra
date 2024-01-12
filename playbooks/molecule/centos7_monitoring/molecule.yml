@@ -25,6 +25,7 @@ platforms:
       - all
       - monitoring_client
       - monitoring_service
+      - centos7
     docker_networks:
       - name: monitoring
         ipam_config:
@@ -51,6 +52,7 @@ platforms:
       - all
       - monitoring_host
       - monitoring_service
+      - centos7
     networks:
       - name: monitoring
         ipv4_address: 192.168.56.3

@@ -26,6 +26,7 @@ platforms:
       - all
       - monitoring_client
       - monitoring_service
+      - rocky9
     docker_networks:
       - name: monitoring
         ipam_config:
@@ -53,6 +54,7 @@ platforms:
       - all
       - monitoring_service
       - monitoring_host
+      - rocky9
     networks:
       - name: monitoring
         ipv4_address: 192.168.56.3

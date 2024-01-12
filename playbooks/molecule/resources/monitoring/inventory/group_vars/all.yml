@@ -6,28 +6,3 @@ selinux_enabled: false
 
 # mirsg.infrastructure.provision
 server_locale: "en_GB.UTF-8"
-
-# mirsg.infrastructure.install_python
-install_python3:
-  version: "3"
-  pip_version: "21.3.1"
-  pip_executable: /usr/local/bin/pip3
-  system_packages:
-    - python3
-    - python3-pip
-    - python3-setuptools
-  pip_packages:
-    - cryptography
-
-install_python2:
-  version: "2"
-  pip_version: "20.3.4"
-  pip_executable: /usr/bin/pip
-  system_packages:
-    - python
-    - python-pip
-    - python-setuptools
-  pip_packages:
-    - cryptography
-
-install_python: "{{ install_python3 }}" # default to Python 3
