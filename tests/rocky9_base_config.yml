@@ -12,7 +12,7 @@ driver:
 platforms:
   - name: instance
     hostname: molecule.instance.local
-    image: ${MOLECULE_DOCKER_IMAGE:-rockylinux/rockylinux:9-ubi-init}
+    image: ${MOLECULE_DOCKER_IMAGE:-geerlingguy/docker-rockylinux9-ansible:latest}
     required: true
     command: ""
     cgroupns_mode: host
