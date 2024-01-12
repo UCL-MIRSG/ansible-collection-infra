@@ -4,7 +4,6 @@ on:
     paths:
       - "roles/monitoring_client/**"
       - "roles/monitoring_server/**"
-      - ".github/workflows/molecule.yml"
       - ".github/workflows/molecule-monitoring.yml"
 
 jobs:
@@ -48,5 +47,5 @@ jobs:
       - name: Test with molecule
         shell: bash
         run: |
-          cd ansible_collections/mirsg/infrastructure/tests
+          cd ansible_collections/mirsg/infrastructure/playbooks
           molecule test --scenario-name  ${{ matrix.scenario }}
