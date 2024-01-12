@@ -66,29 +66,6 @@ http {
 
 {% endif %}
 
-
-    # Default server block for connections that do not match the expected host names.
-    # Note that nginx only uses server_name for disambiguation purposes; if
-    # there is no matching server_name then nginx will use the default_server
-    # regardless of its value of server_name
-    server {
-        listen 80 default_server;
-{% if ssl.use_ssl %}
-        listen 443 ssl default_server;
-{% endif %}
-
-{% if ipv6_enabled %}
-        listen [::]:80 default_server;
-    {% if ssl.use_ssl %}
-        listen [::]:443 ssl default_server;
-    {% endif %}
-{% endif %}
-
-        server_name _;
-
-        return 444;
-    }
-
 {% if ssl.use_ssl %}
     # Redirect to https
     server {
@@ -102,20 +79,20 @@ http {
     server {
 
 {% if ssl.use_ssl %}
-        listen {{ nginx.https_port }} ssl http2;
+        listen {{ nginx.https_port }} ssl http2 default_server;
     {% if ipv6_enabled %}
-        listen [::]:{{ nginx.https_port }} ssl http2;
+        listen [::]:{{ nginx.https_port }} ssl http2 default_server;
     {% endif %}
 {% else %}
-        listen {{ nginx.http_port }};
+        listen {{ nginx.http_port }} default_server;
     {% if ipv6_enabled %}
-        listen [::]:{{ nginx.http_port }};
+        listen [::]:{{ nginx.http_port }} default_server;
     {% endif %}
 {% endif %}
 
 
         # Note: server_name is only used for disambiguation
-        server_name     {{ xnat_web_server.host }};
+        server_name     _;
 
         root            {{ tomcat_root }};
 
