@@ -1,0 +1,15 @@
+---
+- name: Setup for the firewall
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Install firewalld
+      ansible.builtin.package:
+        name: firewalld
+        state: present
+
+    - name: Change firewalld backend to iptables
+      ansible.builtin.lineinfile:
+        path: /etc/firewalld/firewalld.conf
+        regexp: "^FirewallBackend="
+        line: FirewallBackend=iptables

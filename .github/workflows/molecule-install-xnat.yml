@@ -4,7 +4,8 @@ on:
     paths:
       - "roles/xnat/**"
       - "roles/xnat_container_service/**"
-      - ".github/workflows/molecule.yml"
+      - "playbooks/install_xnat.yml"
+      - "playbooks/install_container_service.yml"
       - ".github/workflows/molecule-install-xnat.yml"
   release:
     types: [published]
@@ -16,8 +17,8 @@ jobs:
       fail-fast: true
       matrix:
         scenario:
-          - centos7_install_xnat
-          - rocky9_install_xnat
+          - centos7_xnat
+          - rocky9_xnat
     env:
       PY_COLORS: 1
       ANSIBLE_FORCE_COLOR: 1
@@ -40,5 +41,5 @@ jobs:
 
       - name: Test with molecule
         run: |
-          cd ansible_collections/mirsg/infrastructure/tests
+          cd ansible_collections/mirsg/infrastructure/playbooks
           molecule converge --scenario-name  "${{ matrix.scenario }}"

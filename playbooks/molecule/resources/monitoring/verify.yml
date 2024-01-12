@@ -1,0 +1,40 @@
+---
+- name: Check monitoring host
+  hosts: monitoring_host
+  become: true
+  gather_facts: true
+  vars:
+    container_names:
+      - alertmanager
+      - blackbox-exporter
+      - cadvisor
+      - grafana
+      - nginx
+      - prometheus
+  tasks:
+    - name: Get container info
+      community.docker.docker_container_info:
+        name: "{{ item }}"
+      loop: "{{ container_names }}"
+      register: container_info
+
+    - name: Check containers exist and are running
+      ansible.builtin.assert:
+        that:
+          - item.exists
+          - item.container.State.Running
+      loop: "{{ container_info.results }}"
+
+- name: Check monitoring client
+  hosts: monitoring_client
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Populate service facts
+      ansible.builtin.service_facts:
+
+    - name: Ensure that node exporter has started
+      ansible.builtin.assert:
+        that:
+          - "{{ 'node_exporter.service' in ansible_facts.services }}"
+          - ansible_facts.services['node_exporter.service'].state == "running"

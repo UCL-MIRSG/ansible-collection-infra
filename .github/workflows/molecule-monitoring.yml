@@ -4,7 +4,6 @@ on:
     paths:
       - "roles/monitoring_client/**"
       - "roles/monitoring_server/**"
-      - ".github/workflows/molecule.yml"
       - ".github/workflows/molecule-monitoring.yml"
 
 jobs:
@@ -17,7 +16,6 @@ jobs:
           - centos7_monitoring
           - rocky9_monitoring
     env:
-      MOLECULE_RUN_TAGS: monitoring
       PY_COLORS: 1
       ANSIBLE_FORCE_COLOR: 1
 
@@ -48,5 +46,5 @@ jobs:
       - name: Test with molecule
         shell: bash
         run: |
-          cd ansible_collections/mirsg/infrastructure/tests
+          cd ansible_collections/mirsg/infrastructure/playbooks
           molecule test --scenario-name  ${{ matrix.scenario }}
