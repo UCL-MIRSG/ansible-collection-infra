@@ -75,4 +75,5 @@
     - name: Ensure that node exporter has started
       ansible.builtin.assert:
         that:
-          - monitoring_client_node_export_service_name in ansible_facts.services
+          - "{{ 'node_exporter.service' in ansible_facts.services }}"
+          - ansible_facts.services['node_exporter.service'].state == "running"
