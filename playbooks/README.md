@@ -6,7 +6,7 @@ This collection contains playbooks for deploying XNAT and setting up monitoring 
 
 This collection is tested using Ansible Molecule.
 
-Each playbooks has its own Molecule configuration, which can be found it the
+Each playbook has its own Molecule configuration, which can be found in the
 `ansible_collections/mirsg/infrastructure/playbooks/molecule/` folder.
 Molecule base configurations are used to reduce to amount
 of duplication in the setup for testing each playbook. There are two base configurations
@@ -17,7 +17,7 @@ are in the `ansible_collections/mirsg/infrastructure/molecule_configs` folder.
 
 ## Adding a new playbook
 
-To add a new role to this collection, you will need to:
+To add a new playbook to this collection, you will need to:
 
 1. add the playbook to the `playbooks/` folder
 2. add a molecule configuration for the playbook to the `playbooks/molecule/` folder
@@ -27,7 +27,7 @@ To add a new role to this collection, you will need to:
 
 The playbooks in an Ansible Collection are the same as any other playbook - no special
 setup is required. If you create a playbook
-`ansible_collections/mirsg/infrastructure/playbooks/my_playbooks`, you will be able to
+`ansible_collections/mirsg/infrastructure/playbooks/my_playbook.yml`, you will be able to
 run the playbook using `ansible-playbook`:
 
 ```bash
@@ -57,7 +57,7 @@ If necessary, add inventory `group_vars` to the shared `resources` subfolder:
 `molecule/resources/my_playbook/inventory/group_vars`. for your playbook.
 
 You may also need to add `prepare` or `verify` playbooks. These can be added
-to the the same shared `resources`.
+to the the same shared `resources` folder.
 
 You will need to update the `molecule.yml` configuration file with the correct paths
 to these playbooks.
@@ -73,8 +73,7 @@ on:
   pull_request:
     paths:
       - "playbooks/my_playbook.yml"
-      - ".github/workflows/molecule.yml"
-      - ".github/workflows/molecule-my-role.yml"
+      - ".github/workflows/molecule-role-used-in-playbook.yml"
 
 jobs:
   molecule-my_playbook:

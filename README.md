@@ -164,7 +164,7 @@ molecule --base-config ../../molecule_configs/centos7_base_config.yml  destroy -
 
 Playbooks in the collection can also be tested using Molecule. The Molecule
 configuration for playbooks is in the
-`ansible_collections/mirsg/infrastructure/playbooks` folder.
+`ansible_collections/mirsg/infrastructure/playbooks/molecule` folder.
 
 An example of how to setup testing for a playbook can be seen by looking at
 the tests for the `mirsg.install_monitoring` playbook in this collection.
@@ -174,7 +174,7 @@ This is tested on CentOS 7 and RockyLinux 9 using the
 
 An inventory
 and associated group variables can be found in
-[resources/monitoring/inventory](./playbooks/molecule/resources/monitoring/inventory/).
+[playbooks/molecule/resources/monitoring/inventory](./playbooks/molecule/resources/monitoring/inventory/).
 Testing the playbook also requires its own
 [converge.yml](./playbooks/molecule/resources/monitoring/converge.yml), and optional
 `prepare.yml` and `verify.yml` playbooks.
