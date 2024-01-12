@@ -6,7 +6,7 @@
   tasks:
     - name: Check alertmanager exporter container is running
       community.docker.docker_container_info:
-        name: "{{ monitoring_server_alertmanager.container_name }}"
+        name: alertmanager
       register: result
       failed_when: "'exists' not in result.exists"
 
@@ -18,13 +18,13 @@
 
     - name: Check cadvisor container is running
       community.docker.docker_container_info:
-        name: "{{ monitoring_server_cadvisor.container_name }}"
+        name: cadvisor
       register: result
       failed_when: "'exists' not in result.exists"
 
     - name: Check Grafana container is running
       community.docker.docker_container_info:
-        name: "{{ monitoring_server_grafana.container_name }}"
+        name: grafana
       register: result
       failed_when: "'exists' not in result.exists"
 
@@ -36,7 +36,7 @@
 
     - name: Check Prometheus container is running
       community.docker.docker_container_info:
-        name: "{{ monitoring_server_prometheus.container_name }}"
+        name: prometheus
       register: result
       failed_when: "'exists' not in result.exists"
 
