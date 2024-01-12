@@ -103,14 +103,14 @@ provisioner:
   config_options:
     defaults:
       callbacks_enabled: profile_tasks, timer, yaml
-      vault_password_file: ${MOLECULE_SCENARIO_DIRECTORY}/../resources/install_xnat/.vault_password
+      vault_password_file: ${MOLECULE_SCENARIO_DIRECTORY}/../resources/xnat/.vault_password
   inventory:
     links:
-      hosts: ../resources/install_xnat/inventory/hosts.yml
-      group_vars: ../resources/install_xnat/inventory/group_vars/
+      hosts: ../resources/xnat/inventory/hosts.yml
+      group_vars: ../resources/xnat/inventory/group_vars/
   playbooks:
-    prepare: ../resources/install_xnat/prepare.yml
-    converge: ../resources/install_xnat/converge.yml
+    prepare: ../resources/xnat/prepare.yml
+    converge: ../resources/xnat/converge.yml
   env:
     ANSIBLE_VERBOSITY: 1
 

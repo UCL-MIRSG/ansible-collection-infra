@@ -77,7 +77,7 @@ provisioner:
       host_vars: ../resources/monitoring/inventory/host_vars/
   playbooks:
     converge: ../resources/monitoring/converge.yml
-    prepare: ../resources/shared/prepare.yml
+    prepare: ../resources/monitoring/prepare.yml
     verify: ../resources/monitoring/verify.yml
   env:
     ANSIBLE_VERBOSITY: "1"
