@@ -4,41 +4,65 @@
   become: true
   gather_facts: true
   tasks:
-    - name: Check alertmanager exporter container is running
+    - name: Check alertmanager exporter container exists
       community.docker.docker_container_info:
         name: alertmanager
       register: result
-      failed_when: "'exists' not in result.exists"
+      failed_when: not result.exists
+
+    - name: Check alertmanager exporter container is running
+      ansible.builtin.assert:
+        that: result.container.State.Status == "running"
 
     - name: Check blackbox exporter container is running
       community.docker.docker_container_info:
         name: blackbox-exporter
       register: result
-      failed_when: "'exists' not in result.exists"
+      failed_when: not result.exists
+
+    - name: Check blackbox exporter container is running
+      ansible.builtin.assert:
+        that: result.container.State.Status == "running"
 
     - name: Check cadvisor container is running
       community.docker.docker_container_info:
         name: cadvisor
       register: result
-      failed_when: "'exists' not in result.exists"
+      failed_when: not result.exists
+
+    - name: Check cadvisor exporter container is running
+      ansible.builtin.assert:
+        that: result.container.State.Status == "running"
 
     - name: Check Grafana container is running
       community.docker.docker_container_info:
         name: grafana
       register: result
-      failed_when: "'exists' not in result.exists"
+      failed_when: not result.exists
+
+    - name: Check Grafana exporter container is running
+      ansible.builtin.assert:
+        that: result.container.State.Status == "running"
 
     - name: Check nginx container is running
       community.docker.docker_container_info:
         name: nginx
       register: result
-      failed_when: "'exists' not in result.exists"
+      failed_when: not result.exists
+
+    - name: Check nginx container is running
+      ansible.builtin.assert:
+        that: result.container.State.Status == "running"
 
     - name: Check Prometheus container is running
       community.docker.docker_container_info:
         name: prometheus
       register: result
-      failed_when: "'exists' not in result.exists"
+      failed_when: not result.exists
+
+    - name: Check Prometheus exporter container is running
+      ansible.builtin.assert:
+        that: result.container.State.Status == "running"
 
 - name: Check monitoring client
   hosts: monitoring_client
