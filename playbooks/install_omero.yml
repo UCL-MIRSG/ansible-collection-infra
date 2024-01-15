@@ -44,8 +44,8 @@
   hosts: omero
   become: true
   roles:
-    - role: omero_server
+    - role: mirsg.infrastructure.omero_server
     - role: ome.omero_web
     - role: ome.omero_user
-    - role: nginx
+    - role: mirsg.infrastructure.nginx
     - role: mirsg.infrastructure.firewalld
