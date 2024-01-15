@@ -1,15 +1,20 @@
 ---
-nginx: # noqa: var-naming[no-role-prefix]
-  owner: root
-  group: root
-  log_folder: "/var/log/nginx"
-  http_port: 80
-  https_port: 443
-  certs_dir: "/etc/nginx/ssl"
-  dh_params_file: "/etc/nginx/ssl/dhparam.pem"
-  conf_file: "/etc/nginx/nginx.conf"
-  ssl_cert_file: "/etc/nginx/ssl/server.cert"
-  ssl_key_file: "/etc/nginx/ssl/server.key"
+nginx_owner: root
+nginx_group: root
+nginx_log_folder: "/var/log/nginx"
+nginx_http_port: 80
+nginx_https_port: 443
+#nginx_listen_port: 80  # 8104 for XNAT
+#nginx_proxy_port: 8080 # only for XNAT
+nginx_server_address: http://127.0.0.1:8080
+nginx_certs_dir: "/etc/nginx/ssl"
+nginx_dh_params_file: "/etc/nginx/ssl/dhparam.pem"
+nginx_conf_template: "nginx_reverse_proxy.j2"
+nginx_conf_file: "/etc/nginx/nginx.conf"
+nginx_ipv6_enabled: false
+nginx_use_ssl: false
+nginx_ssl_cert_file: "/etc/nginx/ssl/server.cert"
+nginx_ssl_key_file: "/etc/nginx/ssl/server.key"
 
 # Bit size for OpenSSL Diffie-Hellman Parameters. Higher bit sizes are more
 # secure, but require exponentially larger times for the one-off parameter
