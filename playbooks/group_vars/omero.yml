@@ -49,22 +49,6 @@ omero_server_dbuser: "{{ omero_db.postgresql_user }}"
 omero_server_dbname: "{{ omero_db.postgresql_database }}"
 omero_server_dbpassword: "{{ omero_db.postgresql_password }}"
 omero_server_datadir: "{{ omero_server.storage_dir }}"
-omero_server_config_set:
-  omero.db.poolsize: "{{ omero_db.poolsize }}"
-  omero.db.properties: "ssl={{ postgresql_use_ssl }}&\
-    sslmode={{ postgresql_ssl_mode }}"
-  omero.ldap.config: "{{ ldap.enabled }}"
-  omero.ldap.base: "{{ ldap.base }}"
-  omero.ldap.username: "{{ ldap.userdn }}"
-  omero.ldap.password: "{{ ldap.password | default('') }}"
-  omero.ldap.user_filter: "{{ ldap.filter }}"
-  omero.ldap.new_user_group: "{{ ldap.new_user_group }}"
-  omero.ldap.urls: "{{ ldap.address }}"
-  omero.security.ignore_case: true
-  omero.security.keyStore: "{{ java_keystore_path }}"
-  omero.security.trustStore: "{{ java_keystore_path }}"
-  omero.security.keyStorePassword: "{{ java_keystore_pass }}"
-  omero.security.trustStorePassword: "{{ java_keystore_pass }}"
 
 # ome.omero_web
 # don't install nginx using ome.omero_web role
@@ -123,12 +107,8 @@ nginx:
   logrotate_interval: "daily"
 
 # ome.omero_user
-omero_user_system: omero-server
+omero_user_system: "{{ omero_server_system_user }}"
 omero_user_admin_user: root
 omero_user_admin_pass: "{{ omero_server_rootpassword }}"
-omero_user_create:
-  - login: "{{ omero_service_admin.login }}"
-    firstname: "{{ omero_service_admin.firstname }}"
-    lastname: "{{ omero_service_admin.lastname }}"
-    password: "{{ omero_service_admin.password }}"
-    groups: "--group-name system"
+omero_group_create: "{{ omero_server_additional_groups }}"
+omero_user_create: "{{ omero_server_service_user + omero_server_additional_users }}"
