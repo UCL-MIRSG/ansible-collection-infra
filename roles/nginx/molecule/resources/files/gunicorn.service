@@ -1,0 +1,9 @@
+[Unit]
+Description=Gunicorn instance to serve flask app
+After=network.target
+
+[Service]
+User=root
+Group=root
+WorkingDirectory=/home
+ExecStart=/usr/bin/gunicorn --workers 2 --bind 127.0.0.1:8000 app:app
