@@ -7,10 +7,12 @@ collection can be used to configure infrastructure for deploying XNAT and OMERO.
 
 ### Playbooks
 
-| Name                                                         | Description                                                                   |
-| ------------------------------------------------------------ | ----------------------------------------------------------------------------- |
-| [setup_user_accounts.yml](playbooks/setup_user_accounts.yml) | Create OS user accounts a group of servers `target`, which defaults to `all`. |
-| [install_monitoring.yml](playbooks/install_monitoring.yml)   | Configure a host to collect metrics from client machines.                     |
+| Name                                                                               | Description                                                                   |
+| ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| [setup_user_accounts.yml](playbooks/setup_user_accounts.yml)                       | Create OS user accounts a group of servers `target`, which defaults to `all`. |
+| [install_monitoring.yml](playbooks/install_monitoring.yml)                         | Configure a host to collect metrics from client machines.                     |
+| [install_xnat.yml](playbooks/install_xnat.yml)                                     | Install XNAT on two-tier infrastructure.                                      |
+| [install_xnat_container_service.yml](playbooks/install_xnat_container_service.yml) | Install XNAT Container service (Docker host and client).                      |
 
 ## External requirements
 
@@ -74,48 +76,45 @@ python -m pip install molecule 'molecule-plugins[docker]' docker
 
 ### Testing the roles using Molecule
 
-Molecue 6.0 requires that the test configuration is not in the top-level
-directory of the collection. To support running the tests with Molecule 6, the
-Molecule configuration is in `ansible_collections/mirsg/infrastructure/tests`.
-To run the tests you must be in this directory:
+Each role has its own Molecule configuration, which can be found it the `molecule/`
+folder of each role. Molecule base configurations are used to reduce to amount
+of duplication in the setup for testing each role. There are two base configurations
+that correspond to two [Molecule
+scenarios](https://ansible.readthedocs.io/projects/molecule/getting-started/#molecule-scenarios)
+one for testing on CentOS 7 and another for testing on RockyLinux 9. The base configurations
+are in the `ansible_collections/mirsg/infrastructure/molecule_configs` folder.
+
+To run the tests for a specific role, first navigate the the role directory, e.g.
 
 ```shell
-cd ansible_collections/mirsg/infrastructure/tests
+cd ansible_collections/mirsg/infrastructure/roles/provision
 ```
 
-This collection contains [molecule
-scenarios](https://ansible.readthedocs.io/projects/molecule/getting-started/#molecule-scenarios)
-that allow testing of the individual roles. There are scenarios that run the
-tests on both CentOS 7 and Rocky 9.
-
-To run the CentOS 7 tests for the roles:
+Then invoke Molecule with a base config and corresponding scenario. To run the
+tests on CentOS 7:
 
 ```shell
-molecule test -s centos7_roles
+molecule --base-config ../../molecule_configs/centos7_base_config.yml test --scenario centos7
 ```
 
 This command will:
 
 - install the required Ansible roles and collections
 - create a CentOS 7 container
-- `tests/molecule/resources/shared/prepare.yml` playbook to do any required
-  setup for the roles
-- run the `tests/molecule/resources/roles/converge.yml` playbook, which will run
-  the roles in this collection
-- run `tests/molecule/resources/roles/converge.yml` a second time to check the
-  roles are
+- run the `molecule/prepare.yml` playbook (if it exists) to do any required
+  setup for the role
+- run the `molecule/converge.yml` playbook, which will run
+  the role being tested
+- run `molecule/converge.yml` a second time to check the
+  role is
   [idempotent](https://docs.ansible.com/ansible/latest/reference_appendices/glossary.html#term-Idempotency)
-- run `tests/molecule/resources/roles/verify.yml`
+- run `molecule/verify.yml` playbook (if it exists) to perform verification
 - destroy the CentOS 7 container
 
-### Test a single role in the collection
-
-Individual roles in the collection can be tested by setting the
-`MOLECULE_RUN_TAGS` environment variable:
+To run the tests on Rocky 9 instead:
 
 ```shell
-export MOLECULE_RUN_TAGS=provision
-molecule test -s centos7_roles
+molecule --base-config ../../molecule_configs/rocky9_base_config.yml test --scenario rocky9
 ```
 
 ### Inspecting the Container
@@ -128,7 +127,7 @@ If you would like to be able to access the test container, you should instead
 use the `molecule converge` command. To run this on CentOS 7:
 
 ```shell
-molecule converge -s centos7_roles
+molecule --base-config ../../molecule_configs/centos7_base_config.yml converge --scenario centos7
 ```
 
 This will install necessary Ansible roles and collections, create the test
@@ -138,17 +137,17 @@ container is not destroyed.
 #### Access the container
 
 Once the command has finished running, you can access the container using the
-name of the scenario. To access the container for the `centos7_roles` scenario:
+name of the scenario. To access the container for the `centos7` scenario:
 
 ```shell
-molecule login -s centos7_roles
+molecule --base-config ../../molecule_configs/centos7_base_config.yml login --scenario centos7
 ```
 
 If testing a role or playbook where Molecule creates multiple containers,
 individual hosts can be accessed using the `--host` flag:
 
 ```shell
-molecule login -s centos7_monitoring --host mserv
+molecule --base-config ../../molecule_configs/centos7_base_config.yml login --scenario centos7_monitoring --host mserv
 ```
 
 #### Destroy the container
@@ -158,32 +157,36 @@ container, network, and volumes yourself. You can do this using the `molecule
 destroy` command:
 
 ```shell
-molecule destroy -s centos7_roles
+molecule --base-config ../../molecule_configs/centos7_base_config.yml  destroy --scenario centos7
 ```
 
 ### Test a playbook
 
-Playbooks in the collection can also be tested using Molecule. An example of how
-this can be done can be seen by looking at the tests for the
-`mirsg.install_monitoring` playbook in this collection. This is tested on CentOS
-7 and RockyLinux 9 using the
-[centos7_monitoring](./tests/molecule/centos7_monitoring/) and
-[rocky9_monitoring](./tests/molecule/rocky9_monitoring/) scenarios. An inventory
+Playbooks in the collection can also be tested using Molecule. The Molecule
+configuration for playbooks is in the
+`ansible_collections/mirsg/infrastructure/playbooks/molecule` folder.
+
+An example of how to setup testing for a playbook can be seen by looking at
+the tests for the `mirsg.install_monitoring` playbook in this collection.
+This is tested on CentOS 7 and RockyLinux 9 using the
+[centos7_monitoring](./playbooks/molecule/centos7_monitoring/) and
+[rocky9_monitoring](./playbooks/molecule/rocky9_monitoring/) scenarios.
+
+An inventory
 and associated group variables can be found in
-[resources/monitoring/inventory](./tests/molecule/resources/monitoring/inventory/).
+[playbooks/molecule/resources/monitoring/inventory](./playbooks/molecule/resources/monitoring/inventory/).
 Testing the playbook also requires its own
-[converge.yml](./tests/molecule/resources/monitoring/converge.yml) playbook but
-it uses the shared [prepare.yml](./tests/molecule/resources/shared/prepare.yml)
-playbook. Running the tests then proceeds as with testing the roles:
+[converge.yml](./playbooks/molecule/resources/monitoring/converge.yml), and optional
+`prepare.yml` and `verify.yml` playbooks.
+Running the tests then proceeds as with testing the roles:
 
 ```shell
-export MOLECULE_RUN_TAGS=monitoring
-molecule test -s centos7_monitoring
+molecule --base-config ../molecule_configs/centos7_base_config.yml test --scenario centos7_monitoring
 ```
 
 ### Integration tests
 
-When a PR that modifies a role is opened, the changes are
+When a PR that modifies a role or playbook is opened, the changes are
 [tested](.github/workflows/) by deploying that role using GitHub Actions. See
 the [`molecule-firewalld` workflow](.github/workflows/molecule-firewalld.yml)
 for an example.
