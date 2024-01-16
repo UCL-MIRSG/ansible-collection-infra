@@ -9,7 +9,7 @@ on:
         required: true
         type: string
       base-config-path:
-        default: ../../tests/
+        default: ../../molecule_configs/
         type: string
 
 jobs:
