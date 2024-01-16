@@ -10,7 +10,7 @@
         return_content: true
       register: response
 
-    - name: Check containers exist and are running
+    - name: Check server status and response
       ansible.builtin.assert:
         that:
           - response.status == 200
