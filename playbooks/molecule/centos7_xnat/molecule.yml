@@ -67,6 +67,7 @@ platforms:
       - 8104
     published_ports:
       - 127.0.0.1:8104:8104
+      - 127.0.0.1:8080:80
     etc_hosts:
       xnat.db.local: 192.168.56.2
       xnat.cserv.local: 192.168.56.4
