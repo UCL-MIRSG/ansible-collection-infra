@@ -36,7 +36,7 @@ http {
     gzip on;
     gzip_disable "msie6";
 
-{% if ssl.use_ssl %}
+{% if nginx_use_ssl %}
     # SSL parameters must be specified outside of the server block.
     # Otherwise may only use the nginx may end up using parameters specified in
     # the default_server block even if a different serer is matched
