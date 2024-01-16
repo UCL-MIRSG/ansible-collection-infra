@@ -10,14 +10,8 @@ install_python:
     - python-setuptools
     - libselinux-python
     - policycoreutils-python
-    - gcc
-    - gcc-c++
-    - make
-    - openssl
-    - openssl-devel
-    - libffi
-    - libffi-devel
   pip_packages:
-    - wheel
     - gunicorn
     - Flask
+
+gunicorn_executable: /usr/bin/gunicorn

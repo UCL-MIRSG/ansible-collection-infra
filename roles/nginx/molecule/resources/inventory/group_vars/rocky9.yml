@@ -10,10 +10,8 @@ install_python:
     - python3-setuptools
     - python3-libselinux
     - policycoreutils-python-utils
-    - build-essential
-    - libssl-dev
-    - libffi-dev
   pip_packages:
-    - wheel
     - gunicorn
     - flask
+
+gunicorn_executable: /usr/local/bin/gunicorn
