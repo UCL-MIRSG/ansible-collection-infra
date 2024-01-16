@@ -15,4 +15,4 @@
         that:
           - response.status == 200
           - response.server == "nginx"
-          - "{{ response.content is search('Hello World!') }}"
+          - response.content is search('Hello World!')
