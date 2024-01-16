@@ -13,12 +13,14 @@
         dest: /home/app.py
         owner: root
         group: root
+        mode: "0644"
     - name: Copy Gunicorn service config
       ansible.builtin.copy:
         src: gunicorn.service
         dest: /etc/systemd/system/gunicorn.service
         owner: root
         group: root
+        mode: "0644"
     - name: Start Gunicorn service
       ansible.builtin.systemd:
         name: gunicorn
