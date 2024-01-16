@@ -33,13 +33,6 @@ platforms:
     networks:
       - name: molecule
         ipv4_address: 192.168.56.2
-    exposed_ports:
-      - 80
-      - 443
-      - 5000
-    published_ports:
-      - 127.0.0.1:5000:5000
-      - 127.0.0.1:8000:8000
 
 provisioner:
   name: ansible
