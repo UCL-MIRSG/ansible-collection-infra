@@ -10,11 +10,11 @@ events {
 
 stream {
     upstream dicom {
-        server localhost:{{ xnat_dicom_port }};
+        server localhost:{{ nginx_upstream_port }};
     }
 
     server {
-        listen {{ dicom_port }};
+        listen {{ nginx_upstream_server_port }};
         proxy_pass dicom;
     }
 }
@@ -71,8 +71,8 @@ http {
     server {
         listen {{ nginx_http_port }};
 
-        server_name {{ xnat_web_server.host }};
-        return 301 https://{{ xnat_web_server.host }}:{{ nginx_https_port }}$request_uri;
+        server_name {{ nginx_server_name }};
+        return 301 https://{{ nginx_server_name }}:{{ nginx_https_port }}$request_uri;
     }
 {% endif %}
 
@@ -93,10 +93,10 @@ http {
 
 
         # Note: server_name is only used for disambiguation
-        server_name     {{ xnat_web_server.host }};
-        root            {{ tomcat_root }};
+        server_name     {{ nginx_server_name }};
+        root            {{ nginx_root }};
         location / {
-            proxy_pass                          http://localhost:{{ tomcat_port }};
+            proxy_pass                          http://localhost:{{ nginx_proxy_port }};
             proxy_redirect                      http:// $scheme://;
             proxy_set_header Host               $http_host;
             proxy_set_header X-Real-IP          $remote_addr;

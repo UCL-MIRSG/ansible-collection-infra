@@ -1,3 +1,4 @@
+load_module '/usr/lib64/nginx/modules/ngx_stream_module.so';
 user nginx;
 worker_processes auto;
 error_log {{ nginx_log_folder }}/error.log warn;
@@ -22,18 +23,8 @@ http {
     gzip on;
     gzip_disable "msie6";
 
-    # Default server block for connections that do not match the expected host names.
-    # Note that nginx only uses server_name for disambiguation purposes; if
-    # there is no matching server_name then nginx will use the default_server
-    # regardless of its value of server_name
     server {
-        listen 80 default_server;
-        server_name _;
-        return 444;
-    }
-
-    server {
-        listen {{ nginx_http_port }};
+        listen {{ nginx_http_port }} default_server;
         server_name {{ nginx_server_name }};
         location / {
             proxy_pass                          http://localhost:{{ nginx_proxy_port }};

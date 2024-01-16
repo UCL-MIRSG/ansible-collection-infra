@@ -76,3 +76,8 @@ firewalld_public_zone_open_services:
 firewalld_work_zone_open_services:
   - http
   - https
+
+# mirsg.infrastructure.nginx
+nginx_ipv6_enabled: "{{ ipv6_enabled }}"
+nginx_use_ssl: "{{ ssl.use_ssl }}"
+nginx_server_name: "{{ xnat_web_server.host }}"

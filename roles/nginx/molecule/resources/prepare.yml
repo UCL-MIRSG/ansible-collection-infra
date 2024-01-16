@@ -7,6 +7,7 @@
     - name: Install python and Flask/Gunicorn dependencies
       ansible.builtin.include_role:
         name: mirsg.infrastructure.install_python
+
     - name: Copy Flask app to host
       ansible.builtin.copy:
         src: app.py
@@ -14,6 +15,7 @@
         owner: root
         group: root
         mode: "0644"
+
     - name: Copy Gunicorn service config
       ansible.builtin.copy:
         src: gunicorn.service
@@ -21,6 +23,7 @@
         owner: root
         group: root
         mode: "0644"
+
     - name: Start Gunicorn service
       ansible.builtin.systemd:
         name: gunicorn

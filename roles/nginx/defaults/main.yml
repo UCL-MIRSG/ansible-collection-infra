@@ -4,15 +4,16 @@ nginx_group: root
 nginx_log_folder: "/var/log/nginx"
 nginx_http_port: 80
 nginx_https_port: 443
-# nginx_listen_port: 80  # 8104 for XNAT
-# nginx_proxy_port: 8080 # only for XNAT
-# nginx_server_address: http://127.0.0.1:8080
+nginx_proxy_port: 8080 # defaults to tomcat
+nginx_root: "/usr/share/tomcat/webapps/ROOT"
+nginx_upstream_port: 8104 # defaults to XNAT Dicom port
+nginx_upstream_listen_port: 8104 # defaults to XNAT Dicom port
 nginx_certs_dir: "/etc/nginx/ssl"
 nginx_dh_params_file: "/etc/nginx/ssl/dhparam.pem"
-nginx_conf_template: "nginx_reverse_proxy.j2"
+nginx_conf_template: "nginx_xnat.j2" # check the template file for the variables it requires
 nginx_conf_file: "/etc/nginx/nginx.conf"
 nginx_ipv6_enabled: false
-nginx_use_ssl: false
+nginx_use_ssl: true
 nginx_ssl_cert_file: "/etc/nginx/ssl/server.cert"
 nginx_ssl_key_file: "/etc/nginx/ssl/server.key"
 
