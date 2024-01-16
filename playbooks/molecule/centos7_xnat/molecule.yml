@@ -112,11 +112,7 @@ provisioner:
   playbooks:
     prepare: ../resources/xnat/prepare.yml
     converge: ../resources/xnat/converge.yml
-  env:
-    ANSIBLE_VERBOSITY: 1
-
-verifier:
-  name: ansible
+    verify: ../resources/xnat/verify.yml
   env:
     ANSIBLE_VERBOSITY: 1
 
