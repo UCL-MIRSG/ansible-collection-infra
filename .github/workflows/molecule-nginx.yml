@@ -1,0 +1,13 @@
+name: Test nginx
+on:
+  pull_request:
+    paths:
+      - "roles/nginx/**"
+      - ".github/workflows/molecule.yml"
+      - ".github/workflows/molecule-nginx.yml"
+
+jobs:
+  molecule-nginx:
+    uses: ./.github/workflows/molecule.yml
+    with:
+      tests-path: ansible_collections/mirsg/infrastructure/roles/nginx
