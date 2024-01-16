@@ -27,6 +27,7 @@ ssl:
   validate_certs: false
 
 # nginx config
+nginx_use_ssl: "{{ ssl.use_ssl }}"
 dicom_port: 8104
 xnat_dicom_port: 8105
 
