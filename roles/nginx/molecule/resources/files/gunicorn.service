@@ -6,4 +6,4 @@ After=network.target
 User=root
 Group=root
 WorkingDirectory=/home
-ExecStart=/usr/bin/gunicorn --workers 2 --bind 127.0.0.1:8000 app:app
+ExecStart=/usr/bin/gunicorn --workers 2 --bind localhost:8000 app:app
