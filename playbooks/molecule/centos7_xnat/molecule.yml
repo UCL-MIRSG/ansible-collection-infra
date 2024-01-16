@@ -64,10 +64,10 @@ platforms:
     exposed_ports:
       - 80
       - 443
+      - 8080
       - 8104
     published_ports:
-      - 127.0.0.1:8104:8104
-      - 127.0.0.1:8080:80
+      - 127.0.0.1:8000:80
     etc_hosts:
       xnat.db.local: 192.168.56.2
       xnat.cserv.local: 192.168.56.4
