@@ -2,13 +2,13 @@
 - name: Configure SELinux if enabled and enforced
   when: ansible_selinux.status == "enabled" and ansible_selinux.mode == "enforcing"
   block:
-    - name: Configure SELinux to allow nginx to listen on port {{ nginx_listen_port }}
+    - name: Configure SELinux to allow nginx to listen on port {{ nginx_upstream_listen_port }}
       community.general.seport:
-        ports: "{{ nginx_listen_port }}"
+        ports: "{{ nginx_upstream_listen_port }}"
         proto: tcp
         setype: http_port_t
         state: present
-      when: nginx_listen_port is defined
+      when: nginx_upstream_listen_port is defined
 
     - name: Configure SELinux to allow httpd to act as relay and keep it persistent across reboots
       ansible.posix.seboolean:

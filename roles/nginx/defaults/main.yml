@@ -6,8 +6,6 @@ nginx_http_port: 80
 nginx_https_port: 443
 nginx_proxy_port: 8080 # defaults to tomcat
 nginx_root: "/usr/share/tomcat/webapps/ROOT"
-nginx_upstream_port: 8104 # defaults to XNAT Dicom port
-nginx_upstream_listen_port: 8104 # defaults to XNAT Dicom port
 nginx_certs_dir: "/etc/nginx/ssl"
 nginx_dh_params_file: "/etc/nginx/ssl/dhparam.pem"
 nginx_conf_template: "nginx_xnat.j2" # check the template file for the variables it requires

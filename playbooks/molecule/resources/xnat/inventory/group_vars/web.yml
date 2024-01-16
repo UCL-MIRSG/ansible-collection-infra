@@ -6,16 +6,13 @@ firewalld_public_zone_sources:
   - "0.0.0.0/0"
 
 firewalld_internal_zone_ports:
-  - "{{ dicom_port }}"
-  - "{{ tomcat_port }}"
+  - "{{ nginx_upstream_listen_port }}"
 
 firewalld_work_zone_ports:
-  - "{{ dicom_port }}"
-  - "{{ tomcat_port }}"
+  - "{{ nginx_upstream_listen_port }}"
 
 firewalld_public_zone_ports:
-  - "{{ dicom_port }}"
-  - "{{ tomcat_port }}"
+  - "{{ nginx_upstream_listen_port }}"
 
 # mirsg.xnat.xnat
 # Some times the default admin account hasn't finished creating even after tomcat has started

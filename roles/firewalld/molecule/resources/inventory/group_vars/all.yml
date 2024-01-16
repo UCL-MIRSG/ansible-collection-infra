@@ -12,6 +12,7 @@ firewalld_work_zone_open_services:
   - http
   - https
 firewalld_public_zone_ports:
+  - "80"
   - "8080"
 firewalld_internal_zone_ports:
   - "5432"
