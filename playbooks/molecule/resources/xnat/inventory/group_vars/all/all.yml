@@ -3,7 +3,6 @@
 ipv6_enabled: false
 
 # nginx config
-nginx_ipv6_enabled: "{{ ipv6_enabled }}"
 nginx_diffie_helman_size_bits: 2048
 nginx_conf_template: "nginx_xnat_as_default.j2"
 
