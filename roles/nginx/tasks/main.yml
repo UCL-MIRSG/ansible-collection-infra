@@ -44,8 +44,10 @@
     group: "{{ nginx_group }}"
     mode: "0600"
   with_items:
-    - { src: "{{ nginx_server_cert_cache }}", dest: "{{ nginx_ssl_cert_file }}" }
-    - { src: "{{ nginx_server_key_cache }}", dest: "{{ nginx_ssl_key_file }}" }
+    - src: "{{ nginx_server_cert_cache }}"
+      dest: "{{ nginx_ssl_cert_file }}"
+    - src: "{{ nginx_server_key_cache }}"
+      dest: "{{ nginx_ssl_key_file }}"
   notify: Reload nginx
   when: nginx_use_ssl
 

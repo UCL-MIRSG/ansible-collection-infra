@@ -12,7 +12,7 @@ install_python:
     - policycoreutils-python
     - gcc
     - gcc-c++
-    - make 
+    - make
     - openssl
     - openssl-devel
     - libffi
