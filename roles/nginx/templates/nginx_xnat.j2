@@ -14,7 +14,7 @@ stream {
     }
 
     server {
-        listen {{ nginx_listen_port }};
+        listen {{ dicom_port }};
         proxy_pass dicom;
     }
 }
@@ -94,8 +94,8 @@ http {
     server {
         listen {{ nginx_http_port }};
 
-        server_name {{ nginx_hostname }};
-        return 301 https://{{ nginx_hostname }}:{{ nginx_https_port }}$request_uri;
+        server_name {{ xnat_web_server.host }};
+        return 301 https://{{ xnat_web_server.host }}:{{ nginx_https_port }}$request_uri;
     }
 {% endif %}
 
@@ -115,11 +115,10 @@ http {
 
 
         # Note: server_name is only used for disambiguation
-        server_name     {{ nginx_hostname }};
-        root            {{ nginx_root }};
-
+        server_name     {{ xnat_web_server.host }};
+        root            {{ tomcat_root }};
         location / {
-            proxy_pass                          http://localhost:{{ nginx_proxy_port }};
+            proxy_pass                          http://localhost:{{ tomcat_port }};
             proxy_redirect                      http:// $scheme://;
             proxy_set_header Host               $http_host;
             proxy_set_header X-Real-IP          $remote_addr;
@@ -135,7 +134,7 @@ http {
             client_body_buffer_size             128k;
             proxy_max_temp_file_size            0;
         }
-        access_log {{ nginx.log_folder }}/xnat.access.log;
-        error_log {{ nginx.log_folder }}/xnat.error.log;
+        access_log {{ nginx_log_folder }}/xnat.access.log;
+        error_log {{ nginx_log_folder }}/xnat.error.log;
     }
 }
