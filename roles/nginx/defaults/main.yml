@@ -1,11 +1,15 @@
 ---
 nginx_owner: root
 nginx_group: root
+
 nginx_log_folder: "/var/log/nginx"
+nginx_access_log: "{{ nginx_log_folder }}/access.log"
+nginx_error_log: "{{ nginx_log_folder }}/error.log"
+nginx_app_access_log: "{{ nginx_log_folder }}/app.access.log"
+nginx_app_error_log: "{{ nginx_log_folder }}/app.error.log"
+
 nginx_http_port: 80
 nginx_https_port: 443
-#nginx_proxy_port: 8080 # defaults to tomcat
-#nginx_root: "/usr/share/tomcat/webapps/ROOT"
 nginx_certs_dir: "/etc/nginx/ssl"
 nginx_dh_params_file: "/etc/nginx/ssl/dhparam.pem"
 nginx_conf_template: "nginx_reverse_proxy.j2" # check the template file for the variables it requires

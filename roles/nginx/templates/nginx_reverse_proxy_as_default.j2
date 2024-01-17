@@ -2,7 +2,7 @@
 load_module '/usr/lib64/nginx/modules/ngx_stream_module.so';
 user nginx;
 worker_processes auto;
-error_log {{ nginx_log_folder }}/error.log warn;
+error_log {{ nginx_error_log }} warn;
 pid /run/nginx.pid;
 
 events {
@@ -29,7 +29,7 @@ http {
     keepalive_timeout   65;
     types_hash_max_size 2048;
     default_type        application/octet-stream;
-    access_log          {{ nginx_log_folder }}/access.log;
+    access_log          {{ nginx_access_log }};
 
     # Good security practice is not to expose nginx version
     server_tokens off;
@@ -118,7 +118,7 @@ http {
             client_body_buffer_size             128k;
             proxy_max_temp_file_size            0;
         }
-        access_log {{ nginx_log_folder }}/xnat.access.log;
-        error_log {{ nginx_log_folder }}/xnat.error.log;
+        access_log {{ nginx_app_access_log }};
+        error_log {{ nginx_app_error_log }};
     }
 }
