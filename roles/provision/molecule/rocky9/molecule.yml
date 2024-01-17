@@ -1,0 +1,3 @@
+---
+# test this scenario from the roles/provision directory with the command
+# molecule --base-config ../../molecule_configs/rocky9_base_config.yml test --scenario rocky9

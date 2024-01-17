@@ -8,7 +8,7 @@ on:
       - ".github/workflows/molecule-provision_accounts.yml"
 
 jobs:
-  molecule-provision:
+  molecule-provision-accounts:
     uses: ./.github/workflows/molecule.yml
     with:
-      run-tags: provision_accounts
+      tests-path: ansible_collections/mirsg/infrastructure/roles/provision_accounts

@@ -5,6 +5,12 @@ on:
       run-tags:
         type: string
         default: all
+      tests-path:
+        required: true
+        type: string
+      base-config-path:
+        default: ../../molecule_configs/
+        type: string
 
 jobs:
   molecule:
@@ -13,8 +19,8 @@ jobs:
       fail-fast: true
       matrix:
         scenario:
-          - centos7_roles
-          - rocky9_roles
+          - centos7
+          - rocky9
     env:
       MOLECULE_RUN_TAGS: ${{ inputs.run-tags }}
       PY_COLORS: 1
@@ -22,8 +28,9 @@ jobs:
 
     steps:
       - name: Run `molecule test`
-        uses: UCL-MIRSG/.github/actions/molecule-test@v0.38.0
+        uses: UCL-MIRSG/.github/actions/molecule-test@v0.40.0
         with:
           scenario: ${{ matrix.scenario }}
+          base_config: ${{ format('{0}{1}_base_config.yml', inputs.base-config-path, matrix.scenario ) }}
           checkout_path: ansible_collections/mirsg/infrastructure
-          tests_path: ansible_collections/mirsg/infrastructure/tests
+          tests_path: ${{ inputs.tests-path }}
