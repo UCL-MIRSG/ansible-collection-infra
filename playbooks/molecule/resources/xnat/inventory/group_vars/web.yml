@@ -19,3 +19,7 @@ firewalld_public_zone_ports:
 # Add a delay here to give the admin account a chance to be created
 # Note, this issue only seems to happen in CI
 xnat_wait_for_tomcat: 15
+
+# nginx config
+nginx_diffie_helman_size_bits: 2048
+nginx_conf_template: "nginx_xnat_as_default.j2"
