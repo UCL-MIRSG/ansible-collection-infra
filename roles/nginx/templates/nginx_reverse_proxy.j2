@@ -119,7 +119,11 @@ http {
 
         # Note: server_name is only used for disambiguation
         server_name     {{ nginx_server_name }};
+
+        {% if nginx_root is defined %}
         root            {{ nginx_root }};
+        {% endif %}
+
         location / {
             proxy_pass                          http://localhost:{{ nginx_proxy_port }};
             proxy_redirect                      http:// $scheme://;
