@@ -1,24 +1,27 @@
-# Configure a reverse proxy for XNAT, with tomcat as the default_server
+# Configure a reverse proxy with an additional default_server
 load_module '/usr/lib64/nginx/modules/ngx_stream_module.so';
 user nginx;
 worker_processes auto;
 error_log {{ nginx_log_folder }}/error.log warn;
 pid /run/nginx.pid;
 
+
 events {
     worker_connections  1024;
 }
 
+{% if nginx_upstream_port is defined and nginx_upstream_listen_port is defined %}
 stream {
-    upstream dicom {
+    upstream backend {
         server localhost:{{ nginx_upstream_port }};
     }
 
     server {
         listen {{ nginx_upstream_listen_port }};
-        proxy_pass dicom;
+        proxy_pass backend;
     }
 }
+{% endif %}
 
 http {
     sendfile            off;
@@ -67,6 +70,29 @@ http {
 
 {% endif %}
 
+
+    # Default server block for connections that do not match the expected host names.
+    # Note that nginx only uses server_name for disambiguation purposes; if
+    # there is no matching server_name then nginx will use the default_server
+    # regardless of its value of server_name
+    server {
+        listen 80 default_server;
+{% if nginx_use_ssl %}
+        listen 443 ssl default_server;
+{% endif %}
+
+{% if nginx_ipv6_enabled %}
+        listen [::]:80 default_server;
+    {% if nginx_use_ssl %}
+        listen [::]:443 ssl default_server;
+    {% endif %}
+{% endif %}
+
+        server_name _;
+
+        return 444;
+    }
+
 {% if nginx_use_ssl %}
     # Redirect to https
     server {
@@ -77,21 +103,19 @@ http {
     }
 {% endif %}
 
-    # Forward to tomcat as the default server
     server {
 
 {% if nginx_use_ssl %}
-        listen {{ nginx_https_port }} ssl http2 default_server;
+        listen {{ nginx_https_port }} ssl http2;
     {% if nginx_ipv6_enabled %}
-        listen [::]:{{ nginx_https_port }} ssl http2 default_server;
+        listen [::]:{{ nginx_https_port }} ssl http2;
     {% endif %}
 {% else %}
-        listen {{ nginx_http_port }} default_server;
+        listen {{ nginx_http_port }};
     {% if nginx_ipv6_enabled %}
-        listen [::]:{{ nginx_http_port }} default_server;
+        listen [::]:{{ nginx_http_port }};
     {% endif %}
 {% endif %}
-
 
         # Note: server_name is only used for disambiguation
         server_name     {{ nginx_server_name }};
