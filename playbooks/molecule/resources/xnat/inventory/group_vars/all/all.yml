@@ -6,6 +6,10 @@
 # For local testing (non-production), use 2096 to speed up deployment.
 diffie_helman_size_bits: 2048
 
+# mirsg.infrastructure.firewalld
+firewalld_internal_zone_sources:
+  - "{{ xnat_web_server.subnet | default(xnat_web_server.ip + '/32') }}"
+
 # Support for ipv6
 ipv6_enabled: false
 
