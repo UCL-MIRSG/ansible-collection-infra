@@ -19,7 +19,7 @@ on CentOS 7 or RockyLinux 9.
 | `nginx_https_port`     | The port to listen on for HTTPS connections. Defaults to `443`                                                                                                                                  |
 | `nginx_proxy_port`     | The port to forward requests to. Required variable; no default                                                                                                                                  |
 | `nginx_root`           | The path to search for static files. Optional variable; no default                                                                                                                              |
-| `nginx_conf_template`  | The template to use for generating the NGINX config. See currently available [templates](templates/). Defaults to `nginx_xnat.j2`, which is used to configure NGINX as a reverse proxy for XNAT |
+| `nginx_conf_template`  | The template to use for generating the NGINX config. See currently available [templates](templates/). Defaults to `nginx_reverse_proxy.j2`, which is used to configure NGINX as a reverse proxy |
 | `nginx_conf_file`      | The path to write the NGINX config to. Defaults to `/etc/nginx/nginx.conf`                                                                                                                      |
 | `nginx_ipv6_enabled`   | Whether to enable support for IPv6. Defaults to `false`                                                                                                                                         |
 

@@ -22,4 +22,4 @@ xnat_wait_for_tomcat: 15
 
 # nginx config
 nginx_diffie_helman_size_bits: 2048
-nginx_conf_template: "nginx_reverse_proxy_as_default.j2"
+nginx_conf_template: nginx_reverse_proxy_as_default.j2
