@@ -79,7 +79,7 @@ http {
     }
 {% endif %}
 
-    # Forward to tomcat as the default server
+    # Forward to {{ nginx_server_name }} as the default server
     server {
 
 {% if nginx_use_ssl %}
