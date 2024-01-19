@@ -66,9 +66,10 @@ platforms:
     exposed_ports:
       - 80
       - 443
+      - 8080
       - 8104
     published_ports:
-      - 127.0.0.1:8104:8104
+      - 127.0.0.1:8000:80
     etc_hosts:
       xnat.db.local: 192.168.56.2
       xnat.cserv.local: 192.168.56.4
@@ -95,7 +96,7 @@ platforms:
       - name: xnat
         ipv4_address: 192.168.56.4
     exposed_ports:
-      - "2376"
+      - 2376
     extra_hosts:
       xnat.db.local: 192.168.56.2
       xnat.web.local: 192.168.56.3
@@ -114,6 +115,7 @@ provisioner:
   playbooks:
     prepare: ../resources/xnat/prepare.yml
     converge: ../resources/xnat/converge.yml
+    verify: ../resources/xnat/verify.yml
   env:
     ANSIBLE_VERBOSITY: "1"
 

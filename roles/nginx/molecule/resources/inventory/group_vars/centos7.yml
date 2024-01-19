@@ -1,0 +1,17 @@
+---
+# mirsg.infrastructure.install_python
+install_python:
+  version: "2"
+  pip_version: "20.3.4"
+  pip_executable: pip
+  system_packages:
+    - python
+    - python-pip
+    - python-setuptools
+    - libselinux-python
+    - policycoreutils-python
+  pip_packages:
+    - gunicorn
+    - Flask
+
+gunicorn_executable: /usr/bin/gunicorn
