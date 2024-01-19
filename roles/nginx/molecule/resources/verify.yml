@@ -6,6 +6,8 @@
       ansible.builtin.uri:
         url: http://localhost:8080
         method: GET
+        headers:
+          Host: molecule.instance.local
         validate_certs: false
         return_content: true
       register: response

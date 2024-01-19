@@ -1,5 +1,4 @@
 ---
-nginx_conf_template: nginx_reverse_proxy_as_default.j2
 nginx_server_name: molecule.instance.local
 nginx_proxy_port: 8000
 nginx_diffie_helman_size_bits: 2048

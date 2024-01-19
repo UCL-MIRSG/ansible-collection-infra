@@ -13,6 +13,7 @@ nginx_https_port: 443
 
 nginx_conf_template: nginx_reverse_proxy.j2 # check the template file for the variables it requires
 nginx_conf_file: /etc/nginx/nginx.conf
+nginx_add_default_server: true
 
 nginx_ipv6_enabled: false
 

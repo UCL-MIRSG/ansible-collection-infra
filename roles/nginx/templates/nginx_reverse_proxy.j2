@@ -1,4 +1,5 @@
-# Configure a reverse proxy with an additional default_server
+# Configure a reverse proxy
+# Optionally create an additional default_server
 load_module '/usr/lib64/nginx/modules/ngx_stream_module.so';
 user nginx;
 worker_processes auto;
@@ -74,23 +75,25 @@ http {
     # Note that nginx only uses server_name for disambiguation purposes; if
     # there is no matching server_name then nginx will use the default_server
     # regardless of its value of server_name
+{% if nginx_add_default_server %}
     server {
         listen 80 default_server;
-{% if nginx_use_ssl %}
-        listen 443 ssl default_server;
-{% endif %}
-
-{% if nginx_ipv6_enabled %}
-        listen [::]:80 default_server;
     {% if nginx_use_ssl %}
-        listen [::]:443 ssl default_server;
+        listen 443 ssl default_server;
     {% endif %}
-{% endif %}
+
+    {% if nginx_ipv6_enabled %}
+        listen [::]:80 default_server;
+        {% if nginx_use_ssl %}
+        listen [::]:443 ssl default_server;
+        {% endif %}
+    {% endif %}
 
         server_name _;
 
         return 444;
     }
+{% endif %}
 
 {% if nginx_use_ssl %}
     # Redirect to https
@@ -105,14 +108,14 @@ http {
     server {
 
 {% if nginx_use_ssl %}
-        listen {{ nginx_https_port }} ssl http2;
+        listen {{ nginx_https_port }} ssl http2{% if not nginx_add_default_server %} default_server{% endif %};
     {% if nginx_ipv6_enabled %}
-        listen [::]:{{ nginx_https_port }} ssl http2;
+        listen [::]:{{ nginx_https_port }} ssl http2{% if not nginx_add_default_server %} default_server{% endif %};
     {% endif %}
 {% else %}
-        listen {{ nginx_http_port }};
+        listen {{ nginx_http_port }}{% if not nginx_add_default_server %} default_server{% endif %};
     {% if nginx_ipv6_enabled %}
-        listen [::]:{{ nginx_http_port }};
+        listen [::]:{{ nginx_http_port }}{% if not nginx_add_default_server %} default_server{% endif %};
     {% endif %}
 {% endif %}
 
