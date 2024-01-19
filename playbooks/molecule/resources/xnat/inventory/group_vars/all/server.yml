@@ -26,10 +26,6 @@ ssl:
   use_ssl: false
   validate_certs: false
 
-# nginx config
-dicom_port: 8104
-xnat_dicom_port: 8105
-
 # XNAT configuration
 xnat_config:
   site_name: "MIRSG XNAT"
