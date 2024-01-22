@@ -1,7 +1,7 @@
 ---
 - name: Prepare - install sudo on all hosts
   hosts: all
-  gather_facts: false
+  gather_facts: true
   tasks:
     - name: Install sudo
       ansible.builtin.package:
