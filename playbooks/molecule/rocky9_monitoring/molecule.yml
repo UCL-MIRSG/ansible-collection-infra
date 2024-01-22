@@ -12,7 +12,7 @@ driver:
 platforms:
   - name: mclient
     hostname: molecule.mclient.local
-    image: ${MOLECULE_DOCKER_IMAGE:-rockylinux/rockylinux:9-ubi-init}
+    image: rockylinux/rockylinux:9-ubi-init
     required: true
     command: ""
     cgroupns_mode: host
