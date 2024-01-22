@@ -1,5 +1,5 @@
 ---
-- name: Prepare - install sudo on all hosts
+- name: Install sudo
   hosts: all
   gather_facts: true
   tasks:

@@ -1,13 +1,4 @@
 ---
-- name: Prepare - install sudo on all hosts
-  hosts: all
-  gather_facts: true
-  tasks:
-    - name: Install sudo
-      ansible.builtin.package:
-        name: sudo
-        state: present
-
 - name: Prepare - install and start crontabs on the db
   hosts: db
   become: true
@@ -31,6 +22,11 @@
   hosts: all
   gather_facts: true
   tasks:
+    - name: Install sudo
+      ansible.builtin.package:
+        name: sudo
+        state: present
+
     - name: Install and configure firewalld
       block:
         - name: Install firewalld
