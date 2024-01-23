@@ -5,6 +5,11 @@
   roles:
     - role: mirsg.infrastructure.provision
   tasks:
+    - name: Install sudo
+      ansible.builtin.package:
+        name: sudo
+        state: present
+
     - name: Install crontabs
       ansible.builtin.yum:
         name: cronie
