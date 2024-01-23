@@ -2,14 +2,14 @@
 - name: Setup for roles
   hosts: all
   gather_facts: true
-  roles:
-    - role: mirsg.infrastructure.provision
-  tasks:
+  pre_tasks:
     - name: Install sudo
       ansible.builtin.package:
         name: sudo
         state: present
-
+  roles:
+    - role: mirsg.infrastructure.provision
+  tasks:
     - name: Install crontabs
       ansible.builtin.yum:
         name: cronie
