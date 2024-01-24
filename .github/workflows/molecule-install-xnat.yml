@@ -43,4 +43,4 @@ jobs:
       - name: Test with molecule
         run: |
           cd ansible_collections/mirsg/infrastructure/playbooks
-          molecule converge --scenario-name  "${{ matrix.scenario }}"
+          molecule test --scenario-name  "${{ matrix.scenario }}"
