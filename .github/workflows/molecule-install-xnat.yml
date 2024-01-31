@@ -6,6 +6,7 @@ on:
       - "roles/xnat_container_service/**"
       - "playbooks/install_xnat.yml"
       - "playbooks/install_container_service.yml"
+      - "playbooks/molecule/**/xnat/**"
       - ".github/workflows/molecule-install-xnat.yml"
   release:
     types: [published]
@@ -42,4 +43,4 @@ jobs:
       - name: Test with molecule
         run: |
           cd ansible_collections/mirsg/infrastructure/playbooks
-          molecule converge --scenario-name  "${{ matrix.scenario }}"
+          molecule test --scenario-name  "${{ matrix.scenario }}"

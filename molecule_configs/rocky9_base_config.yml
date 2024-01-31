@@ -49,7 +49,7 @@ provisioner:
   playbooks:
     prepare: ../resources/prepare.yml
     converge: ../resources/converge.yml
-    verify: ../resources/converge.yml
+    verify: ../resources/verify.yml
   env:
     ANSIBLE_VERBOSITY: "1"
 
