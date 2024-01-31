@@ -10,7 +10,7 @@ driver:
   name: docker
 
 platforms:
-  - name: db
+  - name: xnat_db
     hostname: xnat.db.local
     image: geerlingguy/docker-centos7-ansible:latest
     required: true
@@ -40,7 +40,7 @@ platforms:
       xnat.web.local: 192.168.56.3
       xnat.cserv.local: 192.168.56.4
 
-  - name: web
+  - name: xnat_web
     hostname: xnat.web.local
     image: geerlingguy/docker-centos7-ansible:latest
     required: true
