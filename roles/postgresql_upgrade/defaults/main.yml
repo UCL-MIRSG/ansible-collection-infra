@@ -4,3 +4,4 @@ postgreql_upgrade_backup_script: /var/lib/pgsql/run_db_backup.sh
 postgresql_upgrade_postgresql_owner: postgres
 postgresql_upgrade_postgresql_group: postgres
 postgresql_upgrade_generated_script: ./analyze_new_cluster.sh
+postgresql_upgrade_data_dir: "/var/lib/pgsql/{{ postgreql_upgrade_new_version }}/data"

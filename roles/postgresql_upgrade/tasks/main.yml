@@ -1,4 +1,19 @@
 ---
+- name: >-
+    Check if new postgres directory already exists
+  ansible.builtin.stat:
+    path: "{{ postgresql_upgrade_data_dir }}"
+  register: postgresql_upgrade_new_data_dir_exists
+
+- name: >-
+    Fail if new postgres data directory already exists
+  ansible.builtin.fail:
+    msg: >
+      Cannot upgrade because the new postgres directory
+      {{ postgresql_upgrade_data_dir }} already exists; this suggests an
+      upgrade has already been attempted
+  when: postgresql_upgrade_data_dir.stat.exists and postgresql_upgrade_data_dir.stat.isdir
+
 - name: Back up PostgreSQL
   ansible.builtin.command: "{{ postgreql_upgrade_backup_script }}"
   become: true
