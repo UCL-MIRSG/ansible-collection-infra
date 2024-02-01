@@ -1,0 +1,105 @@
+---
+- name: Back up PostgreSQL
+  ansible.builtin.command: "{{ postgreql_upgrade_backup_script }}"
+  become: true
+  become_user: postgres
+  changed_when: false
+
+- name: Query for all tables that have WITH OIDS set
+  community.postgresql.postgresql_query:
+    db: "{{ postgressql_upgrade_database }}"
+    query: >
+      SELECT 'ALTER TABLE "' || n.nspname || '"."' || c.relname || '" SET WITHOUT OIDS;' AS "query"
+      FROM pg_catalog.pg_class c
+      LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+      WHERE 1=1
+        AND c.relkind = 'r'
+        AND c.relhasoids = true
+        AND n.nspname <> 'pg_catalog'
+      order by n.nspname, c.relname;
+  become: true
+  become_user: postgres
+  register: postgresql_upgrade_tables_with_oids_ddl
+  when: postgresql_upgrade_check_for_oids
+
+- name: Run ALTER statements for tables with OIDS
+  community.postgresql.postgresql_query:
+    db: "{{ postgressql_upgrade_database }}"
+    query: "{{ item.query }}"
+  loop: "{{ postgresql_upgrade_tables_with_oids_ddl.query_result }}"
+  become: true
+  become_user: postgres
+  when: postgresql_upgrade_check_for_oids
+
+- name: Back up PostgreSQL after OIDS edit
+  ansible.builtin.command: "{{ postgreql_upgrade_backup_script }}"
+  become: true
+  become_user: postgres
+  changed_when: false
+  when: postgresql_upgrade_check_for_oids
+
+- name: Disable previous version of PostgreSQL - {{ postgreql_upgrade_old_version }}
+  ansible.builtin.service:
+    name: "postgresql-{{ postgreql_upgrade_old_version }}"
+    state: stopped
+    enabled: false
+
+- name: Install latest configured version of PostgreSQL - {{ postgreql_upgrade_new_version }}
+  ansible.builtin.include_role:
+    name: mirsg.infrastructure.postgresql
+
+- name: Ensure postgres is not running during configuration change
+  ansible.builtin.service:
+    name: "{{ postgresql_upgrade_service_name }}"
+    state: stopped
+
+- name: Remove any previous upgrade output
+  ansible.builtin.file:
+    path: "{{ postgresql_upgrade_scripts_dir }}"
+    state: absent
+
+- name: >-
+    Ensure directory for upgrade scripts exists -
+    {{ postgresql_upgrade_scripts_dir }}
+  ansible.builtin.file:
+    path: "{{ postgresql_upgrade_scripts_dir }}"
+    owner: "{{ postgresql_upgrade_postgresql_owner }}"
+    group: "{{ postgresql_upgrade_postgresql_group }}"
+    state: directory
+    mode: "0700"
+
+- name: Run PostgreSQL upgrade
+  ansible.builtin.command:
+    cmd: >
+      /usr/pgsql-{{ postgreql_upgrade_new_version }}/bin/pg_upgrade -d
+      /var/lib/pgsql/{{ postgreql_upgrade_old_version }}/data -D
+      /var/lib/pgsql/{{ postgreql_upgrade_new_version }}/data -b
+      /usr/pgsql-{{ postgreql_upgrade_old_version }}/bin -B
+      /usr/pgsql-{{ postgreql_upgrade_new_version }}/bin -p 10094 -P 5432
+    chdir: "{{ postgresql_upgrade_scripts_dir }}"
+  become: true
+  become_user: postgres
+  changed_when: false
+
+- name: Ensure new postgres is running - {{ postgreql_upgrade_new_version }}
+  ansible.builtin.service:
+    name: "{{ postgresql_upgrade_service_name }}"
+    state: started
+    enabled: true
+
+# Note: The script(s) to run could change for different upgrades; you may need to modify this command each time
+- name: Run scripts produced by upgrade command (NOTE - these could change for each upgrade)
+  ansible.builtin.command:
+    cmd: "{{ postgresql_upgrade_generated_script }}"
+    chdir: "{{ postgresql_upgrade_scripts_dir }}"
+  become: true
+  become_user: postgres
+  changed_when: false
+
+- name: Show suggested commands for removing old service
+  ansible.builtin.debug:
+    msg:
+      - "The PostgreSQL {{ postgreql_upgrade_old_version }} service has been disabled \
+        but you may wish to remove it using the following commands on the db server:"
+      - "sudo yum remove postgresql{{ postgreql_upgrade_old_version }}-server"
+      - "sudo yum remove postgresql{{ postgreql_upgrade_old_version }}-libs"
