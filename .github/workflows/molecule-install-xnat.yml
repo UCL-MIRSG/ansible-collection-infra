@@ -2,6 +2,7 @@ name: Test install_xnat playbook
 on:
   pull_request:
     paths:
+      - "molecule_configs/*"
       - "roles/xnat/**"
       - "roles/xnat_container_service/**"
       - "playbooks/install_xnat.yml"
