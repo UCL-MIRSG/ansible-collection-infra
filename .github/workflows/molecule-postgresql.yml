@@ -2,6 +2,7 @@ name: Test PostgreSQL
 on:
   pull_request:
     paths:
+      - "molecule_configs/*"
       - "roles/postgresql/**"
       - ".github/workflows/molecule.yml"
       - ".github/workflows/molecule-postgresql.yml"

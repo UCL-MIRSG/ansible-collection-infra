@@ -2,6 +2,7 @@ name: Test provision_accounts
 on:
   pull_request:
     paths:
+      - "molecule_configs/*"
       - "roles/provision_accounts/**"
       - "playbooks/setup_user_accounts.yml"
       - ".github/workflows/molecule.yml"
