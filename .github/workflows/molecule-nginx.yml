@@ -2,6 +2,7 @@ name: Test nginx
 on:
   pull_request:
     paths:
+      - "molecule_configs/*"
       - "roles/nginx/**"
       - ".github/workflows/molecule.yml"
       - ".github/workflows/molecule-nginx.yml"

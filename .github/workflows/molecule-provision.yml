@@ -2,6 +2,7 @@ name: Test provision
 on:
   pull_request:
     paths:
+      - "molecule_configs/*"
       - "roles/provision/**"
       - ".github/workflows/molecule.yml"
       - ".github/workflows/molecule-provision.yml"
