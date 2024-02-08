@@ -34,8 +34,9 @@
     name: "{{ item }}"
     state: installed
   loop:
-    - docker-ce
-    - docker-ce-cli
+    # https://groups.google.com/g/xnat_discussion/c/yyPBkN4kayE/m/LUe5GQH5AAAJ
+    - docker-ce-24.0.9
+    - docker-ce-cli-24.0.9
     - containerd.io
     - docker-buildx-plugin
     - docker-compose-plugin
