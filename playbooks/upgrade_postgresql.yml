@@ -20,7 +20,7 @@
   become: true
   gather_facts: true
   vars_prompt:
-    - name: postgreql_upgrade_old_version
+    - name: postgreql_upgrade_current_version
       prompt: What is the version of postgres to upgrade from?
       private: false
     - name: postgreql_upgrade_new_version
