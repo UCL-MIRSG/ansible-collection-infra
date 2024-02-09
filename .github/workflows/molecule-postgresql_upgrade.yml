@@ -47,6 +47,6 @@ jobs:
         shell: bash
         run: |
           cd ansible_collections/mirsg/infrastructure/roles/postgresql_upgrade
-          molecule converge \
-          --base-config ../../molecule_configs/${{ matrix.scenario }}_base_config.yml \
-          --scenario-name  ${{ matrix.scenario }}
+          molecule --base-config \
+          ../../molecule_configs/${{ matrix.scenario }}_base_config.yml \
+          converge --scenario-name  ${{ matrix.scenario }}
