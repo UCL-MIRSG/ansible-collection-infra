@@ -3,7 +3,7 @@
     Check if new postgres directory already exists
   ansible.builtin.stat:
     path: "{{ postgresql_upgrade_data_dir }}"
-  register: postgresql_upgrade_new_data_dir_exists
+  register: postgresql_upgrade_new_data_dir
 
 - name: >-
     Fail if new postgres data directory already exists
@@ -12,7 +12,7 @@
       Cannot upgrade because the new postgres directory
       {{ postgresql_upgrade_data_dir }} already exists; this suggests an
       upgrade has already been attempted
-  when: postgresql_upgrade_data_dir.stat.exists and postgresql_upgrade_data_dir.stat.isdir
+  when: postgresql_upgrade_new_data_dir.stat.exists and postgresql_upgrade_new_data_dir.stat.isdir
 
 - name: Back up PostgreSQL
   ansible.builtin.command: "{{ postgreql_upgrade_backup_script }}"
@@ -53,19 +53,22 @@
   changed_when: false
   when: postgresql_upgrade_check_for_oids
 
-- name: Disable previous version of PostgreSQL - {{ postgreql_upgrade_old_version }}
+- name: Disable previous version of PostgreSQL - {{ postgreql_upgrade_current_version }}
   ansible.builtin.service:
-    name: "postgresql-{{ postgreql_upgrade_old_version }}"
+    name: "postgresql-{{ postgreql_upgrade_current_version }}"
     state: stopped
     enabled: false
 
-- name: Install latest configured version of PostgreSQL - {{ postgreql_upgrade_new_version }}
+- name: Install new version of PostgreSQL - {{ postgreql_upgrade_new_version }}
   ansible.builtin.include_role:
     name: mirsg.infrastructure.postgresql
+  vars:
+    postgresql_version: "{{ postgreql_upgrade_new_version }}" # noqa var-naming[no-role-prefix]
+    postgresql_create_database: false
 
 - name: Ensure postgres is not running during configuration change
   ansible.builtin.service:
-    name: "{{ postgresql_upgrade_service_name }}"
+    name: "postgresql-{{ postgreql_upgrade_new_version }}"
     state: stopped
 
 - name: Remove any previous upgrade output
@@ -87,9 +90,9 @@
   ansible.builtin.command:
     cmd: >
       /usr/pgsql-{{ postgreql_upgrade_new_version }}/bin/pg_upgrade -d
-      /var/lib/pgsql/{{ postgreql_upgrade_old_version }}/data -D
+      /var/lib/pgsql/{{ postgreql_upgrade_current_version }}/data -D
       /var/lib/pgsql/{{ postgreql_upgrade_new_version }}/data -b
-      /usr/pgsql-{{ postgreql_upgrade_old_version }}/bin -B
+      /usr/pgsql-{{ postgreql_upgrade_current_version }}/bin -B
       /usr/pgsql-{{ postgreql_upgrade_new_version }}/bin -p 10094 -P 5432
     chdir: "{{ postgresql_upgrade_scripts_dir }}"
   become: true
@@ -98,7 +101,7 @@
 
 - name: Ensure new postgres is running - {{ postgreql_upgrade_new_version }}
   ansible.builtin.service:
-    name: "{{ postgresql_upgrade_service_name }}"
+    name: "postgresql-{{ postgreql_upgrade_new_version }}"
     state: started
     enabled: true
 
@@ -114,7 +117,7 @@
 - name: Show suggested commands for removing old service
   ansible.builtin.debug:
     msg:
-      - "The PostgreSQL {{ postgreql_upgrade_old_version }} service has been disabled \
+      - "The PostgreSQL {{ postgreql_upgrade_current_version }} service has been disabled \
         but you may wish to remove it using the following commands on the db server:"
-      - "sudo yum remove postgresql{{ postgreql_upgrade_old_version }}-server"
-      - "sudo yum remove postgresql{{ postgreql_upgrade_old_version }}-libs"
+      - "sudo yum remove postgresql{{ postgreql_upgrade_current_version }}-server"
+      - "sudo yum remove postgresql{{ postgreql_upgrade_current_version }}-libs"
