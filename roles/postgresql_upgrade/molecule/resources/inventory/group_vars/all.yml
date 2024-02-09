@@ -1,0 +1,22 @@
+---
+external_storage_drive: "/storage/molecule"
+selinux_enabled: false
+
+# mirsg.infrastructure.postgresql
+postgresql_use_ssl: false
+postgresql_database:
+  database_name: "database"
+  user_name: "user"
+  user_password: "password"
+postgresql_connection:
+  host: "molecule.instance.local"
+  port: 5432
+  client_ip: 0.0.0.0
+  listen_addresses: "'*'"
+  subnet_mask: 255.255.255.255
+
+postgreql_upgrade_current_version: "12"
+postgreql_upgrade_new_version: "14"
+postgresql_upgrade_check_for_oids: false
+postgresql_upgrade_data_dir: "/var/lib/pgsql/{{ postgreql_upgrade_new_version }}/data"
+postgresql_upgrade_scripts_dir: "/var/lib/pgsql/{{ postgreql_upgrade_current_version }}/upgrade"
