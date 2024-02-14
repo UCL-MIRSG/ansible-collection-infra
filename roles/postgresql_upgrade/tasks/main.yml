@@ -106,15 +106,6 @@
     state: started
     enabled: true
 
-# Note: The script(s) to run could change for different upgrades; you may need to modify this command each time
-- name: Run scripts produced by upgrade command (NOTE - these could change for each upgrade)
-  ansible.builtin.command:
-    cmd: "{{ postgresql_upgrade_generated_script }}"
-    chdir: "{{ postgresql_upgrade_scripts_dir }}"
-  become: true
-  become_user: postgres
-  changed_when: false
-
 - name: Show suggested commands for removing old service
   ansible.builtin.debug:
     msg:
