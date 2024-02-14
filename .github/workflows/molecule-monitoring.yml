@@ -1,4 +1,7 @@
+---
 name: Test install_monitoring playbook
+
+# yamllint disable-line rule:truthy
 on:
   pull_request:
     paths:

@@ -1,4 +1,7 @@
+---
 name: Test provision_accounts
+
+# yamllint disable-line rule:truthy
 on:
   pull_request:
     paths:
@@ -12,4 +15,5 @@ jobs:
   molecule-provision-accounts:
     uses: ./.github/workflows/molecule.yml
     with:
-      tests-path: ansible_collections/mirsg/infrastructure/roles/provision_accounts
+      tests-path: >-
+        ansible_collections/mirsg/infrastructure/roles/provision_accounts
