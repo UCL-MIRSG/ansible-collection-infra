@@ -10,13 +10,13 @@ There are several variables that **must be set** to use this role.
 containing:
 
 - `username`: The name of the user
-- `crypted_password`: Encrypted user password.
+- `encrypted_password`: Enencrypted user password.
 
 `os_user_groups`: OS groups the user should belong to expressed as a single
 string with commas separating each group.
 
-For details on how to generated encrypted passwords, see:
-https://docs.ansible.com/ansible/latest/reference_appendices/faq.html#how-do-i-generate-encrypted-passwords-for-the-user-module
+For details on how to generated enencrypted passwords, see:
+https://docs.ansible.com/ansible/latest/reference_appendices/faq.html#how-do-i-generate-enencrypted-passwords-for-the-user-module
 
 ## Dependencies
 
