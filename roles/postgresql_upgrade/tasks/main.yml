@@ -89,11 +89,12 @@
 - name: Run PostgreSQL upgrade
   ansible.builtin.command:
     cmd: >
-      /usr/pgsql-{{ postgreql_upgrade_new_version }}/bin/pg_upgrade -d
-      /var/lib/pgsql/{{ postgreql_upgrade_current_version }}/data -D
-      /var/lib/pgsql/{{ postgreql_upgrade_new_version }}/data -b
-      /usr/pgsql-{{ postgreql_upgrade_current_version }}/bin -B
-      /usr/pgsql-{{ postgreql_upgrade_new_version }}/bin -p 10094 -P 5432
+      /usr/pgsql-{{ postgreql_upgrade_new_version }}/bin/pg_upgrade
+      -d /var/lib/pgsql/{{ postgreql_upgrade_current_version }}/data
+      -D /var/lib/pgsql/{{ postgreql_upgrade_new_version }}/data
+      -b /usr/pgsql-{{ postgreql_upgrade_current_version }}/bin
+      -B /usr/pgsql-{{ postgreql_upgrade_new_version }}/bin
+      -p 10094 -P 5432
     chdir: "{{ postgresql_upgrade_scripts_dir }}"
   become: true
   become_user: postgres
