@@ -22,7 +22,7 @@
       private: false
 
   roles:
-    - { role: postgresql_upgrade }
+    - role: mirsg.infrastructure.postgresql_upgrade
 
 - name: Restart related web services
   hosts: web
