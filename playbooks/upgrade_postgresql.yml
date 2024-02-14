@@ -1,19 +1,13 @@
 ---
-- name: Create PG client certificate
+- name: Stop related web services
   hosts: web
   become: true
   gather_facts: true
-
-  pre_tasks:
+  tasks:
     - name: Stop web service
       ansible.builtin.service:
         name: "{{ postgresql_upgrade_related_web_service | default('tomcat') }}"
         state: stopped
-  roles:
-    - role: mirsg.infrastructure.ssl_certificates
-      vars:
-        ssl_certificate: "{{ postgres_client_ssl_certificate }}" # noqa: var-naming[no-role-prefix]
-      when: postgresql_use_ssl
 
 - name: Upgrade postgres
   hosts: db
@@ -30,22 +24,11 @@
   roles:
     - { role: postgresql_upgrade }
 
-- name: Add PG server certificate to client
+- name: Restart related web services
   hosts: web
   become: true
   gather_facts: true
-
   tasks:
-    - name: Get postgres server certificate from cache
-      ansible.builtin.copy:
-        src: "{{ database_server_certificate_cache_filename }}"
-        dest: "{{ postgresql_client.server_certificate_filename }}"
-        owner: "{{ postgresql_client_ssl_certificate.owner }}"
-        group: "{{ postgresql_client_ssl_certificate.group }}"
-        mode: "0600"
-      when: postgresql_use_ssl
-
-  post_tasks:
     - name: Restart web service
       ansible.builtin.service:
         name: "{{ postgresql_upgrade_related_web_service | default('tomcat') }}"
