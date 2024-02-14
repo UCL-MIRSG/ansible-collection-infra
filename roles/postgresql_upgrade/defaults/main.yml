@@ -1,5 +1,4 @@
 ---
-postgresql_upgrade_check_for_oids: true
 postgreql_upgrade_backup_script: /var/lib/pgsql/run_db_backup.sh
 postgresql_upgrade_postgresql_owner: postgres
 postgresql_upgrade_postgresql_group: postgres

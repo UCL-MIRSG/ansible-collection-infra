@@ -20,39 +20,6 @@
   become_user: postgres
   changed_when: false
 
-- name: Query for all tables that have WITH OIDS set
-  community.postgresql.postgresql_query:
-    db: "{{ postgressql_upgrade_database }}"
-    query: >
-      SELECT 'ALTER TABLE "' || n.nspname || '"."' || c.relname || '" SET WITHOUT OIDS;' AS "query"
-      FROM pg_catalog.pg_class c
-      LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
-      WHERE 1=1
-        AND c.relkind = 'r'
-        AND c.relhasoids = true
-        AND n.nspname <> 'pg_catalog'
-      order by n.nspname, c.relname;
-  become: true
-  become_user: postgres
-  register: postgresql_upgrade_tables_with_oids_ddl
-  when: postgresql_upgrade_check_for_oids
-
-- name: Run ALTER statements for tables with OIDS
-  community.postgresql.postgresql_query:
-    db: "{{ postgressql_upgrade_database }}"
-    query: "{{ item.query }}"
-  loop: "{{ postgresql_upgrade_tables_with_oids_ddl.query_result }}"
-  become: true
-  become_user: postgres
-  when: postgresql_upgrade_check_for_oids
-
-- name: Back up PostgreSQL after OIDS edit
-  ansible.builtin.command: "{{ postgreql_upgrade_backup_script }}"
-  become: true
-  become_user: postgres
-  changed_when: false
-  when: postgresql_upgrade_check_for_oids
-
 - name: Disable previous version of PostgreSQL - {{ postgreql_upgrade_current_version }}
   ansible.builtin.service:
     name: "postgresql-{{ postgreql_upgrade_current_version }}"
@@ -66,7 +33,7 @@
     postgresql_version: "{{ postgreql_upgrade_new_version }}" # noqa var-naming[no-role-prefix]
     postgresql_create_database: false
 
-- name: Ensure postgres is not running during configuration change
+- name: Ensure new postgres is not running
   ansible.builtin.service:
     name: "postgresql-{{ postgreql_upgrade_new_version }}"
     state: stopped
