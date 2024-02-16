@@ -26,7 +26,7 @@ groups:
           severity: high
         annotations:
           summary: "{{ $labels.job }} instance {{ $labels.instance }} down"
-          description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 10 minutes."
+          description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes."
 
   - name: metrics
     rules:
