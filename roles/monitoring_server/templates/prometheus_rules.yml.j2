@@ -21,7 +21,7 @@ groups:
 
       - alert: InstanceDown
         expr: up == 0
-        for: 10m
+        for: 5m
         labels:
           severity: high
         annotations:
