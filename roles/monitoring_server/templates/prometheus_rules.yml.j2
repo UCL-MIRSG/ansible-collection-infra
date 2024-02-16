@@ -13,7 +13,7 @@ groups:
     rules:
       - alert: EndpointDown
         expr: probe_success == 0
-        for: 2m
+        for: 5m
         labels:
           severity: critical
         annotations:
