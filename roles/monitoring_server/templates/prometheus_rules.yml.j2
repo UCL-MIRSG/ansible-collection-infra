@@ -3,7 +3,7 @@ groups:
     rules:
       - alert: SSLCertExpiringSoon
         expr: probe_ssl_earliest_cert_expiry - time() < 60 * 60 * 24 * 14
-        for: 1m
+        for: 2m
         labels:
           severity: warning
         annotations:
@@ -13,7 +13,7 @@ groups:
     rules:
       - alert: EndpointDown
         expr: probe_success == 0
-        for: 1m
+        for: 2m
         labels:
           severity: critical
         annotations:
@@ -21,36 +21,36 @@ groups:
 
       - alert: InstanceDown
         expr: up == 0
-        for: 5m
+        for: 10m
         labels:
           severity: high
         annotations:
           summary: "{{ $labels.job }} instance {{ $labels.instance }} down"
-          description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes."
+          description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 10 minutes."
 
   - name: metrics
     rules:
       - alert: MemoryUsageHigh
         expr: 100- node_memory_MemAvailable_bytes/node_memory_MemTotal_bytes*100 > 90
-        for: 5m
+        for: 10m
         labels:
           severity: warning
         annotations:
           summary: Instance memory usage high (Instance:{{ $labels.instance }})
-          description: "Instance memory usage more than 90% within 5 minutes, value:{{ $labels.value }}%"
+          description: "Instance memory usage more than 90% within 10 minutes, value:{{ $labels.value }}%"
 
       - alert: CpuLoadHigh
-        expr: 100 - avg by(instance)(rate(node_cpu_seconds_total{mode="idle"}[5m]))*100 > 90
+        expr: 100 - avg by(instance)(rate(node_cpu_seconds_total{mode="idle"}[10m]))*100 > 90
         for: 0m
         labels:
           severity: warning
         annotations:
           summary: Instance cpu load high (Instance:{{ $labels.instance }})
-          description: "Instance cpu load more than 90% within 5 minutes, value: {{ $labels.value }}%"
+          description: "Instance cpu load more than 90% within 10 minutes, value: {{ $labels.value }}%"
 
       - alert: FilesystemFull
         expr: 100 - node_filesystem_free_bytes{mountpoint!~"/*|/boot.*|/run.*"}/node_filesystem_size_bytes*100 > 90
-        for: 5m
+        for: 10m
         labels:
           severity: warning
         annotations:
