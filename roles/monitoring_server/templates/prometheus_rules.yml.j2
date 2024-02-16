@@ -32,7 +32,7 @@ groups:
     rules:
       - alert: MemoryUsageHigh
         expr: 100- node_memory_MemAvailable_bytes/node_memory_MemTotal_bytes*100 > 90
-        for: 10m
+        for: 5m
         labels:
           severity: warning
         annotations:
