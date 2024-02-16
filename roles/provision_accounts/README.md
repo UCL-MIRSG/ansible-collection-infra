@@ -10,7 +10,7 @@ There are several variables that **must be set** to use this role.
 containing:
 
 - `username`: The name of the user
-- `crypted_password`: Encrypted user password.
+- `encrypted_password`: Encrypted user password.
 
 `os_user_groups`: OS groups the user should belong to expressed as a single
 string with commas separating each group.

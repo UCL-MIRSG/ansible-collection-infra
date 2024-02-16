@@ -6,6 +6,6 @@
     state: present
     groups: "{{ os_users_groups }}"
     append: true
-    password: "{{ item.crypted_password }}"
+    password: "{{ item.encrypted_password }}"
     update_password: always
   loop: "{{ os_users }}"

@@ -1,3 +1,4 @@
+---
 - name: Restart prometheus
   community.docker.docker_container:
     name: "{{ monitoring_server_prometheus.container_name }}"
