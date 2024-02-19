@@ -1,3 +1,4 @@
 ---
 # test this scenario from the roles/postgresql directory with the command
-# molecule --base-config ../../molecule_configs/centos7_base_config.yml test --scenario centos7
+# molecule --base-config ../../molecule_configs/centos7_base_config.yml
+# test --scenario centos7
