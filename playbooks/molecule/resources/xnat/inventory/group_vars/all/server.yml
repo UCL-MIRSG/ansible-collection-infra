@@ -28,6 +28,6 @@ ssl:
 
 # XNAT configuration
 xnat_config:
-  site_name: "MIRSG XNAT"
-  site_description: "<h1>MIRSG XNAT</h1><p>A test instance of XNAT."
+  site_name: MIRSG_XNAT
+  site_description: <h1>MIRSG XNAT</h1><p>A test instance of XNAT.
   admin_password: "{{ vault_admin_password }}"
