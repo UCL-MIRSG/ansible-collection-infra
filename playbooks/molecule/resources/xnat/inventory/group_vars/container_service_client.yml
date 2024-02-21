@@ -1,7 +1,7 @@
 ---
 # mirsg.xnat_container_service
 xnat_container_service_name: "Container Service"
-xnat_container_service_url: "{{ xnat_web_server.url }}/xapi/docker/server"
+xnat_container_service_url: "http://{{ xnat_web_server.host }}/xapi/docker/server"
 xnat_container_service_client_hostname: "{{ hostvars['xnat_web']['hostname'] }}"
 xnat_container_service_validate_certs: "{{ ssl.validate_certs }}"
 
