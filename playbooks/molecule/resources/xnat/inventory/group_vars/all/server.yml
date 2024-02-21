@@ -9,6 +9,8 @@ xnat_web_server:
   ip: "{{ hostvars['xnat_web']['ansible_ip'] }}"
   storage_dir: "{{ external_storage_drive }}/data"
 
+xnat_site_url: "http://localhost:8000"
+
 # database server VM
 xnat_db:
   host: "{{ hostvars['xnat_db']['hostname'] }}"
