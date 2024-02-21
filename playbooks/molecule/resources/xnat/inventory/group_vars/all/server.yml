@@ -4,7 +4,7 @@ external_storage_drive: "/storage/xnat"
 # web server VM
 xnat_web_server:
   host: "{{ hostvars['xnat_web']['hostname'] }}"
-  url: "http://{{ hostvars['xnat_web']['hostname'] }}:8000"
+  url: "http://{{ hostvars['xnat_web']['hostname'] }}:80"
   subnet: "192.168.56.0/24"
   ip: "{{ hostvars['xnat_web']['ansible_ip'] }}"
   storage_dir: "{{ external_storage_drive }}/data"
