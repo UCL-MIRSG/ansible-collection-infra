@@ -37,7 +37,7 @@
 # Subsequently, this should return 401 indicating the password has already been changed and/or the account is disabled.
 - name: "Checking if the default admin credentials are the default values"
   ansible.builtin.uri:
-    url: "{{ xnat_site_url }}/xapi/siteConfig"
+    url: "{{ http://{{ xnat_web_server.host }} }}/xapi/siteConfig"
     user: "admin"
     password: "admin"
     method: GET
@@ -48,7 +48,7 @@
 # If the previous call succeeded, it means the default admin password has not yet been changed so we change it now
 - name: "Changing default admin password"
   ansible.builtin.uri:
-    url: "{{ xnat_site_url }}/xapi/users/admin"
+    url: "{{ http://{{ xnat_web_server.host }} }}/xapi/users/admin"
     user: "admin"
     password: "admin"
     method: PUT
@@ -67,7 +67,7 @@
 # If user is not found (404 or 500) then the service_admin has not yet been created and the default admin is still enabled
 - name: "Check existence of service admin user using default admin"
   ansible.builtin.uri:
-    url: "{{ xnat_site_url }}/xapi/users/{{ xnat_service_admin.username }}"
+    url: "{{ http://{{ xnat_web_server.host }} }}/xapi/users/{{ xnat_service_admin.username }}"
     user: "admin"
     password: "{{ xnat_config.admin_password }}"
     method: GET
@@ -78,7 +78,7 @@
 # If the above service_admin_check failed with a non-authentication error (404, 500), then we create the service account
 - name: "Create service admin user"
   ansible.builtin.uri:
-    url: "{{ xnat_site_url }}/xapi/users/"
+    url: "{{ http://{{ xnat_web_server.host }} }}/xapi/users/"
     user: "admin"
     password: "{{ xnat_config.admin_password }}"
     method: POST
@@ -103,7 +103,7 @@
 # Ensure that the created service_admin user has the correct admin role
 - name: "Set service admin user roles"
   ansible.builtin.uri:
-    url: "{{ xnat_site_url }}/xapi/users/{{ xnat_service_admin.username }}/roles/Administrator"
+    url: "{{ http://{{ xnat_web_server.host }} }}/xapi/users/{{ xnat_service_admin.username }}/roles/Administrator"
     user: "admin"
     password: "{{ xnat_config.admin_password }}"
     method: PUT
@@ -114,7 +114,7 @@
 # Ensure that the created service_admin user is non-expiring
 - name: "Set service admin account to non-expiring"
   ansible.builtin.uri:
-    url: "{{ xnat_site_url }}/xapi/users/{{ xnat_service_admin.username }}/roles/non_expiring"
+    url: "{{ http://{{ xnat_web_server.host }} }}/xapi/users/{{ xnat_service_admin.username }}/roles/non_expiring"
     user: "admin"
     password: "{{ xnat_config.admin_password }}"
     method: PUT
@@ -125,7 +125,7 @@
   # Give the created service_admin access to all data
 - name: "Set service admin role to all data admin"
   ansible.builtin.uri:
-    url: "{{ xnat_site_url }}/xapi/users/{{ xnat_service_admin.username }}/groups/ALL_DATA_ADMIN"
+    url: "{{ http://{{ xnat_web_server.host }} }}/xapi/users/{{ xnat_service_admin.username }}/groups/ALL_DATA_ADMIN"
     user: "admin"
     password: "{{ xnat_config.admin_password }}"
     method: PUT
@@ -136,7 +136,7 @@
 # All further admin actions can then be undertaken using the new service_admin
 - name: "XNAT configuration"
   ansible.builtin.uri:
-    url: "{{ xnat_site_url }}/xapi/siteConfig"
+    url: "{{ http://{{ xnat_web_server.host }} }}/xapi/siteConfig"
     user: "{{ xnat_service_admin.username }}"
     password: "{{ xnat_service_admin.password }}"
     method: POST
@@ -149,7 +149,7 @@
 # The default admin is disabled once it is verified that the service_admin works
 - name: "Disable default admin user"
   ansible.builtin.uri:
-    url: "{{ xnat_site_url }}/xapi/users/admin"
+    url: "{{ http://{{ xnat_web_server.host }} }}/xapi/users/admin"
     user: "{{ xnat_service_admin.username }}"
     password: "{{ xnat_service_admin.password }}"
     method: PUT
@@ -163,7 +163,7 @@
 
 - name: "Disable the guest user"
   ansible.builtin.uri:
-    url: "{{ xnat_site_url }}/xapi/users/guest"
+    url: "{{ http://{{ xnat_web_server.host }} }}/xapi/users/guest"
     user: "{{ xnat_service_admin.username }}"
     password: "{{ xnat_service_admin.password }}"
     method: PUT
