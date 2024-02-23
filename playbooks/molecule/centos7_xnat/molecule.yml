@@ -64,7 +64,6 @@ platforms:
       - name: xnat
         ipv4_address: 192.168.56.3
     exposed_ports:
-      - 22
       - 80
       - 443
       - 8080

@@ -43,7 +43,7 @@ platforms:
       xnat.cserv.local: 192.168.56.4
 
   - name: xnat_web
-    hostname: localhost # necessary to allow redirects outside the Docker network and to avoid CORS issues inside the network
+    hostname: xnat.web.local # other containers on the network use this hostname for connecting
     image: rockylinux/rockylinux:9-ubi-init
     required: true
     command: ""
