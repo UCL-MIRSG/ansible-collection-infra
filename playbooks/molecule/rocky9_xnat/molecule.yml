@@ -43,7 +43,7 @@ platforms:
       xnat.cserv.local: 192.168.56.4
 
   - name: xnat_web
-    hostname: xnat.web.local # other containers on the network use this hostname for connecting
+    hostname: xnat.web.local
     image: rockylinux/rockylinux:9-ubi-init
     required: true
     command: ""
