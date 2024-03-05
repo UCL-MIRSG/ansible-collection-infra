@@ -17,6 +17,5 @@ postgresql_connection:
 
 postgreql_upgrade_current_version: "12"
 postgreql_upgrade_new_version: "14"
-postgresql_upgrade_check_for_oids: false
 postgresql_upgrade_data_dir: "{{ external_storage_drive }}/pgsql/{{ postgreql_upgrade_new_version }}/data"
 postgresql_upgrade_scripts_dir: "/var/lib/pgsql/{{ postgreql_upgrade_current_version }}/upgrade"
