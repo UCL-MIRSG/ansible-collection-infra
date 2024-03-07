@@ -22,7 +22,7 @@ There are no Ansible-Galaxy dependencies for this role.
 
 ## Example Playbook
 
-This role will perform postgresql_upgrade tasks on a managed host. Note that to
+This role will perform `postgresql_upgrade` tasks on a managed host. Note that to
 use this role you will need to make sure that any applications that use the
 associated Postgresql database are stopped before running the role. For
 convenience a [playbook is provided in this
