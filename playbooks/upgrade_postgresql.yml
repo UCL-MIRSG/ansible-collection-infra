@@ -1,0 +1,35 @@
+---
+- name: Stop related web services
+  hosts: web
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Stop web service
+      ansible.builtin.service:
+        name: "{{ postgresql_upgrade_related_web_service | default('tomcat') }}"
+        state: stopped
+
+- name: Upgrade postgres
+  hosts: db
+  become: true
+  gather_facts: true
+  vars_prompt:
+    - name: postgreql_upgrade_current_version
+      prompt: What is the version of postgres to upgrade from?
+      private: false
+    - name: postgreql_upgrade_new_version
+      prompt: What is the version of postgres to upgrade to?
+      private: false
+
+  roles:
+    - role: mirsg.infrastructure.postgresql_upgrade
+
+- name: Restart related web services
+  hosts: web
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Restart web service
+      ansible.builtin.service:
+        name: "{{ postgresql_upgrade_related_web_service | default('tomcat') }}"
+        state: restarted

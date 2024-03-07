@@ -1,3 +1,4 @@
+---
 monitoring_server_hostname: "{{ hostvars['mserv']['hostname'] }}"
 monitoring_server_ssl_cert: "/etc/ssl/certs/{{ monitoring_server_hostname }}.cert"
 monitoring_server_ssl_key: "/etc/ssl/certs/{{ monitoring_server_hostname }}.key"
