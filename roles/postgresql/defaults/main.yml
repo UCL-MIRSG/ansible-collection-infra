@@ -45,3 +45,5 @@ postgresql_storage:
 postgresql_backup:
   directory: "/var/lib/pgsql/backups"
   script: "/var/lib/pgsql/run_db_backup.sh" # script to run cron backup job
+
+postgresql_create_database: true

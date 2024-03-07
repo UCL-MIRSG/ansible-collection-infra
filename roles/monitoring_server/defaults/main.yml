@@ -1,3 +1,4 @@
+---
 monitoring_server_owner: monitoring
 monitoring_server_group: monitoring
 monitoring_server_gid: 595

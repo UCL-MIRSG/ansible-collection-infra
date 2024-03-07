@@ -1,3 +1,4 @@
+---
 monitoring_server_ssl_certificate:
   owner: "{{ monitoring_server_cert_owner }}"
   group: "{{ monitoring_server_cert_group }}"

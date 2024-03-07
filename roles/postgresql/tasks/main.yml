@@ -200,3 +200,4 @@
 - name: Create database
   ansible.builtin.include_tasks:
     file: create_database.yml
+  when: postgresql_create_database

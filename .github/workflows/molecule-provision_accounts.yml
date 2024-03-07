@@ -15,4 +15,5 @@ jobs:
   molecule-provision-accounts:
     uses: ./.github/workflows/molecule.yml
     with:
-      tests-path: ansible_collections/mirsg/infrastructure/roles/provision_accounts
+      tests-path: >-
+        ansible_collections/mirsg/infrastructure/roles/provision_accounts
