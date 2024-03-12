@@ -1,7 +1,11 @@
+---
 name: Test firewalld
+
+# yamllint disable-line rule:truthy
 on:
   pull_request:
     paths:
+      - "molecule_configs/*"
       - "roles/firewalld/**"
       - ".github/workflows/molecule.yml"
       - ".github/workflows/molecule-firewalld.yml"

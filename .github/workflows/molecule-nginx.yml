@@ -1,0 +1,17 @@
+---
+name: Test nginx
+
+# yamllint disable-line rule:truthy
+on:
+  pull_request:
+    paths:
+      - "molecule_configs/*"
+      - "roles/nginx/**"
+      - ".github/workflows/molecule.yml"
+      - ".github/workflows/molecule-nginx.yml"
+
+jobs:
+  molecule-nginx:
+    uses: ./.github/workflows/molecule.yml
+    with:
+      tests-path: ansible_collections/mirsg/infrastructure/roles/nginx

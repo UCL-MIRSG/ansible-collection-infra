@@ -1,11 +1,16 @@
+---
 name: Test install_xnat playbook
+
+# yamllint disable-line rule:truthy
 on:
   pull_request:
     paths:
+      - "molecule_configs/*"
       - "roles/xnat/**"
       - "roles/xnat_container_service/**"
       - "playbooks/install_xnat.yml"
       - "playbooks/install_container_service.yml"
+      - "playbooks/molecule/**/xnat/**"
       - ".github/workflows/molecule-install-xnat.yml"
   release:
     types: [published]
@@ -37,9 +42,14 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get -y install rsync
           python3 -m pip install --upgrade pip
-          python3 -m pip install ansible molecule molecule-plugins[docker] docker requests
+          python3 -m pip install \
+          ansible \
+          molecule \
+          molecule-plugins[docker] \
+          docker \
+          requests
 
       - name: Test with molecule
         run: |
           cd ansible_collections/mirsg/infrastructure/playbooks
-          molecule converge --scenario-name  "${{ matrix.scenario }}"
+          molecule test --scenario-name  "${{ matrix.scenario }}"

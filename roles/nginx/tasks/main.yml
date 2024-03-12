@@ -2,12 +2,13 @@
 - name: Configure SELinux if enabled and enforced
   when: ansible_selinux.status == "enabled" and ansible_selinux.mode == "enforcing"
   block:
-    - name: Configure SELinux to allow nginx to listen on port {{ dicom_port }}
+    - name: Configure SELinux to allow nginx to listen on port {{ nginx_upstream_listen_port }}
       community.general.seport:
-        ports: "{{ dicom_port }}"
+        ports: "{{ nginx_upstream_listen_port }}"
         proto: tcp
         setype: http_port_t
         state: present
+      when: nginx_upstream_listen_port is defined
 
     - name: Configure SELinux to allow httpd to act as relay and keep it persistent across reboots
       ansible.posix.seboolean:
@@ -28,9 +29,9 @@
 
 - name: Ensure nginx certs directory exists
   ansible.builtin.file:
-    path: "{{ nginx.certs_dir }}"
-    owner: "{{ nginx.owner }}"
-    group: "{{ nginx.group }}"
+    path: "{{ nginx_certs_dir }}"
+    owner: "{{ nginx_owner }}"
+    group: "{{ nginx_group }}"
     state: directory
     mode: "0700"
 
@@ -39,27 +40,29 @@
     remote_src: true
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
-    owner: "{{ nginx.owner }}"
-    group: "{{ nginx.group }}"
+    owner: "{{ nginx_owner }}"
+    group: "{{ nginx_group }}"
     mode: "0600"
   with_items:
-    - { src: "{{ ssl.server_cert }}", dest: "{{ nginx.ssl_cert_file }}" }
-    - { src: "{{ ssl.server_key }}", dest: "{{ nginx.ssl_key_file }}" }
+    - src: "{{ nginx_server_cert_cache }}"
+      dest: "{{ nginx_ssl_cert_file }}"
+    - src: "{{ nginx_server_key_cache }}"
+      dest: "{{ nginx_ssl_key_file }}"
   notify: Reload nginx
-  when: ssl.use_ssl
+  when: nginx_use_ssl
 
 - name: Generate Diffie-Hellman (DH) parameters. Number of {{ diffie_helman_size_bits }}.
   community.crypto.openssl_dhparam:
-    path: "{{ nginx.dh_params_file }}"
-    size: "{{ diffie_helman_size_bits }}"
+    path: "{{ nginx_dh_params_file }}"
+    size: "{{ nginx_diffie_helman_size_bits }}"
   notify: Reload nginx
 
 - name: Copy nginx config file
   ansible.builtin.template:
-    src: "nginx.j2"
-    dest: "{{ nginx.conf_file }}"
-    owner: "{{ nginx.owner }}"
-    group: "{{ nginx.group }}"
+    src: "{{ nginx_conf_template }}"
+    dest: "{{ nginx_conf_file }}"
+    owner: "{{ nginx_owner }}"
+    group: "{{ nginx_group }}"
     mode: "0644"
     force: true
   notify: Reload nginx

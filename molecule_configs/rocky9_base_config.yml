@@ -12,7 +12,7 @@ driver:
 platforms:
   - name: instance
     hostname: molecule.instance.local
-    image: ${MOLECULE_DOCKER_IMAGE:-geerlingguy/docker-rockylinux9-ansible:latest}
+    image: rockylinux/rockylinux:9-ubi-init
     required: true
     command: ""
     cgroupns_mode: host
@@ -49,7 +49,7 @@ provisioner:
   playbooks:
     prepare: ../resources/prepare.yml
     converge: ../resources/converge.yml
-    verify: ../resources/converge.yml
+    verify: ../resources/verify.yml
   env:
     ANSIBLE_VERBOSITY: "1"
 

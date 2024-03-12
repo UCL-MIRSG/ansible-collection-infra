@@ -1,0 +1,40 @@
+---
+- name: Install sudo
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Install sudo
+      ansible.builtin.package:
+        name: sudo
+        state: present
+
+- name: Install and configure Flask and Gunicorn
+  hosts: all
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Install python and Flask/Gunicorn dependencies
+      ansible.builtin.include_role:
+        name: mirsg.infrastructure.install_python
+
+    - name: Copy Flask app to host
+      ansible.builtin.copy:
+        src: app.py
+        dest: /home/app.py
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Create Gunicorn service config
+      ansible.builtin.template:
+        src: gunicorn_service.j2
+        dest: /etc/systemd/system/gunicorn.service
+        owner: root
+        group: root
+        mode: "0644"
+        force: true
+
+    - name: Start Gunicorn service
+      ansible.builtin.systemd:
+        name: gunicorn
+        state: restarted

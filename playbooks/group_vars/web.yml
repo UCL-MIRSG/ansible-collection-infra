@@ -76,3 +76,13 @@ firewalld_public_zone_open_services:
 firewalld_work_zone_open_services:
   - http
   - https
+
+# mirsg.infrastructure.nginx
+nginx_use_ssl: "{{ ssl.use_ssl }}"
+nginx_server_name: "{{ xnat_web_server.host }}"
+nginx_upstream_port: 8104
+nginx_upstream_listen_port: 8104
+nginx_proxy_port: 8080 # tomcat
+nginx_root: /usr/share/tomcat/webapps/ROOT
+nginx_app_access_log: "{{ nginx_log_folder }}/xnat.access.log"
+nginx_app_error_log: "{{ nginx_log_folder }}/xnat.error.log"

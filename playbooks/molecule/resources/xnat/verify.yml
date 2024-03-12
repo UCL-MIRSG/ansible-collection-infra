@@ -1,0 +1,18 @@
+---
+- name: Verify XNAT instance is running
+  hosts: localhost
+  tasks:
+    - name: Get server status
+      ansible.builtin.uri:
+        url: http://localhost:8080
+        method: GET
+        validate_certs: false
+        return_content: true
+      register: response
+
+    - name: Check server status and response
+      ansible.builtin.assert:
+        that:
+          - response.status == 200
+          - response.server == "nginx"
+          - "response.content is search('MIRSG XNAT')"

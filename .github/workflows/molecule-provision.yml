@@ -1,7 +1,11 @@
+---
 name: Test provision
+
+# yamllint disable-line rule:truthy
 on:
   pull_request:
     paths:
+      - "molecule_configs/*"
       - "roles/provision/**"
       - ".github/workflows/molecule.yml"
       - ".github/workflows/molecule-provision.yml"
