@@ -1,9 +1,14 @@
 ---
-- name: Prepare - install sudo
+- name: Prepare - install sudo and latest version of Java
   hosts: all
   gather_facts: true
   tasks:
     - name: Install sudo
       ansible.builtin.package:
         name: sudo
+        state: present
+
+    - name: Install latest version of Java
+      ansible.builtin.package:
+        name: java-21-openjdk-devel
         state: present
