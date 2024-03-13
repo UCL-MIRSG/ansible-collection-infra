@@ -1,5 +1,5 @@
 ---
-- name: Prepare - install sudo and latest version of Java
+- name: Prepare - install sudo and Java 17
   hosts: all
   gather_facts: true
   tasks:
@@ -8,7 +8,7 @@
         name: sudo
         state: present
 
-    - name: Install latest version of Java
+    - name: Install Java 17 before the role installs Java 8
       ansible.builtin.package:
-        name: java-21-openjdk-devel
+        name: java-17-openjdk-devel
         state: present
