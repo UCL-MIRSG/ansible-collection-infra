@@ -20,5 +20,5 @@ passed in as parameters) is always nice for users too:
 ```yaml
 - hosts: servers
   roles:
-    - { role: mirsg.infrastructure.install_java }
+    - role: mirsg.infrastructure.install_java
 ```
