@@ -3,4 +3,3 @@ java_profile_d: /etc/profile.d
 java_home: /usr/lib/jvm/jre
 java_package: java-1.8.0-openjdk
 java_package_version: devel
-java_keystore_path: /usr/lib/jvm/jre/lib/security/cacerts/
