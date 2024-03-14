@@ -1,0 +1,17 @@
+---
+name: Test install_java
+
+# yamllint disable-line rule:truthy
+on:
+  pull_request:
+    paths:
+      - "molecule_configs/*"
+      - "roles/install_java/**"
+      - ".github/workflows/molecule.yml"
+      - ".github/workflows/molecule-java.yml"
+
+jobs:
+  molecule-java:
+    uses: ./.github/workflows/molecule.yml
+    with:
+      tests-path: ansible_collections/mirsg/infrastructure/roles/install_java
