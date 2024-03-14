@@ -1,7 +1,11 @@
+---
 name: Test Python
+
+# yamllint disable-line rule:truthy
 on:
   pull_request:
     paths:
+      - "molecule_configs/*"
       - "roles/install_python/**"
       - ".github/workflows/molecule.yml"
       - ".github/workflows/molecule-python.yml"

@@ -1,4 +1,13 @@
 ---
+- name: Install sudo
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Install sudo
+      ansible.builtin.package:
+        name: sudo
+        state: present
+
 - name: Install and configure Flask and Gunicorn
   hosts: all
   become: true

@@ -1,0 +1,55 @@
+---
+name: Test PostgreSQL Upgrade
+
+# yamllint disable-line rule:truthy
+on:
+  pull_request:
+    paths:
+      - "molecule_configs/*"
+      - "roles/postgresql_upgrade/**"
+      - ".github/workflows/molecule.yml"
+      - ".github/workflows/molecule-postgresql_upgrade.yml"
+
+jobs:
+  molecule-postgresql_upgrade:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        scenario:
+          - centos7
+          - rocky9
+    env:
+      PY_COLORS: 1
+      ANSIBLE_FORCE_COLOR: 1
+
+    steps:
+      - name: Check out the codebase
+        uses: actions/checkout@v4
+        with:
+          path: ansible_collections/mirsg/infrastructure
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install test dependencies
+        shell: bash
+        run: |
+          sudo apt-get update && sudo apt-get -y install rsync
+          python3 -m pip install --upgrade pip
+          python3 -m pip install \
+          ansible \
+          molecule \
+          molecule-plugins[docker] \
+          docker \
+          requests
+
+      - name: Test with molecule
+        shell: bash
+        run: |
+          cd ansible_collections/mirsg/infrastructure/roles/postgresql_upgrade
+          molecule --base-config \
+          ../../molecule_configs/${{ matrix.scenario }}_base_config.yml \
+          converge --scenario-name  ${{ matrix.scenario }}

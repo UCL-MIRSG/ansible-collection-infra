@@ -1,0 +1,16 @@
+---
+- name: Verify correct java version is selected
+  hosts: all
+  tasks:
+    - name: Get Java version
+      ansible.builtin.shell:
+        cmd: |
+          set -o pipefail
+          java -version 2>&1 | grep version | awk '{print $3}' | sed 's/"//g'
+      register: java_version
+      changed_when: false
+
+    - name: Check the java version is correct
+      ansible.builtin.assert:
+        that:
+          - java_version.stdout | split("_") | first is version('1.8.0')

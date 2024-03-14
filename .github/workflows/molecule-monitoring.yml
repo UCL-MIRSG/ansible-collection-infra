@@ -1,7 +1,11 @@
+---
 name: Test install_monitoring playbook
+
+# yamllint disable-line rule:truthy
 on:
   pull_request:
     paths:
+      - "molecule_configs/*"
       - "roles/monitoring_client/**"
       - "roles/monitoring_server/**"
       - ".github/workflows/molecule-monitoring.yml"

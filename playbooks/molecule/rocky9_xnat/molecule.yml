@@ -12,7 +12,7 @@ driver:
 platforms:
   - name: xnat_db
     hostname: xnat.db.local
-    image: geerlingguy/docker-rockylinux9-ansible:latest
+    image: rockylinux/rockylinux:9-ubi-init
     required: true
     command: ""
     cgroupns_mode: host
@@ -43,7 +43,7 @@ platforms:
 
   - name: xnat_web
     hostname: xnat.web.local
-    image: geerlingguy/docker-rockylinux9-ansible:latest
+    image: rockylinux/rockylinux:9-ubi-init
     required: true
     command: ""
     cgroupns_mode: host
@@ -69,14 +69,14 @@ platforms:
       - 8080
       - 8104
     published_ports:
-      - 127.0.0.1:8000:80
+      - 127.0.0.1:8080:80
     etc_hosts:
       xnat.db.local: 192.168.56.2
       xnat.cserv.local: 192.168.56.4
 
   - name: xnat_cserv
     hostname: xnat.cserv.local
-    image: geerlingguy/docker-rockylinux9-ansible:latest
+    image: rockylinux/rockylinux:9-ubi-init
     required: true
     command: ""
     cgroupns_mode: host

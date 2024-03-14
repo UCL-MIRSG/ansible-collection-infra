@@ -1,0 +1,23 @@
+---
+- name: Install postgresql
+  hosts: all
+  gather_facts: true
+  pre_tasks:
+    - name: Install sudo
+      ansible.builtin.package:
+        name: sudo
+        state: present
+
+    - name: Install crontabs
+      ansible.builtin.yum:
+        name: cronie
+        state: present
+
+    - name: Start crontabs service
+      ansible.builtin.service:
+        name: crond.service
+        state: started
+        enabled: true
+  roles:
+    - role: mirsg.infrastructure.provision
+    - role: mirsg.infrastructure.postgresql

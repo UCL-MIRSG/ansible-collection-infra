@@ -1,7 +1,11 @@
+---
 name: Test PostgreSQL
+
+# yamllint disable-line rule:truthy
 on:
   pull_request:
     paths:
+      - "molecule_configs/*"
       - "roles/postgresql/**"
       - ".github/workflows/molecule.yml"
       - ".github/workflows/molecule-postgresql.yml"
