@@ -1,4 +1,23 @@
 ---
+ansible_cache_dir: "{{ lookup('env', 'HOME') }}/ansible_persistent_files"
+
+xnat_data_dir: "/data"
+xnat_root_dir: "{{ xnat_data_dir }}/xnat"
+xnat_home_dir: "{{ xnat_root_dir }}/home"
+
+database_server_certificate_cache_filename: "{{ ansible_cache_dir }}/pg_certificates/{{ xnat_db.host }}.pg.server.crt"
+database_client_certificate_cache_filename: "{{ ansible_cache_dir }}/pg_certificates/{{ xnat_db.host }}.pg.client.crt"
+
+# mirsg.infrastructure.postgresql - download and install - we need to do this on both the web server and the db
+postgresql_install:
+  disable_gpg_check: false
+  rpm: >-
+    https://download.postgresql.org/pub/repos/yum/reporpms/EL-{{
+    ansible_facts['distribution_major_version'] }}-{{
+    ansible_facts['architecture'] }}/pgdg-redhat-repo-latest.noarch.rpm
+  yum_package: "postgresql{{ postgresql_version }}-server"
+  yum_contrib_package: "postgresql{{ postgresql_version }}-contrib" # required only on CentOS 7
+
 # XNAT configuration shared between all servers
 xnat_common_config:
   admin_email: "xnatadmin@{{ hostvars['xnat_web']['hostname'] }}"
