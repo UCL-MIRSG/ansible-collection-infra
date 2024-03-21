@@ -1,6 +1,7 @@
 # defaults for omero-server
 ---
 omero_server_database_backupdir: "{{ omero_server_datadir }}/upgrade_backups"
+omero_server_basedir: /opt/omero/server
 
 omero_server_release: "5.6.9"
 # omero_server_release: present
@@ -16,7 +17,7 @@ omero_server_rootpassword: omero
 
 # OMERO system user
 omero_server_system_user: omero-server
-omero_server_system_user_manage: true
+omero_server_system_user_manage: false
 
 # OMERO system user ID (If not defined one is chosen automatically)
 # omero_server_system_uid:
@@ -59,7 +60,7 @@ omero_server_systemd_environment: {}
 omero_server_python_addons: []
 
 # If true disable anonymous ciphers and use self-signed certificates
-omero_server_selfsigned_certificates: false
+omero_server_selfsigned_certificates: true
 
 omero_server_ice_version: "3.6"
 
@@ -135,9 +136,6 @@ omero_server_database_manage: true
 # DEVELOPMENT: Automatically create and configure OMERO data directories
 omero_server_datadir_manage: true
 
-# Base directory for the server installation
-omero_server_basedir: "{{ omero_common_basedir }}/server"
-
 # Symlink to the currently installed OMERO.server
 omero_server_symlink: OMERO.server
 
@@ -192,12 +190,13 @@ omero_server_ldap_enabled: false
 omero_server_ldap_name: ""
 omero_server_ldap_address: ""
 omero_server_ldap_userdn: ""
-omero_server_ldap_password: "{{ vault_ldap_password | default(omit) }}"
+omero_server_ldap_password: ""
 omero_server_ldap_base: ""
 omero_server_ldap_filter: ""
 omero_server_ldap_ca_cert: ""
 omero_server_ldap_keystore_alias: ""
 omero_server_ldap_new_user_group: "My Data"
+omero_server_java_keystore_path: /usr/lib/jvm/jre/lib/security/cacerts/
 
 omero_server_default_config:
   omero.db.poolsize: "{{ omero_db.poolsize }}"
@@ -211,10 +210,10 @@ omero_server_default_config:
   omero.ldap.new_user_group: "{{ omero_server_ldap_new_user_group }}"
   omero.ldap.urls: "{{ omero_server_ldap_address }}"
   omero.security.ignore_case: true
-  omero.security.keyStore: "{{ java_keystore.keystore_path }}"
-  omero.security.trustStore: "{{ java_keystore.keystore_path }}"
-  omero.security.keyStorePassword: "{{ java_keystore.keystore_pass }}"
-  omero.security.trustStorePassword: "{{ java_keystore.keystore_pass }}"
+  omero.security.keyStore: "{{ omero_server_java_keystore_path }}"
+  omero.security.trustStore: "{{ omero_server_java_keystore_path }}"
+  omero.security.keyStorePassword: "{{ omero_server_java_keystore_pass }}"
+  omero.security.trustStorePassword: "{{ omero_server_java_keystore_pass }}"
 
 omero_server_config_set: "{{ omero_server_default_config | ansible.builtin.combine(omero_server_extra_config | default({})) }}"
 
