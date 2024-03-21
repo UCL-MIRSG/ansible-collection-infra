@@ -3,18 +3,15 @@
   hosts: omero
   become: true
   pre_tasks:
-    - name: Create omero_server_system_user and home directory if they don't exist
-      when: "'omero' in group_names"
-      block:
-        - name: Create omero server system user
-          become: true
-          ansible.builtin.user:
-            name: "{{ omero_server_system_user }}"
-            home: "{{ omero_server_basedir }}"
-            createhome: false
-            state: present
-            system: true
-            uid: "{{ omero_server_system_uid | default(omit) }}"
+    - name: Create omero server system user
+      become: true
+      ansible.builtin.user:
+        name: "{{ omero_server_system_user }}"
+        home: "{{ omero_server_basedir }}"
+        createhome: false
+        state: present
+        system: true
+        uid: "{{ omero_server_system_uid | default(omit) }}"
 
     - name: Create a directory for upgrade backups
       ansible.builtin.file:
@@ -26,6 +23,7 @@
   roles:
     - role: mirsg.infrastructure.provision
     - role: mirsg.infrastructure.install_python
+    - role: mirsg.infrastructure.install_java
     - role: mirsg.infrastructure.ssl_certificates
       vars:
         ssl_certificate: "{{ postgresql_client_ssl_certificate }}" # noqa: var-naming[no-role-prefix]
@@ -48,4 +46,7 @@
     - role: ome.omero_web
     - role: ome.omero_user
     - role: mirsg.infrastructure.nginx
+      vars:
+        nginx_conf_template: omero-web-nginx-conf.j2
+        nginx_conf_file: /etc/nginx/conf.d/omero-web.conf
     - role: mirsg.infrastructure.firewalld
