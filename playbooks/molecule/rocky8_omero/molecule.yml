@@ -1,0 +1,98 @@
+---
+dependency:
+  name: galaxy
+  options:
+    force: true
+    role-file: ${MOLECULE_SCENARIO_DIRECTORY}/../../../meta/requirements.yml
+    requirements-file: ${MOLECULE_SCENARIO_DIRECTORY}/../../../meta/requirements.yml
+
+driver:
+  name: docker
+
+platforms:
+  - name: omero_db
+    hostname: omero.db.local
+    image: rockylinux/rockylinux:8-ubi-init
+    required: true
+    command: ""
+    cgroupns_mode: host
+    privileged: true
+    pre_build_image: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+      - ./OMERO:/storage/OMERO
+      # - ${MOLECULE_SCENARIO_DIRECTORY}/../resources/omero/files/resolv.conf:/etc/resolv.conf
+    keep_volumes: false
+    groups:
+      - molecule_omero
+      - db
+    docker_networks:
+      - name: omero
+        ipam_config:
+          - subnet: 192.168.56.0/24
+            gateway: 192.168.56.1
+    networks:
+      - name: omero
+        ipv4_address: 192.168.56.2
+    exposed_ports:
+      - 5432
+    etc_hosts:
+      omero.server.local: 192.168.56.3
+
+  - name: omero_server_web
+    hostname: omero.server.local
+    image: rockylinux/rockylinux:8-ubi-init
+    required: true
+    command:
+    cgroupns_mode: host
+    privileged: true
+    pre_build_image: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+      - ./OMERO:/storage/OMERO
+      # - ${MOLECULE_SCENARIO_DIRECTORY}/../resources/omero/files/resolv.conf:/etc/resolv.conf
+    keep_volumes: false
+    groups:
+      - molecule_omero
+      - omero
+    networks:
+      - name: omero
+        ipv4_address: 192.168.56.3
+    exposed_ports:
+      - 80
+      - 443
+      - 4063
+      - 4064
+    published_ports:
+      - 127.0.0.1:4063:4063
+      - 127.0.0.1:4064:4064
+    etc_hosts:
+      omero.db.local: 192.168.56.2
+
+provisioner:
+  name: ansible
+  log: true
+  config_options:
+    defaults:
+      callbacks_enabled: profile_tasks, timer, yaml
+      stdout_callback: yaml
+      vault_password_file: ${MOLECULE_SCENARIO_DIRECTORY}/../resources/omero/.vault_password
+  inventory:
+    links:
+      hosts: ../resources/omero/inventory/hosts.yml
+      group_vars: ../resources/omero/inventory/group_vars/
+  playbooks:
+    prepare: prepare.yml
+    converge: converge.yml
+  env:
+    ANSIBLE_VERBOSITY: "1"
+
+verifier:
+  name: ansible
+  env:
+    ANSIBLE_VERBOSITY: "1"
+
+lint: |
+  set -e
+  yamllint .
+  ansible-lint .

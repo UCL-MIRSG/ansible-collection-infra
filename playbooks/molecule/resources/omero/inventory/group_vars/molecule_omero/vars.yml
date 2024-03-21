@@ -1,0 +1,102 @@
+---
+ansible_cache_dir: "{{ lookup('env', 'HOME') }}/ansible_persistent_files"
+
+database_server_certificate_cache_filename: "{{ ansible_cache_dir }}/pg_certificates/{{ omero_db.host }}.pg.server.crt"
+database_client_certificate_cache_filename: "{{ ansible_cache_dir }}/pg_certificates/{{ omero_db.host }}.pg.client.crt"
+
+# mirsg.infrastructure.postgresql - download and install - we need to do this on both the web server and the db
+postgresql_install:
+  disable_gpg_check: false
+  rpm: >-
+    https://download.postgresql.org/pub/repos/yum/reporpms/EL-{{
+    ansible_facts['distribution_major_version'] }}-{{
+    ansible_facts['architecture'] }}/pgdg-redhat-repo-latest.noarch.rpm
+  yum_package: "postgresql{{ postgresql_version }}-server"
+  yum_client_package: "postgresql{{ postgresql_version }}"
+
+# omero_server, omero_web vm
+omero_server:
+  host: "{{ hostvars['omero_server_web']['hostname'] }}"
+  url: "https://{{ hostvars['omero_server_web']['hostname'] }}"
+  ip: "{{ hostvars['omero_server_web']['ansible_ip'] }}"
+  storage_dir: /OMERO
+  subnet: "192.168.56.0/24"
+  dbhost: "{{ hostvars['omero_db']['hostname'] }}"
+  rootpassword: "{{ vault_omero_rootpassword }}"
+
+# database server VM
+omero_db:
+  host: "{{ hostvars['omero_db']['hostname'] }}"
+  port: 5432
+  listen_addresses: "*"
+  postgresql_database: omero
+  postgresql_user: omero
+  postgresql_password: "{{ vault_postgres_omero_password }}"
+  storage_dir: /var/lib/pgsql
+  data_dir: "/var/lib/pgsql/{{ postgresql_version }}/data"
+  backups_dir: /var/lib/pgsql/backups
+  poolsize: 10
+
+ssl_certificate:
+  owner: root
+  group: root
+  certificate_directory: /etc/ssl/certs
+  privatekey_filename: "/etc/ssl/certs/{{ hostvars['omero_server_web']['hostname'] }}.key"
+  use_pk8: false
+  csr_filename: "/etc/ssl/certs/{{ hostvars['omero_server_web']['hostname'] }}.csr"
+  csr_common_name: "{{ hostvars['omero_server_web']['hostname'] }}"
+  certificate_filename: "/etc/ssl/certs/{{ hostvars['omero_server_web']['hostname'] }}.cert"
+  provider: selfsigned
+
+# SSL certificate settings
+ssl:
+  use_ssl: true
+  server_cert: "/etc/ssl/certs/{{ hostvars['omero_server_web']['hostname'] }}.cert"
+  server_key: "/etc/ssl/certs/{{ hostvars['omero_server_web']['hostname'] }}.key"
+
+postgresql_version: "14"
+postgresql_use_ssl: false
+postgresql_ssl_mode: disable
+
+# keystore used for ldap
+omero_server_java_keystore_pass: keystore
+
+selinux_enabled: false
+
+# mirsg.infrastructure.install_python
+install_python:
+  version: "3"
+  pip_version: 21.2.3
+  pip_executable: /usr/bin/pip3
+  system_packages:
+    - python3
+    - python3-pip
+    - python3-setuptools
+  pip_packages:
+    - cryptography
+
+omero_additional_groups:
+  - name: public
+    type: read-only
+
+omero_additional_users:
+  - login: service_user
+    firstname: SERVICE
+    lastname: ADMIN
+    password: "{{ vault_service_admin_password }}"
+    groups: --group-name system
+  - login: public_user
+    firstname: public
+    lastname: user
+    password: "{{ vault_public_user_password }}"
+    groups: --group-name public
+
+omero_web_inventory_config:
+  omero.web.public.enabled: true
+  omero.web.public.server_id: 1
+  omero.web.public.user: public_user
+  omero.web.public.password: "{{ vault_public_user_password }}"
+  omero.web.public.url_filter: ^/webclient/?show=project-1/(?!archived_files|download_as)
+
+omero_server_system_user: omero-server
+omero_server_upgrade: false
