@@ -59,6 +59,12 @@ install_python:
   pip_packages:
     - cryptography
 
+omero_server_config_set:
+  omero.db.poolsize: "{{ db_server.poolsize }}"
+  omero.db.properties: "ssl={{ postgresql_use_ssl }}&\
+    sslmode={{ postgresql_ssl_mode }}"
+  omero.ldap.config: true
+
 omero_additional_groups:
   - name: public
     type: read-only

@@ -185,37 +185,5 @@ omero_server_omego_db_backup_options: >
   --dbname {{ omero_server_dbname | quote }}
   --dbpass {{ omero_server_dbpassword | quote }}
 
-# LDAP configuration
-omero_server_ldap_enabled: false
-omero_server_ldap_name: ""
-omero_server_ldap_address: ""
-omero_server_ldap_userdn: ""
-omero_server_ldap_password: ""
-omero_server_ldap_base: ""
-omero_server_ldap_filter: ""
-omero_server_ldap_ca_cert: ""
-omero_server_ldap_keystore_alias: ""
-omero_server_ldap_new_user_group: "My Data"
-omero_server_java_keystore_path: /usr/lib/jvm/jre/lib/security/cacerts/
-
-omero_server_default_config:
-  omero.db.poolsize: "{{ omero_db.poolsize }}"
-  omero.db.properties: "ssl={{ postgresql_use_ssl }}&\
-    sslmode={{ postgresql_ssl_mode }}"
-  omero.ldap.config: "{{ omero_server_ldap_enabled }}"
-  omero.ldap.base: "{{ omero_server_ldap_base }}"
-  omero.ldap.username: "{{ omero_server_ldap_userdn }}"
-  omero.ldap.password: "{{ omero_server_ldap_password }}"
-  omero.ldap.user_filter: "{{ omero_server_ldap_filter }}"
-  omero.ldap.new_user_group: "{{ omero_server_ldap_new_user_group }}"
-  omero.ldap.urls: "{{ omero_server_ldap_address }}"
-  omero.security.ignore_case: true
-  omero.security.keyStore: "{{ omero_server_java_keystore_path }}"
-  omero.security.trustStore: "{{ omero_server_java_keystore_path }}"
-  omero.security.keyStorePassword: "{{ omero_server_java_keystore_pass }}"
-  omero.security.trustStorePassword: "{{ omero_server_java_keystore_pass }}"
-
-omero_server_config_set: "{{ omero_server_default_config | ansible.builtin.combine(omero_server_extra_config | default({})) }}"
-
 omero_server_additional_groups: {}
 omero_server_additional_users: []
