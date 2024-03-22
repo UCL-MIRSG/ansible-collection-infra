@@ -24,6 +24,7 @@ platforms:
       - ${MOLECULE_SCENARIO_DIRECTORY}/../resources/shared/resolv.conf:/etc/resolv.conf
     keep_volumes: false
     groups:
+      - all
       - molecule_omero
       - db
     docker_networks:
@@ -53,6 +54,7 @@ platforms:
       - ${MOLECULE_SCENARIO_DIRECTORY}/../resources/shared/resolv.conf:/etc/resolv.conf
     keep_volumes: false
     groups:
+      - all
       - molecule_omero
       - omero
     networks:
