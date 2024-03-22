@@ -90,7 +90,7 @@ omero_additional_users:
     password: "{{ vault_public_user_password }}"
     groups: --group-name public
 
-omero_web_inventory_config:
+omero_web_extra_config:
   omero.web.public.enabled: true
   omero.web.public.server_id: 1
   omero.web.public.user: public_user
