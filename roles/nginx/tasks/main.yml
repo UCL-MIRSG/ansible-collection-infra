@@ -34,6 +34,7 @@
     group: "{{ nginx_group }}"
     state: directory
     mode: "0700"
+  when: nginx_use_ssl
 
 - name: Copy server certificates to nginx
   ansible.builtin.copy:
