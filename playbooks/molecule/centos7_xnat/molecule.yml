@@ -20,7 +20,7 @@ platforms:
     pre_build_image: true
     volumes:
       - ./xnat-data:/storage/xnat
-      - ${MOLECULE_SCENARIO_DIRECTORY}/../resources/xnat/files/resolv.conf:/etc/resolv.conf
+      - ${MOLECULE_SCENARIO_DIRECTORY}/../resources/shared/resolv.conf:/etc/resolv.conf
     keep_volumes: false
     groups:
       - all
@@ -50,7 +50,7 @@ platforms:
     pre_build_image: true
     volumes:
       - ./xnat-data:/storage/xnat
-      - ${MOLECULE_SCENARIO_DIRECTORY}/../resources/xnat/files/resolv.conf:/etc/resolv.conf
+      - ${MOLECULE_SCENARIO_DIRECTORY}/../resources/shared/resolv.conf:/etc/resolv.conf
     keep_volumes: false
     groups:
       - all
@@ -82,7 +82,7 @@ platforms:
     pre_build_image: true
     volumes:
       - ./xnat-data:/storage/xnat
-      - ${MOLECULE_SCENARIO_DIRECTORY}/../resources/xnat/files/resolv.conf:/etc/resolv.conf
+      - ${MOLECULE_SCENARIO_DIRECTORY}/../resources/shared/resolv.conf:/etc/resolv.conf
     keep_volumes: false
     groups:
       - all

@@ -21,7 +21,7 @@ platforms:
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
       - ./OMERO:/storage/OMERO
-      - ${MOLECULE_SCENARIO_DIRECTORY}/../resources/omero/files/resolv.conf:/etc/resolv.conf
+      - ${MOLECULE_SCENARIO_DIRECTORY}/../resources/shared/resolv.conf:/etc/resolv.conf
     keep_volumes: false
     groups:
       - molecule_omero
@@ -50,7 +50,7 @@ platforms:
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
       - ./OMERO:/storage/OMERO
-      - ${MOLECULE_SCENARIO_DIRECTORY}/../resources/omero/files/resolv.conf:/etc/resolv.conf
+      - ${MOLECULE_SCENARIO_DIRECTORY}/../resources/shared/resolv.conf:/etc/resolv.conf
     keep_volumes: false
     groups:
       - molecule_omero
