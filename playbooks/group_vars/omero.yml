@@ -42,7 +42,7 @@ omero_server_database_backupdir: "{{ web_server.storage_dir }}/upgrade_backups"
 omero_server_basedir: "{{ omero_common_basedir }}/server"
 # set rootpassword in vault
 omero_server_rootpassword: "{{ vault_omero_rootpassword }}"
-
+omero_server_java_keystore_path: /usr/lib/jvm/jre/lib/security/cacerts/
 omero_server_dbhost: "{{ web_server.dbhost }}"
 omero_server_dbuser: "{{ db_server.postgresql_user }}"
 omero_server_dbname: "{{ db_server.postgresql_database }}"
