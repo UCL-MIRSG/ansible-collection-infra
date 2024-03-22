@@ -2,13 +2,14 @@ upstream omeroweb {
     server 127.0.0.1:4080 fail_timeout=0;
 }
 
+{% if nginx_use_ssl %}
 server {
     listen {{ nginx_http_port }};
 
     server_name {{ omero_server.host }};
     return 301 https://{{ omero_server.host }}:{{ nginx_https_port }}$request_uri;
 }
-
+{% endif %}
 server {
     listen 80;
     server_name $hostname;
@@ -16,6 +17,7 @@ server {
     sendfile on;
     client_max_body_size 0;
 
+{% if nginx_use_ssl %}
     # OMERO.web SSL configuration
     listen 443 ssl;
 
@@ -38,7 +40,7 @@ server {
 
     # Enable HSTS - this requests browsers to only contact the server using TLS
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
-
+{% endif %}
     # maintenance page serve from here
     location @maintenance {
         root /opt/omero/web/OMERO.web/etc/templates/error;
