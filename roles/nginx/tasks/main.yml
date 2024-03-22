@@ -52,11 +52,12 @@
   notify: Reload nginx
   when: nginx_use_ssl
 
-- name: Generate Diffie-Hellman (DH) parameters. Number of {{ diffie_helman_size_bits }}.
+- name: Generate Diffie-Hellman (DH) parameters. Number of {{ nginx_diffie_helman_size_bits }}.
   community.crypto.openssl_dhparam:
     path: "{{ nginx_dh_params_file }}"
     size: "{{ nginx_diffie_helman_size_bits }}"
   notify: Reload nginx
+  when: nginx_use_ssl
 
 - name: Copy nginx config file
   ansible.builtin.template:
