@@ -82,7 +82,7 @@ provisioner:
       hosts: ../resources/omero/inventory/hosts.yml
       group_vars: ../resources/omero/inventory/group_vars/
   playbooks:
-    prepare: prepare.yml
+    prepare: ../resources/shared/prepare.yml
     converge: converge.yml
   env:
     ANSIBLE_VERBOSITY: "1"
