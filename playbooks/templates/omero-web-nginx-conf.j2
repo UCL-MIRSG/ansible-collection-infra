@@ -6,8 +6,8 @@ upstream omeroweb {
 server {
     listen {{ nginx_http_port }};
 
-    server_name {{ omero_server.host }};
-    return 301 https://{{ omero_server.host }}:{{ nginx_https_port }}$request_uri;
+    server_name {{ web_server.host }};
+    return 301 https://{{ web_server.host }}:{{ nginx_https_port }}$request_uri;
 }
 {% endif %}
 server {

@@ -11,7 +11,7 @@ postgresql_client_ssl_certificate:
   use_pk8: true
   pk8_filename: /opt/omero/server/.postgresql/postgresql.pk8
   csr_filename: /opt/omero/server/.postgresql/postgresql.csr
-  csr_common_name: "{{ omero_server.host }}"
+  csr_common_name: "{{ web_server.host }}"
   certificate_filename: /opt/omero/server/.postgresql/postgresql.crt
   provider: selfsigned
   cache_filename: "{{ database_client_certificate_cache_filename }}" # where to store the client certificate in cache
@@ -38,16 +38,16 @@ firewalld_work_zone_ports:
 omero_common_basedir: /opt/omero
 
 # ome.omero_server
-omero_server_database_backupdir: "{{ omero_server.storage_dir }}/upgrade_backups"
+omero_server_database_backupdir: "{{ web_server.storage_dir }}/upgrade_backups"
 omero_server_basedir: "{{ omero_common_basedir }}/server"
 # set rootpassword in vault
 omero_server_rootpassword: "{{ vault_omero_rootpassword }}"
 
-omero_server_dbhost: "{{ omero_server.dbhost }}"
-omero_server_dbuser: "{{ omero_db.postgresql_user }}"
-omero_server_dbname: "{{ omero_db.postgresql_database }}"
-omero_server_dbpassword: "{{ omero_db.postgresql_password }}"
-omero_server_datadir: "{{ omero_server.storage_dir }}"
+omero_server_dbhost: "{{ web_server.dbhost }}"
+omero_server_dbuser: "{{ db_server.postgresql_user }}"
+omero_server_dbname: "{{ db_server.postgresql_database }}"
+omero_server_dbpassword: "{{ db_server.postgresql_password }}"
+omero_server_datadir: "{{ web_server.storage_dir }}"
 
 # ome.omero_web
 # don't install nginx using ome.omero_web role
@@ -83,6 +83,7 @@ nginx_server_cert_cache: "{{ ssl.server_cert }}"
 nginx_server_key_cache: "{{ ssl.server_key }}"
 
 # ome.omero_user
+omero_user_system: "{{ omero_server_system_user }}"
 omero_user_admin_user: root
 omero_user_admin_pass: "{{ omero_server_rootpassword }}"
 omero_group_create: "{{ omero_additional_groups | default({}) }}"

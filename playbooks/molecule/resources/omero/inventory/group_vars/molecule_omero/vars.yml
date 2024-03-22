@@ -1,21 +1,6 @@
 ---
-ansible_cache_dir: "{{ lookup('env', 'HOME') }}/ansible_persistent_files"
-
-database_server_certificate_cache_filename: "{{ ansible_cache_dir }}/pg_certificates/{{ omero_db.host }}.pg.server.crt"
-database_client_certificate_cache_filename: "{{ ansible_cache_dir }}/pg_certificates/{{ omero_db.host }}.pg.client.crt"
-
-# mirsg.infrastructure.postgresql - download and install - we need to do this on both the web server and the db
-postgresql_install:
-  disable_gpg_check: false
-  rpm: >-
-    https://download.postgresql.org/pub/repos/yum/reporpms/EL-{{
-    ansible_facts['distribution_major_version'] }}-{{
-    ansible_facts['architecture'] }}/pgdg-redhat-repo-latest.noarch.rpm
-  yum_package: "postgresql{{ postgresql_version }}-server"
-  yum_client_package: "postgresql{{ postgresql_version }}"
-
-# omero_server, omero_web vm
-omero_server:
+# OMERO.server, OMERO.web VM
+web_server:
   host: "{{ hostvars['omero_server_web']['hostname'] }}"
   url: "https://{{ hostvars['omero_server_web']['hostname'] }}"
   ip: "{{ hostvars['omero_server_web']['ansible_ip'] }}"
@@ -25,7 +10,7 @@ omero_server:
   rootpassword: "{{ vault_omero_rootpassword }}"
 
 # database server VM
-omero_db:
+db_server:
   host: "{{ hostvars['omero_db']['hostname'] }}"
   port: 5432
   listen_addresses: "*"
