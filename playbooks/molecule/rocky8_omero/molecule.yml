@@ -83,7 +83,7 @@ provisioner:
       group_vars: ../resources/omero/inventory/group_vars/
   playbooks:
     prepare: ../resources/shared/prepare.yml
-    converge: converge.yml
+    converge: ../resources/omero/converge.yml
   env:
     ANSIBLE_VERBOSITY: "1"
 

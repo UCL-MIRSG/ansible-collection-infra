@@ -50,9 +50,8 @@ ssl_certificate:
 
 # SSL certificate settings
 ssl:
-  use_ssl: true
-  server_cert: "/etc/ssl/certs/{{ hostvars['omero_server_web']['hostname'] }}.cert"
-  server_key: "/etc/ssl/certs/{{ hostvars['omero_server_web']['hostname'] }}.key"
+  use_ssl: false
+  validate_certs: false
 
 postgresql_version: "14"
 postgresql_use_ssl: false
