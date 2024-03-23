@@ -72,11 +72,6 @@ omero_web_apps_config_append:
           - well
         label: OMERO.iviewer
 
-omero_web_default_config:
-  omero.web.viewer.view: omero_iviewer.views.index
-
-omero_web_config_set: "{{ omero_web_default_config | ansible.builtin.combine(omero_web_extra_config | default({})) }}"
-
 # mirsg.infrastructure.nginx
 nginx_use_ssl: "{{ ssl.use_ssl }}"
 nginx_server_cert_cache: "{{ ssl.server_cert }}"
@@ -86,5 +81,3 @@ nginx_server_key_cache: "{{ ssl.server_key }}"
 omero_user_system: "{{ omero_server_system_user }}"
 omero_user_admin_user: root
 omero_user_admin_pass: "{{ omero_server_rootpassword }}"
-omero_group_create: "{{ omero_additional_groups | default({}) }}"
-omero_user_create: "{{ omero_additional_users | default([]) }}"

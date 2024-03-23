@@ -184,6 +184,3 @@ omero_server_omego_db_backup_options: >
   --dbuser {{ omero_server_dbuser | quote }}
   --dbname {{ omero_server_dbname | quote }}
   --dbpass {{ omero_server_dbpassword | quote }}
-
-omero_server_additional_groups: {}
-omero_server_additional_users: []

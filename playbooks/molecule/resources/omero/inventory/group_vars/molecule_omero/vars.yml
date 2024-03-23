@@ -65,11 +65,11 @@ omero_server_config_set:
     sslmode={{ postgresql_ssl_mode }}"
   omero.ldap.config: true
 
-omero_additional_groups:
+omero_group_create:
   - name: public
     type: read-only
 
-omero_additional_users:
+omero_user_create:
   - login: service_user
     firstname: SERVICE
     lastname: ADMIN
@@ -81,7 +81,8 @@ omero_additional_users:
     password: "{{ vault_public_user_password }}"
     groups: --group-name public
 
-omero_web_extra_config:
+omero_web_default_config:
+  omero.web.viewer.view: omero_iviewer.views.index
   omero.web.public.enabled: true
   omero.web.public.server_id: 1
   omero.web.public.user: public_user
