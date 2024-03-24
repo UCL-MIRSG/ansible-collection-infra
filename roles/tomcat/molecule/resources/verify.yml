@@ -19,10 +19,6 @@
         chdir: "/usr/share/tomcat/bin"
       register: tomcat_check_version
 
-    - name: Print version
-      ansible.builtin.debug:
-        var: tomcat_check_version.stdout
-
     - name: Check Tomcat version is correct
       ansible.builtin.assert:
         that:
