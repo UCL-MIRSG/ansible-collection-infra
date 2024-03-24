@@ -15,8 +15,6 @@ A role for installing and configuring Apache Tomcat.
 
 `java_profile_d`: Directory in which to put a script for setting java home. Defaults to "/etc/profile.d".
 
-`java_package`: Name of the Java package to install. Defaults to "java-1.8.0-openjdk-devel"
-
 ### Tomcat general settings
 
 `tomcat_version`: The version of Tomcat to install. Defaults to the latest release of version 9.
