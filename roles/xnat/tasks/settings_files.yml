@@ -13,7 +13,9 @@
   ansible.builtin.assert:
     that:
       - xnat_config.site_name is match('^[A-Za-z][A-Za-z0-9_]*$')
-    fail_msg: "xnat_config.site_name must start with a letter and contain only letters, numbers, and underscores"
+    fail_msg: >
+      xnat_config.site_name must start with a letter and contain only
+      letters, numbers, and underscores
     success_msg: "xnat_config.site_name is valid"
 
 - name: "Configure prefs-init"
