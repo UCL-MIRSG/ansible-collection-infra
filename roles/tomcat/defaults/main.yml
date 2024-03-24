@@ -2,11 +2,6 @@
 # mirsg.tomcat: selinux
 selinux_enabled: false
 
-# mirsg.tomcat: java settings
-java_home: /usr/lib/jvm/jre
-java_profile_d: "/etc/profile.d"
-java_package: "java-1.8.0-openjdk-devel"
-
 # mirsg.tomcat
 tomcat_version: 9.0.82
 tomcat_owner: tomcat
