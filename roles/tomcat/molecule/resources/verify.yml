@@ -1,0 +1,31 @@
+---
+- name: Verify correct tomcat version is installed and running
+  hosts: all
+  tasks:
+    - name: Get status of all services
+      ansible.builtin.service_facts:
+
+    - name: Check tomcat is enabled and running
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.services["tomcat.service"].state == "running"
+          - ansible_facts.services["tomcat.service"].status == "enabled"
+
+    - name: Check installed Tomcat version
+      ansible.builtin.shell: |
+        set -o pipefail
+        ./version.sh | grep -oP '(?<=Apache Tomcat/)([0-9]+\.?)+'
+      args:
+        chdir: "/usr/share/tomcat/bin"
+      register: tomcat_check_version
+
+    - name: Print version
+      ansible.builtin.debug:
+        var: tomcat_check_version.stdout
+
+    - name: Check Tomcat version is correct
+      ansible.builtin.assert:
+        that:
+          - tomcat_check_version.stdout.split(".")[0] is version(expected_version)
+      vars:
+        expected_version: "{{ '10' if 'tomcat10' in group_names else '9' }}"

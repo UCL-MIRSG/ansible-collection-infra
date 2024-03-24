@@ -1,0 +1,50 @@
+---
+# test this scenario from the roles/tomcat directory with the command
+# molecule --base-config ../../molecule_configs/rocky9_base_config.yml test --scenario rocky9
+platforms:
+  - name: tomcat9_server
+    hostname: molecule.tomcat9.local
+    image: rockylinux/rockylinux:9-ubi-init
+    required: true
+    command: ""
+    cgroupns_mode: host
+    privileged: true
+    pre_build_image: ${MOLECULE_PRE_BUILD_IMAGE:-true}
+    volumes:
+      - ./tomcat9-data:/storage/molecule/tomcat9
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    keep_volumes: false
+    groups:
+      - all
+      - molecule
+      - rocky9
+      - tomcat9
+    docker_networks:
+      - name: molecule
+        ipam_config:
+          - subnet: 192.168.56.0/24
+            gateway: 192.168.56.1
+    networks:
+      - name: molecule
+        ipv4_address: 192.168.56.2
+
+  - name: tomcat10_server
+    hostname: molecule.tomcat10.local
+    image: rockylinux/rockylinux:9-ubi-init
+    required: true
+    command: ""
+    cgroupns_mode: host
+    privileged: true
+    pre_build_image: ${MOLECULE_PRE_BUILD_IMAGE:-true}
+    volumes:
+      - ./tomcat10-data:/storage/molecule/tomcat10
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    keep_volumes: false
+    groups:
+      - all
+      - molecule
+      - rocky9
+      - tomcat10
+    networks:
+      - name: molecule
+        ipv4_address: 192.168.56.3
