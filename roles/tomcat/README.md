@@ -15,8 +15,6 @@ A role for installing and configuring Apache Tomcat.
 
 `java_profile_d`: Directory in which to put a script for setting java home. Defaults to "/etc/profile.d".
 
-`java_package`: Name of the Java package to install. Defaults to "java-1.8.0-openjdk-devel"
-
 ### Tomcat general settings
 
 `tomcat_version`: The version of Tomcat to install. Defaults to the latest release of version 9.
@@ -91,12 +89,6 @@ an upgrade. Defaults to:
 - "{{ tomcat_backup_directory }}/logs"
 ```
 
-## Dependencies
-
-You will need to install the following collections before using `mirsg.tomcat`:
-
-- `community.general`
-
 ## Example Playbook
 
 Including an example of how to use your role (for instance, with variables
@@ -105,15 +97,5 @@ passed in as parameters) is always nice for users too:
 ```yaml
 - hosts: servers
   roles:
-    - { role: mirsg.tomcat }
+    - role: mirsg.infrastructure.tomcat
 ```
-
-## License
-
-BSD
-
-## Author Information
-
-This role was created by the [Medical Imaging Research Software
-Group](https://www.ucl.ac.uk/advanced-research-computing/expertise/research-software-development/medical-imaging-research-software-group)
-at [UCL](https://www.ucl.ac.uk/).

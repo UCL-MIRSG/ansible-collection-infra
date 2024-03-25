@@ -1,0 +1,17 @@
+---
+name: Test tomcat
+
+# yamllint disable-line rule:truthy
+on:
+  pull_request:
+    paths:
+      - "molecule_configs/*"
+      - "roles/tomcat/**"
+      - ".github/workflows/molecule.yml"
+      - ".github/workflows/molecule-tomcat.yml"
+
+jobs:
+  molecule-tomcat:
+    uses: ./.github/workflows/molecule.yml
+    with:
+      tests-path: ansible_collections/mirsg/infrastructure/roles/tomcat
