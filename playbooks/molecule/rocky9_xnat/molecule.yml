@@ -107,6 +107,7 @@ provisioner:
   config_options:
     defaults:
       callbacks_enabled: profile_tasks, timer, yaml
+      stdout_callback: yaml
       vault_password_file: ${MOLECULE_SCENARIO_DIRECTORY}/../resources/xnat/.vault_password
   inventory:
     links:
