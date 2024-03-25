@@ -37,21 +37,3 @@ ssl_certificate:
 ssl:
   use_ssl: false
   validate_certs: false
-
-postgresql_version: "14"
-postgresql_use_ssl: false
-postgresql_ssl_mode: disable
-
-selinux_enabled: false
-
-# mirsg.infrastructure.install_python
-install_python:
-  version: "3"
-  pip_version: 21.2.3
-  pip_executable: /usr/bin/pip3
-  system_packages:
-    - python3
-    - python3-pip
-    - python3-setuptools
-  pip_packages:
-    - cryptography

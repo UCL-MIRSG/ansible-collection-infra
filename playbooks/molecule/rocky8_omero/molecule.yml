@@ -25,7 +25,6 @@ platforms:
     keep_volumes: false
     groups:
       - all
-      - molecule_omero
       - db
     docker_networks:
       - name: omero
@@ -55,7 +54,6 @@ platforms:
     keep_volumes: false
     groups:
       - all
-      - molecule_omero
       - omero
     networks:
       - name: omero
@@ -83,6 +81,7 @@ provisioner:
     links:
       hosts: ../resources/omero/inventory/hosts.yml
       group_vars: ../resources/omero/inventory/group_vars/
+      host_vars: ../resources/omero/inventory/host_vars/
   playbooks:
     prepare: ../resources/shared/prepare.yml
     converge: ../resources/omero/converge.yml
