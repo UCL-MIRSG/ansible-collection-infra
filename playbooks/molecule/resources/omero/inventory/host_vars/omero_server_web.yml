@@ -30,3 +30,8 @@ omero_additional_users:
     groups: --group-name public
 
 omero_server_upgrade: false
+
+firewalld_allow_public_access: true
+
+firewalld_public_zone_sources:
+  - "0.0.0.0/0"
