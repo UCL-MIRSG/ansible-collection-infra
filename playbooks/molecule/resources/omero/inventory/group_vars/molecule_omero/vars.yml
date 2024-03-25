@@ -42,9 +42,6 @@ postgresql_version: "14"
 postgresql_use_ssl: false
 postgresql_ssl_mode: disable
 
-# keystore used for ldap
-omero_server_java_keystore_pass: keystore
-
 selinux_enabled: false
 
 # mirsg.infrastructure.install_python
@@ -58,27 +55,3 @@ install_python:
     - python3-setuptools
   pip_packages:
     - cryptography
-
-omero_server_additional_config:
-  omero.ldap.config: false
-
-omero_web_additional_config:
-  omero.web.public.enabled: true
-  omero.web.public.server_id: 1
-  omero.web.public.user: public_user
-  omero.web.public.password: "{{ vault_public_user_password }}"
-  omero.web.public.url_filter: ^/webclient/?show=project-1/(?!archived_files|download_as)
-
-omero_group_create:
-  - name: public
-    type: read-only
-
-omero_additional_users:
-  - login: public_user
-    firstname: public
-    lastname: user
-    password: "{{ vault_public_user_password }}"
-    groups: --group-name public
-
-omero_server_system_user: omero-server
-omero_server_upgrade: false

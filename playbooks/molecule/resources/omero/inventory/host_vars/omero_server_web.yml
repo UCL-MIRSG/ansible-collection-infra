@@ -1,0 +1,32 @@
+---
+omero_server_ldap_enabled: false
+
+omero_server_additional_config:
+  omero.ldap.config: false
+
+omero_web_additional_config:
+  omero.web.public.enabled: true
+  omero.web.public.server_id: 1
+  omero.web.public.user: public_user
+  omero.web.public.password: "{{ vault_public_user_password }}"
+  omero.web.public.url_filter: ^/webclient/?show=project-1/(?!archived_files|download_as)
+
+omero_group_create:
+  - name: public
+    type: read-only
+
+omero_service_user:
+  - login: service_user
+    firstname: SERVICE
+    lastname: ADMIN
+    password: "{{ vault_service_admin_password }}"
+    groups: --group-name system
+
+omero_additional_users:
+  - login: public_user
+    firstname: public
+    lastname: user
+    password: "{{ vault_public_user_password }}"
+    groups: --group-name public
+
+omero_server_upgrade: false
