@@ -49,7 +49,7 @@
       "matchStrings": ["xnat_version:\\s?(?<currentValue>.*?)\\n"],
       "depNameTemplate": "xnatdev/xnat-web",
       "datasourceTemplate": "bitbucket-tags",
-      "versioningTemplate": "regex:(?<major>\\d+).(?<minor>\\d+).(?<build>\\d+).(?<revision>\\d+)"
+      "versioning": "loose"
     },
     {
       "customType": "regex",
@@ -130,7 +130,7 @@
       "matchStrings": ["dxm-settings-plugin-(?<currentValue>.*?).jar"],
       "depNameTemplate": "xnatx/xnatx-dxm-settings-plugin",
       "datasourceTemplate": "bitbucket-tags",
-      "versioningTemplate": "regex:(?<major>\\d+).(?<minor>\\d+)"
+      "versioning": "loose"
     },
     {
       "customType": "regex",
