@@ -86,6 +86,7 @@ provisioner:
   playbooks:
     prepare: ../resources/shared/prepare.yml
     converge: ../resources/omero/converge.yml
+    verify: ../resources/omero/verify.yml
   env:
     ANSIBLE_VERBOSITY: "1"
 
