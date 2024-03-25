@@ -1,16 +1,4 @@
 ---
-- name: Ensure correct Java version is installed - {{ java_package }}
-  ansible.builtin.package:
-    name: "{{ java_package }}"
-    state: installed
-
-- name: Set JAVA_HOME through shell script
-  ansible.builtin.template:
-    src: "java_home.sh.j2"
-    dest: "{{ java_profile_d }}/java_home.sh"
-    mode: "0644"
-  when: java_home != ''
-
 - name: Ensure Ansible seport dependencies are installed
   ansible.builtin.yum:
     name: ["libselinux-python", "policycoreutils-python"]

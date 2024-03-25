@@ -1,0 +1,7 @@
+---
+- name: Install Tomcat
+  hosts: all
+  become: true
+  gather_facts: true
+  roles:
+    - role: mirsg.infrastructure.tomcat

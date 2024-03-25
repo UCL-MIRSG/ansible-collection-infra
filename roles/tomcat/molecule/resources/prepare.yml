@@ -1,0 +1,12 @@
+---
+- name: Prepare - install sudo and Java
+  hosts: all
+  gather_facts: true
+  pre_tasks:
+    - name: Install sudo
+      ansible.builtin.package:
+        name: sudo
+        state: present
+  roles:
+    - role: mirsg.infrastructure.install_java
+      java_package: "{{ 'java-11-openjdk' if 'tomcat10' in group_names else 'java-1.8.0-openjdk'}}"

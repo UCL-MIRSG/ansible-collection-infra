@@ -16,8 +16,21 @@
     path: "/usr/lib/jvm/{{ java_package }}"
   register: java_package_info
 
+- name: Check if JRE exists
+  ansible.builtin.stat:
+    path: "{{ java_package_info.stat.lnk_source }}/jre"
+  register: java_jre
+
 - name: Set the default java version - {{ java_package_info.stat.lnk_source }}
   community.general.alternatives:
     name: java
     path: "{{ java_package_info.stat.lnk_source }}/jre/bin/java"
     state: selected
+  when: java_jre.stat.exists
+
+- name: Set the default java version - {{ java_package_info.stat.lnk_source }}
+  community.general.alternatives:
+    name: java
+    path: "{{ java_package_info.stat.lnk_source }}/bin/java"
+    state: selected
+  when: not java_jre.stat.exists
