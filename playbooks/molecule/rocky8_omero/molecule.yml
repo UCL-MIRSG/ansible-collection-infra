@@ -66,6 +66,7 @@ platforms:
     published_ports:
       - 127.0.0.1:4063:4063
       - 127.0.0.1:4064:4064
+      - 127.0.0.1:8080:80
     etc_hosts:
       omero.db.local: 192.168.56.2
 
