@@ -41,35 +41,10 @@ If you have specified a list of clients in `docker_client_hostnames`, the certif
 controller in the folder `docker_client_certificate_cache_directory`. You will then need to copy these certificates to the corresponding
 client.
 
-## Dependencies
-
-You will need to install the following collections before using `mirsg.docker`:
-
-- `community.crypto`
-
-## Installation
-
-Include in a requirements.yml file as follows:
-
-```yaml
-roles:
-  - src: https://github.com/UCL-MIRSG/ansible-role-docker.git
-    version: x.y.z
-    name: mirsg.docker
-```
-
 ## Example Playbook
 
 ```yaml
 - hosts: servers
   roles:
-    - { role: mirsg.docker }
+    - { role: mirsg.infrastructure.docker }
 ```
-
-## License
-
-[BSD 3-Clause License](https://github.com/UCL-MIRSG/ansible-role-docker/blob/main/LICENSE).
-
-## Author Information
-
-This role was created by the [Medical Imaging Research Software Group](https://www.ucl.ac.uk/advanced-research-computing/expertise/research-software-development/medical-imaging-research-software-group) at [UCL](https://www.ucl.ac.uk/).
