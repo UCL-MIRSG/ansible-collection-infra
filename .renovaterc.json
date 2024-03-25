@@ -50,7 +50,7 @@
       "fileMatch": ["(^|/)*defaults/main.yml$"],
       "matchStrings": ["xnat_version:\\s?(?<currentValue>.*?)\\n"],
       "depNameTemplate": "xnatdev/xnat-web",
-      "datasourceTemplate": "bitbucket-tags",
+      "datasourceTemplate": "bitbucket-tags"
     },
     {
       "customType": "regex",
@@ -130,7 +130,7 @@
       "fileMatch": ["roles/xnat/defaults/main.yml$"],
       "matchStrings": ["dxm-settings-plugin-(?<currentValue>.*?).jar"],
       "depNameTemplate": "xnatx/xnatx-dxm-settings-plugin",
-      "datasourceTemplate": "bitbucket-tags",
+      "datasourceTemplate": "bitbucket-tags"
     },
     {
       "customType": "regex",
