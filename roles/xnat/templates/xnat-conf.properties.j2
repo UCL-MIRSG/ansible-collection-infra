@@ -4,8 +4,8 @@ datasource.url=jdbc:postgresql://{{ db_server.host }}:{{ db_server.port }}/{{ db
 {% else %}
 datasource.url=jdbc:postgresql://{{ db_server.host }}:{{ db_server.port }}/{{ db_server.postgresql_database }}
 {% endif %}
-datasource.username={{ db_server.postgres_xnat_user }}
-datasource.password={{ db_server.postgres_xnat_password }}
+datasource.username={{ db_server.postgresql_user }}
+datasource.password={{ db_server.postgresql_password }}
 
 hibernate.dialect=org.hibernate.dialect.PostgreSQL9Dialect
 hibernate.hbm2ddl.auto=update
