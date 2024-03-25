@@ -1,8 +1,8 @@
 datasource.driver=org.postgresql.Driver
 {% if postgresql_use_ssl %}
-datasource.url=jdbc:postgresql://{{ db_server.host }}:{{ db_server.port }}/{{ db_server.postgres_xnat_database }}?ssl=true&sslmode=verify-full
+datasource.url=jdbc:postgresql://{{ db_server.host }}:{{ db_server.port }}/{{ db_server.postgresql_database }}?ssl=true&sslmode=verify-full
 {% else %}
-datasource.url=jdbc:postgresql://{{ db_server.host }}:{{ db_server.port }}/{{ db_server.postgres_xnat_database }}
+datasource.url=jdbc:postgresql://{{ db_server.host }}:{{ db_server.port }}/{{ db_server.postgresql_database }}
 {% endif %}
 datasource.username={{ db_server.postgres_xnat_user }}
 datasource.password={{ db_server.postgres_xnat_password }}
