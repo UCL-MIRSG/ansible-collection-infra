@@ -8,6 +8,7 @@
       "allowedVersions": "<10"
     },
     {
+      "description": "Update XNAT and associated plugins at the same time",
       "matchPackageNames": [
         "xnatdev/xnat-web",
         "xnatdev/xsync",
@@ -22,7 +23,8 @@
         "xnatx/xnatx-dxm-settings-plugin",
         "NrgXnat/xnat-pipeline-engine"
       ],
-      "groupName": "xnat"
+      "groupName": "xnat",
+      "versioning": "loose"
     }
   ],
   "customDatasources": {
@@ -49,7 +51,6 @@
       "matchStrings": ["xnat_version:\\s?(?<currentValue>.*?)\\n"],
       "depNameTemplate": "xnatdev/xnat-web",
       "datasourceTemplate": "bitbucket-tags",
-      "versioning": "loose"
     },
     {
       "customType": "regex",
@@ -130,7 +131,6 @@
       "matchStrings": ["dxm-settings-plugin-(?<currentValue>.*?).jar"],
       "depNameTemplate": "xnatx/xnatx-dxm-settings-plugin",
       "datasourceTemplate": "bitbucket-tags",
-      "versioning": "loose"
     },
     {
       "customType": "regex",
