@@ -97,5 +97,5 @@ passed in as parameters) is always nice for users too:
 ```yaml
 - hosts: servers
   roles:
-    - { role: mirsg.tomcat }
+    - role: mirsg.infrastructure.tomcat
 ```
