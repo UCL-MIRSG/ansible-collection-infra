@@ -8,6 +8,8 @@ on:
       - "molecule_configs/*"
       - "roles/monitoring_client/**"
       - "roles/monitoring_server/**"
+      - "playbooks/install_monitoring.yml"
+      - "playbooks/molecule/**/monitoring/**"
       - ".github/workflows/molecule-monitoring.yml"
 
 jobs:
