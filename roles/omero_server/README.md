@@ -105,7 +105,7 @@ before upgrading, default empty (disabled)
 ### Configuring OMERO.server
 
 This role regenerates the OMERO configuration file using the configuration files
-and helper script in `/opt/omero/server/config`. omero_server_config_set can be
+and helper script in `/opt/omero/server/config`. `omero_server_config_set` can be
 used for simple configurations, for anything more complex consider creating one
 or more configuration files under: `/opt/omero/server/config/` with the
 extension .omero.
