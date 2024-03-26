@@ -79,12 +79,20 @@ not support insecure ciphers
 ### OMERO.server systemd configuration
 
 `omero_server_systemd_setup`: Create and start the omero-server systemd service,
-default True `omero_server_systemd_limit_nofile`: Systemd limit for number of
-open files (default ignore) `omero_server_systemd_after`: A list of strings with
+default True
+
+`omero_server_systemd_limit_nofile`: Systemd limit for number of
+open files (default ignore)
+
+`omero_server_systemd_after`: A list of strings with
 additional service names to appear in systemd unit file "After" statements.
-Default empty/none. `omero_server_systemd_requires`: A list of strings with
+Default empty/none.
+
+`omero_server_systemd_requires`: A list of strings with
 additional service names to appear in systemd unit file "Requires" statements.
-Default empty/none. `omero_server_systemd_environment`: Dictionary of additional
+Default empty/none.
+
+`omero_server_systemd_environment`: Dictionary of additional
 environment variables. Python virtualenv
 
 `omero_server_python_addons`: List of additional Python packages to be installed
