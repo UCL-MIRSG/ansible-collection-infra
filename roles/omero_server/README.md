@@ -42,9 +42,15 @@ All variables are optional, see defaults/main.yml for the full list
 
 `omero_server_release`: The OMERO release, e.g. 5.6.0. Defaults to `5.6.0`.
 
-`omero_server_dbhost`: Database host `omero_server_dbuser`: Database user
-`omero_server_dbname`: Database name `omero_server_dbpassword`: Database
-password `omero_server_rootpassword`: OMERO root password, defaults to `omero`.
+`omero_server_dbhost`: Database host
+
+`omero_server_dbuser`: Database user
+
+`omero_server_dbname`: Database name
+
+`omero_server_dbpassword`: Database password
+
+`omero_server_rootpassword`: OMERO root password, defaults to `omero`.
 This is only used when initialising a new database.
 
 ### OMERO.server configuration
