@@ -36,3 +36,9 @@ xnat_config:
   site_name: MIRSG_XNAT
   site_description: <h1>MIRSG XNAT</h1><p>A test instance of XNAT.
   admin_password: "{{ vault_admin_password }}"
+
+# mirsg.xnat.xnat
+# Some times the default admin account hasn't finished creating even after tomcat has started
+# Add a delay here to give the admin account a chance to be created
+# Note, this issue only seems to happen in CI
+xnat_wait_for_tomcat: 15
