@@ -1,0 +1,27 @@
+---
+- name: "Ensure directories exist for cert files"
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: "{{ omero_server_system_user }}"
+    group: "{{ omero_server_system_managedrepo_group }}"
+    state: directory
+    mode: "0755"
+  with_items:
+    - "{{ omero_server_basedir }}/certs"
+
+- name: Copy ldap server certificate to client
+  ansible.builtin.copy:
+    src: "{{ omero_server_ldap_ca_cert }}"
+    dest: "{{ omero_server_basedir }}/certs/ldap-ca.cert"
+    owner: "{{ omero_server_system_user }}"
+    group: "{{ omero_server_system_managedrepo_group }}"
+    mode: "0600"
+
+- name: Add CA certificate for LDAP server to keystore
+  community.general.java_cert:
+    cert_path: "{{ omero_server_basedir }}/certs/ldap-ca.cert"
+    keystore_path: "{{ omero_server_java_keystore_path }}"
+    keystore_pass: "{{ omero_server_java_keystore_pass }}"
+    cert_alias: "{{ omero_server_ldap_keystore_alias }}"
+    keystore_create: true
+    state: present

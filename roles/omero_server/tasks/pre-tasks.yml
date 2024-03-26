@@ -1,0 +1,47 @@
+---
+# omero_common must be imported to prevent
+# undeclared variable failure
+- name: Import ome.omero_common role
+  ansible.builtin.import_role:
+    name: ome.omero_common
+
+- name: Include ome.python3_virtualenv
+  ansible.builtin.include_role:
+    name: ome.python3_virtualenv
+
+- name: Include ome.ice role
+  ansible.builtin.include_role:
+    name: ome.ice
+  vars:
+    ice_version: "{{ omero_server_ice_version }}"
+    ice_install_devel: false
+    ice_install_python: false
+
+- name: Ensure postgres RPM is installed
+  ansible.builtin.yum:
+    name: "{{ postgresql_install.rpm }}"
+    state: present
+    disable_gpg_check: "{{ postgresql_install.disable_gpg_check }}"
+
+- name: Ensure postgresql is installed
+  ansible.builtin.yum:
+    name: "{{ postgresql_install.yum_client_package }}"
+    state: installed
+
+- name: Get postgres server certificate from cache
+  ansible.builtin.copy:
+    src: "{{ database_server_certificate_cache_filename }}"
+    dest: "{{ postgresql_client.server_certificate_filename }}"
+    owner: "{{ omero_server_system_user }}"
+    group: "{{ omero_server_system_user }}"
+    mode: "0600"
+  when: postgresql_use_ssl
+  notify: Restart omero-server
+
+- name: Remove OMERO scripts
+  ansible.builtin.file:
+    path: "{{ omero_server_basedir }}/OMERO.server/lib/scripts/omero"
+    state: absent
+  notify: Restart omero-server
+  tags:
+    - molecule-idempotence-notest

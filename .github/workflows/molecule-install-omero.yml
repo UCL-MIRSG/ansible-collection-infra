@@ -1,0 +1,46 @@
+---
+name: Test install_omero playbook
+
+# yamllint disable-line rule:truthy
+on:
+  pull_request:
+    paths:
+      - "roles/omero_server/**"
+      - "playbooks/install_omero.yml"
+      - "playbooks/molecule/**/omero/**"
+      - ".github/workflows/molecule-install-omero.yml"
+  release:
+    types: [published]
+
+jobs:
+  molecule:
+    runs-on: ubuntu-latest
+    env:
+      PY_COLORS: 1
+      ANSIBLE_FORCE_COLOR: 1
+    steps:
+      - name: Check out the codebase
+        uses: actions/checkout@v4
+        with:
+          path: ansible_collections/mirsg/infrastructure
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install test dependencies
+        run: |
+          sudo apt-get update && sudo apt-get -y install rsync
+          python3 -m pip install --upgrade pip
+          python3 -m pip install \
+          ansible==8.2.0 \
+          molecule \
+          molecule-plugins[docker] \
+          docker \
+          requests
+
+      - name: Test with molecule
+        run: |
+          cd ansible_collections/mirsg/infrastructure/playbooks
+          molecule test --scenario-name rocky8_omero

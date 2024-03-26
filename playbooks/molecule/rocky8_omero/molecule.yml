@@ -10,9 +10,9 @@ driver:
   name: docker
 
 platforms:
-  - name: xnat_db
-    hostname: xnat.db.local
-    image: rockylinux/rockylinux:9-ubi-init
+  - name: omero_db
+    hostname: omero.db.local
+    image: rockylinux/rockylinux:8-ubi-init
     required: true
     command: ""
     cgroupns_mode: host
@@ -20,86 +20,55 @@ platforms:
     pre_build_image: true
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
-      - ./xnat-data:/storage/xnat
+      - ./OMERO:/storage/OMERO
       - ${MOLECULE_SCENARIO_DIRECTORY}/../resources/shared/resolv.conf:/etc/resolv.conf
     keep_volumes: false
     groups:
       - all
       - db
-      - rocky9
     docker_networks:
-      - name: xnat
+      - name: omero
         ipam_config:
           - subnet: 192.168.56.0/24
             gateway: 192.168.56.1
     networks:
-      - name: xnat
+      - name: omero
         ipv4_address: 192.168.56.2
     exposed_ports:
       - 5432
     etc_hosts:
-      xnat.web.local: 192.168.56.3
-      xnat.cserv.local: 192.168.56.4
+      omero.server.local: 192.168.56.3
 
-  - name: xnat_web
-    hostname: xnat.web.local
-    image: rockylinux/rockylinux:9-ubi-init
+  - name: omero_server_web
+    hostname: omero.server.local
+    image: rockylinux/rockylinux:8-ubi-init
     required: true
-    command: ""
+    command:
     cgroupns_mode: host
     privileged: true
     pre_build_image: true
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
-      - ./xnat-data:/storage/xnat
+      - ./OMERO:/storage/OMERO
       - ${MOLECULE_SCENARIO_DIRECTORY}/../resources/shared/resolv.conf:/etc/resolv.conf
     keep_volumes: false
     groups:
       - all
-      - xnat
-      - container_service
-      - container_service_client
-      - rocky9
+      - omero
     networks:
-      - name: xnat
+      - name: omero
         ipv4_address: 192.168.56.3
     exposed_ports:
       - 80
       - 443
-      - 8080
-      - 8104
+      - 4063
+      - 4064
     published_ports:
+      - 127.0.0.1:4063:4063
+      - 127.0.0.1:4064:4064
       - 127.0.0.1:8080:80
     etc_hosts:
-      xnat.db.local: 192.168.56.2
-      xnat.cserv.local: 192.168.56.4
-
-  - name: xnat_cserv
-    hostname: xnat.cserv.local
-    image: rockylinux/rockylinux:9-ubi-init
-    required: true
-    command: ""
-    cgroupns_mode: host
-    privileged: true
-    pre_build_image: true
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:rw
-      - ./xnat-data:/storage/xnat
-      - ${MOLECULE_SCENARIO_DIRECTORY}/../resources/shared/resolv.conf:/etc/resolv.conf
-    keep_volumes: false
-    groups:
-      - all
-      - container_service
-      - container_service_host
-      - rocky9
-    networks:
-      - name: xnat
-        ipv4_address: 192.168.56.4
-    exposed_ports:
-      - 2376
-    extra_hosts:
-      xnat.db.local: 192.168.56.2
-      xnat.web.local: 192.168.56.3
+      omero.db.local: 192.168.56.2
 
 provisioner:
   name: ansible
@@ -108,15 +77,16 @@ provisioner:
     defaults:
       callbacks_enabled: profile_tasks, timer, yaml
       stdout_callback: yaml
-      vault_password_file: ${MOLECULE_SCENARIO_DIRECTORY}/../resources/xnat/.vault_password
+      vault_password_file: ${MOLECULE_SCENARIO_DIRECTORY}/../resources/omero/.vault_password
   inventory:
     links:
-      hosts: ../resources/xnat/inventory/hosts.yml
-      group_vars: ../resources/xnat/inventory/group_vars/
+      hosts: ../resources/omero/inventory/hosts.yml
+      group_vars: ../resources/omero/inventory/group_vars/
+      host_vars: ../resources/omero/inventory/host_vars/
   playbooks:
     prepare: ../resources/shared/prepare.yml
-    converge: ../resources/xnat/converge.yml
-    verify: ../resources/xnat/verify.yml
+    converge: ../resources/omero/converge.yml
+    verify: ../resources/omero/verify.yml
   env:
     ANSIBLE_VERBOSITY: "1"
 
