@@ -115,8 +115,8 @@ of omero-server with systemd, you can disable this by setting
 `omero_server_always_reset_config: false`. Manual configuration changes will never
 be copied during an upgrade.
 
-See ome/design#70 for a proposal to add support for a conf.d style directory
-directly into OMERO.
+See [ome/design#70](https://github.com/ome/design/issues/70) for a proposal to
+add support for a conf.d style directory directly into OMERO.
 
 ### Example Playbook
 
