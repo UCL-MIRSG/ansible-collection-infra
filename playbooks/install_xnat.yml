@@ -1,6 +1,6 @@
 ---
-- name: Configure the web server and create PostgreSQL client certificate
-  hosts: web
+- name: Configure the XNAT web server and create PostgreSQL client certificate
+  hosts: xnat
   become: true
   gather_facts: true
 
@@ -27,7 +27,7 @@
     - role: mirsg.infrastructure.firewalld
 
 - name: Install XNAT
-  hosts: web
+  hosts: xnat
   become: true
   gather_facts: true
 

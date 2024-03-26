@@ -1,0 +1,39 @@
+---
+# OMERO.server, OMERO.web VM
+web_server:
+  host: "{{ hostvars['omero_server_web']['hostname'] }}"
+  url: "https://{{ hostvars['omero_server_web']['hostname'] }}"
+  ip: "{{ hostvars['omero_server_web']['ansible_ip'] }}"
+  storage_dir: /OMERO
+  subnet: "192.168.56.0/24"
+  dbhost: "{{ hostvars['omero_db']['hostname'] }}"
+  rootpassword: "{{ vault_omero_rootpassword }}"
+
+# database server VM
+db_server:
+  host: "{{ hostvars['omero_db']['hostname'] }}"
+  port: 5432
+  listen_addresses: "*"
+  postgresql_database: omero
+  postgresql_user: omero
+  postgresql_password: "{{ vault_postgres_omero_password }}"
+  storage_dir: /var/lib/pgsql
+  data_dir: "/var/lib/pgsql/{{ postgresql_version }}/data"
+  backups_dir: /var/lib/pgsql/backups
+  poolsize: 10
+
+ssl_certificate:
+  owner: root
+  group: root
+  certificate_directory: /etc/ssl/certs
+  privatekey_filename: "/etc/ssl/certs/{{ hostvars['omero_server_web']['hostname'] }}.key"
+  use_pk8: false
+  csr_filename: "/etc/ssl/certs/{{ hostvars['omero_server_web']['hostname'] }}.csr"
+  csr_common_name: "{{ hostvars['omero_server_web']['hostname'] }}"
+  certificate_filename: "/etc/ssl/certs/{{ hostvars['omero_server_web']['hostname'] }}.cert"
+  provider: selfsigned
+
+# SSL certificate settings
+ssl:
+  use_ssl: false
+  validate_certs: false

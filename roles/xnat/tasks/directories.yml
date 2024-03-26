@@ -1,7 +1,7 @@
 ---
 - name: Ensure XNAT external storage subdirectory exists
   ansible.builtin.file:
-    path: "{{ xnat_web_server.storage_dir }}"
+    path: "{{ web_server.storage_dir }}"
     owner: "{{ xnat.owner }}"
     group: "{{ xnat.group }}"
     state: directory
@@ -10,7 +10,7 @@
 
 - name: Ensure there is a symbolic link from XNAT data directory to storage directory
   ansible.builtin.file:
-    src: "{{ xnat_web_server.storage_dir }}"
+    src: "{{ web_server.storage_dir }}"
     dest: "{{ xnat_data_dir }}"
     state: link
   when: xnat_link_data_directory and external_storage_drive is defined

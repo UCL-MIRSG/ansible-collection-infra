@@ -1,0 +1,27 @@
+---
+# omero system user
+- name: Create system user
+  ansible.builtin.user:
+    name: "{{ omero_server_system_user }}"
+    home: "{{ omero_server_basedir }}"
+    createhome: false
+    state: present
+    system: true
+    uid: "{{ omero_server_system_uid | default(omit) }}"
+  when: omero_server_system_user_manage
+
+# TODO: Ideally everything should be read-only apart from the var directory
+- name: Create omero directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ omero_server_system_user }}"
+    mode: "0755"
+  with_items:
+    - "{{ omero_server_basedir }}"
+    - "{{ omero_server_basedir }}/config"
+
+- name: Create managedrepo system group
+  ansible.builtin.group:
+    name: "{{ omero_server_system_managedrepo_group }}"
+    state: present

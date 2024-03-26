@@ -1,0 +1,18 @@
+---
+- name: Verify OMERO instance is running
+  hosts: localhost
+  tasks:
+    - name: Get server status
+      ansible.builtin.uri:
+        url: http://127.0.0.1:8080
+        method: GET
+        validate_certs: false
+        return_content: true
+      register: response
+
+    - name: Check server status and response
+      ansible.builtin.assert:
+        that:
+          - response.status == 200
+          - "'nginx' in response.server"
+          - "response.content is search('OMERO.web')"

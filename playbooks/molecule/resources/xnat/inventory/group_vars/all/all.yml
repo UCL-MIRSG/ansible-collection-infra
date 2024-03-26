@@ -1,4 +1,8 @@
 ---
+xnat_data_dir: "/data"
+xnat_root_dir: "{{ xnat_data_dir }}/xnat"
+xnat_home_dir: "{{ xnat_root_dir }}/home"
+
 # XNAT configuration shared between all servers
 xnat_common_config:
   admin_email: "xnatadmin@{{ hostvars['xnat_web']['hostname'] }}"

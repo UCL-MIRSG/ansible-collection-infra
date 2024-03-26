@@ -1,0 +1,31 @@
+---
+- name: Configure OMERO to use LDAP
+  ansible.builtin.include_tasks:
+    file: omero-ldap.yml
+  when: omero_server_ldap_enabled
+
+- name: Run the pre-tasks
+  ansible.builtin.include_tasks:
+    file: pre-tasks.yml
+
+- name: Run omero-user tasks
+  ansible.builtin.include_tasks:
+    file: omero-user.yml
+
+- name: Run omero-datadir tasks
+  ansible.builtin.include_tasks:
+    file: omero-datadir.yml
+  when: omero_server_datadir_manage
+
+- name: Run omero-configfiles tasks
+  ansible.builtin.include_tasks:
+    file: omero-configfiles.yml
+
+- name: Run omero-install tasks
+  ansible.builtin.include_tasks:
+    file: omero-install.yml
+
+- name: Run omero-systemd tasks
+  ansible.builtin.include_tasks:
+    file: omero-systemd.yml
+  when: omero_server_systemd_setup

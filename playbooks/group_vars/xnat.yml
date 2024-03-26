@@ -55,7 +55,7 @@ postgresql_client_ssl_certificate:
   use_pk8: true
   pk8_filename: "/usr/share/tomcat/.postgresql/postgresql.pk8"
   csr_filename: "/usr/share/tomcat/.postgresql/postgresql.csr"
-  csr_common_name: "{{ xnat_web_server.host }}"
+  csr_common_name: "{{ web_server.host }}"
   certificate_filename: "/usr/share/tomcat/.postgresql/postgresql.crt"
   provider: "selfsigned"
   cache_filename: "{{ database_client_certificate_cache_filename }}" # where to store the client certificate in cache
@@ -77,9 +77,18 @@ firewalld_work_zone_open_services:
   - http
   - https
 
+firewalld_internal_zone_ports:
+  - "{{ nginx_upstream_listen_port }}"
+
+firewalld_work_zone_ports:
+  - "{{ nginx_upstream_listen_port }}"
+
+firewalld_public_zone_ports:
+  - "{{ nginx_upstream_listen_port }}"
+
 # mirsg.infrastructure.nginx
 nginx_use_ssl: "{{ ssl.use_ssl }}"
-nginx_server_name: "{{ xnat_web_server.host }}"
+nginx_server_name: "{{ web_server.host }}"
 nginx_upstream_port: 8104
 nginx_upstream_listen_port: 8104
 nginx_proxy_port: 8080 # tomcat

@@ -1,0 +1,56 @@
+---
+# OMERO data directories
+
+- name: Create omero datadir base directory
+  become: true
+  ansible.builtin.file:
+    owner: "{{ omero_server_system_user }}"
+    mode: "{{ omero_server_datadir_mode }}"
+    path: "{{ omero_server_datadir }}"
+    recurse: false
+    state: directory
+
+- name: Create omero datadir subdirectories
+  become: true
+  ansible.builtin.file:
+    owner: "{{ omero_server_system_user }}"
+    mode: "{{ omero_server_datadir_mode }}"
+    path: "{{ omero_server_datadir }}/{{ item }}"
+    recurse: "{{ omero_server_datadir_chown }}"
+    state: directory
+  with_items:
+    - Files
+    - Thumbnails
+    - DropBox
+    - FullText
+    - Pixels
+
+- name: Create omero BioFormatsCache
+  become: true
+  ansible.builtin.file:
+    owner: "{{ omero_server_system_user }}"
+    mode: "{{ omero_server_datadir_mode }}"
+    path: "{{ omero_server_datadir_bioformatscache }}"
+    recurse: "{{ omero_server_datadir_chown }}"
+    state: directory
+
+- name: Create omero BioFormatsCache symlink
+  become: true
+  ansible.builtin.file:
+    src: "{{ omero_server_datadir_bioformatscache }}"
+    path: "{{ omero_server_datadir }}/BioFormatsCache"
+    state: link
+    force: true
+  when: >-
+    omero_server_datadir_bioformatscache !=
+    (omero_server_datadir + "/BioFormatsCache")
+
+- name: Create omero ManagedRepository
+  become: true
+  ansible.builtin.file:
+    owner: "{{ omero_server_system_user }}"
+    group: "{{ omero_server_system_managedrepo_group }}"
+    mode: "{{ omero_server_datadir_managedrepo_mode }}"
+    path: "{{ omero_server_datadir_managedrepo }}"
+    recurse: "{{ omero_server_datadir_chown }}"
+    state: directory

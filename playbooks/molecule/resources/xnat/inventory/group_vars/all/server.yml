@@ -1,5 +1,5 @@
 ---
-external_storage_drive: "/storage/xnat"
+external_storage_drive: /storage/xnat
 
 # web server VM
 # URL is localhost:8080
@@ -7,7 +7,7 @@ external_storage_drive: "/storage/xnat"
 # Outside the Docker network, 8080 maps to 80 (HTTP) on the web container
 # This is necessary to allow redirects when accessing the WEB UI outside the
 # Docker network, and to avoid CORS issues inside the network
-xnat_web_server:
+web_server:
   host: "{{ hostvars['xnat_web']['hostname'] }}"
   url: "http://{{ hostvars['xnat_web']['hostname'] }}:8080"
   subnet: "192.168.56.0/24"
@@ -15,13 +15,13 @@ xnat_web_server:
   storage_dir: "{{ external_storage_drive }}/data"
 
 # database server VM
-xnat_db:
+db_server:
   host: "{{ hostvars['xnat_db']['hostname'] }}"
   port: 5432
   listen_addresses: "*"
-  postgres_xnat_database: "xnat"
-  postgres_xnat_user: "xnat"
-  postgres_xnat_password: "{{ vault_postgres_xnat_password }}"
+  postgresql_database: xnat
+  postgresql_user: xnat
+  postgresql_password: "{{ vault_postgres_xnat_password }}"
   storage_dir: "{{ external_storage_drive }}/pgsql"
   data_dir: "{{ external_storage_drive }}/pgsql/{{ postgresql_version }}/data"
   backups_dir: "{{ external_storage_drive }}/pgsql/backups"

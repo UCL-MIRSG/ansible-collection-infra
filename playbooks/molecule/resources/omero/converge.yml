@@ -1,0 +1,3 @@
+---
+- name: Install OMERO
+  ansible.builtin.import_playbook: mirsg.infrastructure.install_omero
