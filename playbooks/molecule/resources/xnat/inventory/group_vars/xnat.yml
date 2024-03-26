@@ -1,0 +1,15 @@
+---
+# mirsg.infrastructure.firewalld
+firewalld_allow_public_access: true
+
+firewalld_public_zone_sources:
+  - "0.0.0.0/0"
+
+# mirsg.xnat.xnat
+# Some times the default admin account hasn't finished creating even after tomcat has started
+# Add a delay here to give the admin account a chance to be created
+# Note, this issue only seems to happen in CI
+xnat_wait_for_tomcat: 15
+
+# nginx config
+nginx_add_default_server: false # set Tomcat as default server to allow access to XNAT web UI through localhost:8000
