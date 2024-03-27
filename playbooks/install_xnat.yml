@@ -34,3 +34,22 @@
   roles:
     - role: mirsg.infrastructure.xnat
     - role: mirsg.infrastructure.firewalld
+
+- name: Setup Container Service on hosts
+  hosts: container_service_host
+  become: true
+  gather_facts: true
+
+  roles:
+    - role: mirsg.infrastructure.provision
+    - role: mirsg.infrastructure.install_python
+    - role: mirsg.infrastructure.docker
+    - role: mirsg.infrastructure.firewalld
+
+- name: Setup Container Service on clients (i.e. the web servers)
+  hosts: container_service_client
+  become: true
+  gather_facts: true
+
+  roles:
+    - role: mirsg.infrastructure.xnat_container_service
