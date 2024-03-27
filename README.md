@@ -7,12 +7,11 @@ collection can be used to configure infrastructure for deploying XNAT and OMERO.
 
 ### Playbooks
 
-| Name                                                                               | Description                                                                   |
-| ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| [setup_user_accounts.yml](playbooks/setup_user_accounts.yml)                       | Create OS user accounts a group of servers `target`, which defaults to `all`. |
-| [install_monitoring.yml](playbooks/install_monitoring.yml)                         | Configure a host to collect metrics from client machines.                     |
-| [install_xnat.yml](playbooks/install_xnat.yml)                                     | Install XNAT on two-tier infrastructure.                                      |
-| [install_xnat_container_service.yml](playbooks/install_xnat_container_service.yml) | Install XNAT Container service (Docker host and client).                      |
+| Name                                                         | Description                                                                                   |
+| ------------------------------------------------------------ | --------------------------------------------------------------------------------------------- |
+| [setup_user_accounts.yml](playbooks/setup_user_accounts.yml) | Create OS user accounts a group of servers `target`, which defaults to `all`.                 |
+| [install_monitoring.yml](playbooks/install_monitoring.yml)   | Configure a host to collect metrics from client machines.                                     |
+| [install_xnat.yml](playbooks/install_xnat.yml)               | Install XNAT on two-tier infrastructure with XNAT Container Service (Docker host and client). |
 
 ## External requirements
 

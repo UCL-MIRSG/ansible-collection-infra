@@ -1,6 +1,3 @@
 ---
 - name: Install XNAT
   ansible.builtin.import_playbook: mirsg.infrastructure.install_xnat
-
-- name: Install Container Service
-  ansible.builtin.import_playbook: mirsg.infrastructure.install_container_service
