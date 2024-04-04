@@ -1,0 +1,17 @@
+---
+# handlers for omero-server
+# Don't use omero-common handlers because systemd might be disabled.
+# This also avoids problems with ordering of handlers:
+# http://stackoverflow.com/a/35130254
+
+- name: Rewrite omero-server configuration # noqa no-changed-when
+  become: true
+  become_user: "{{ omero_server_system_user }}"
+  ansible.builtin.command: "{{ omero_server_config_update }}"
+
+- name: Restart omero-server
+  become: true
+  ansible.builtin.service:
+    name: omero-server
+    state: restarted
+  when: omero_server_systemd_setup and omero_server_systemd_start

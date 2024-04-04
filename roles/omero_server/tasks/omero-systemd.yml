@@ -1,0 +1,27 @@
+---
+# Setup systemd files
+
+- name: Systemd service
+  become: true
+  ansible.builtin.template:
+    dest: /etc/systemd/system/omero-server.service
+    force: true
+    src: systemd-system-omero-server-service.j2
+    mode: "0644"
+  notify:
+    - reload systemd # handler from ome.common
+    - Restart omero-server
+
+# Flush handlers to ensure systemd is reloaded
+- name: Flush systemd handlers
+  ansible.builtin.meta: flush_handlers
+  tags:
+    - molecule-idempotence-notest
+
+- name: Enable and start server systemd
+  become: true
+  ansible.builtin.service:
+    enabled: true
+    name: omero-server.service
+    state: started
+  when: omero_server_systemd_start

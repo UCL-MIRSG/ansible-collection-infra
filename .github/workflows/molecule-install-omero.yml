@@ -1,28 +1,20 @@
 ---
-name: Test install_xnat playbook
+name: Test install_omero playbook
 
 # yamllint disable-line rule:truthy
 on:
   pull_request:
     paths:
-      - "molecule_configs/*"
-      - "roles/xnat/**"
-      - "roles/xnat_container_service/**"
-      - "playbooks/install_xnat.yml"
-      - "playbooks/molecule/**/xnat/**"
-      - ".github/workflows/molecule-install-xnat.yml"
+      - "roles/omero_server/**"
+      - "playbooks/install_omero.yml"
+      - "playbooks/molecule/**/omero/**"
+      - ".github/workflows/molecule-install-omero.yml"
   release:
     types: [published]
 
 jobs:
   molecule:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: true
-      matrix:
-        scenario:
-          - centos7_xnat
-          - rocky9_xnat
     env:
       PY_COLORS: 1
       ANSIBLE_FORCE_COLOR: 1
@@ -42,7 +34,7 @@ jobs:
           sudo apt-get update && sudo apt-get -y install rsync
           python3 -m pip install --upgrade pip
           python3 -m pip install \
-          ansible \
+          ansible==8.2.0 \
           molecule \
           molecule-plugins[docker] \
           docker \
@@ -51,4 +43,4 @@ jobs:
       - name: Test with molecule
         run: |
           cd ansible_collections/mirsg/infrastructure/playbooks
-          molecule test --scenario-name  "${{ matrix.scenario }}"
+          molecule test --scenario-name rocky8_omero
