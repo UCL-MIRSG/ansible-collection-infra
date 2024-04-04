@@ -1,0 +1,22 @@
+---
+- name: Verify we can connect to the docker server
+  hosts: client
+  tasks:
+    - name: Get info about the docker server
+      community.docker.docker_host_info:
+        ca_path: /root/docker_certs/ca.pem
+        client_cert: /root/docker_certs/cert.pem
+        client_key: /root/docker_certs/key.pem
+        docker_host: tcp://192.168.56.3:2376
+        tls_hostname: "192.168.56.3"
+        validate_certs: true
+        networks: true
+        volumes: true
+        images: true
+        containers: true
+        disk_usage: true
+      register: docker_host_info
+
+    - name: Confirm we can connect to the remote server
+      ansible.builtin.assert:
+        that: not docker_host_info.failed
