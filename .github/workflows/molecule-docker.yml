@@ -11,7 +11,7 @@ on:
       - ".github/workflows/molecule-docker.yml"
 
 jobs:
-  molecule-firewalld:
+  molecule-docker:
     uses: ./.github/workflows/molecule.yml
     with:
       tests-path: ansible_collections/mirsg/infrastructure/roles/docker
