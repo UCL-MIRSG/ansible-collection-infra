@@ -26,6 +26,7 @@ The following variables can be used to configure certificate creation and signin
 | `docker_daemon_conf_file`                   | Docker daemon configuration filename. Defaults to `/etc/docker/daemon.json`                                                                    |
 | `docker_server_hostname`                    | Hostname of your Docker server. Used for the `commonName` field of the certificate signing request subject. Defaults to `"{{ ansible_host }}"` |
 | `docker_server_ip`                          | IP address of your Docker server. Defaults to `0.0.0.0`                                                                                        |
+| `docker_server_port`                        | Port the Docker Daemon will listen on. Defaults to `2376`.                                                                                     |
 | `docker_tls_verify`                         | If `true`, require that TLS certificates can be verified by a root authority. Defaults to `true`                                               |
 | `docker_ca_key`                             | Filename for the CA certificate key. Defaults to `/home/docker/.docker/ca.key`                                                                 |
 | `docker_ca_csr`                             | Filename for the CA certificate signing request. Defaults to `/home/docker/.docker/ca.csr`                                                     |

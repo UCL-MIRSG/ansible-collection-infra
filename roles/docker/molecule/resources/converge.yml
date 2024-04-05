@@ -10,10 +10,12 @@
   hosts: client
   become: true
   gather_facts: true
+  vars:
+    docker_client_directory: /root/docker_certs
   tasks:
     - name: Ensure Docker certificate directory exists on the client
       ansible.builtin.file:
-        path: /root/docker_certs
+        path: "{{ docker_client_directory }}"
         state: directory
         owner: root
         group: root
@@ -22,7 +24,7 @@
     - name: Copy Docker server certificate from Ansible Controller cache to client
       ansible.builtin.copy:
         src: "{{ docker_client_certificate_cache_directory }}/ca.pem"
-        dest: /root/docker_certs/ca.pem
+        dest: "{{ docker_client_directory }}/ca.pem"
         owner: root
         group: root
         mode: "0600"
@@ -30,7 +32,7 @@
     - name: Copy signed Docker client certificate from Ansible Controller cache to client
       ansible.builtin.copy:
         src: "{{ docker_client_certificate_cache_directory }}/molecule.docker-client.local.cert"
-        dest: /root/docker_certs/cert.pem
+        dest: "{{ docker_client_directory }}/cert.pem"
         owner: root
         group: root
         mode: "0600"
@@ -38,7 +40,7 @@
     - name: Copy private key from Ansible Controller cache to client
       ansible.builtin.copy:
         src: "{{ docker_client_certificate_cache_directory }}/key.pem"
-        dest: /root/docker_certs/key.pem
+        dest: "{{ docker_client_directory }}/key.pem"
         owner: root
         group: root
         mode: "0600"
