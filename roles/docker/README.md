@@ -47,5 +47,5 @@ client.
 ```yaml
 - hosts: servers
   roles:
-    - { role: mirsg.infrastructure.docker }
+    - role: mirsg.infrastructure.docker
 ```
