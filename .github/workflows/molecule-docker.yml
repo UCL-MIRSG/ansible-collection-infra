@@ -1,0 +1,17 @@
+---
+name: Test Docker
+
+# yamllint disable-line rule:truthy
+on:
+  pull_request:
+    paths:
+      - "molecule_configs/*"
+      - "roles/docker/**"
+      - ".github/workflows/molecule.yml"
+      - ".github/workflows/molecule-docker.yml"
+
+jobs:
+  molecule-docker:
+    uses: ./.github/workflows/molecule.yml
+    with:
+      tests-path: ansible_collections/mirsg/infrastructure/roles/docker
