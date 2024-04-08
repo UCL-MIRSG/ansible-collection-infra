@@ -9,7 +9,7 @@ platforms:
     command: ""
     cgroupns_mode: host
     privileged: true
-    pre_build_image: ${MOLECULE_PRE_BUILD_IMAGE:-true}
+    pre_build_image: true
     volumes:
       - ./molecule-data:/storage/molecule
     keep_volumes: false
