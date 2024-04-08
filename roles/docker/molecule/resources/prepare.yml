@@ -1,0 +1,11 @@
+---
+- name: Install sudo
+  hosts: all
+  gather_facts: true
+  pre_tasks:
+    - name: Install sudo
+      ansible.builtin.package:
+        name: sudo
+        state: present
+  roles:
+    - role: mirsg.infrastructure.install_python
