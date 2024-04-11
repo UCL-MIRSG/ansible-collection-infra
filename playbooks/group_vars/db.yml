@@ -40,10 +40,3 @@ postgresql_ssl_certificate:
 firewalld_rich_rules:
   - zone: "internal"
     rule: "family=ipv4 source address={{ web_server.subnet | default(web_server.ip + '/32') }} port protocol=tcp port={{ db_server.port }} accept"
-
-# mirsg.infrastructure.firewalld
-firewalld_internal_zone_sources:
-  - "{{ web_server.subnet | default(web_server.ip + '/32') }}"
-
-firewalld_internal_zone_open_services:
-  - "postgresql"
