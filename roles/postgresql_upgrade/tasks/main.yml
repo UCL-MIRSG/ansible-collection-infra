@@ -1,37 +1,37 @@
 ---
-# - name: >-
-#     Check if new postgres directory already exists
-#   ansible.builtin.stat:
-#     path: "{{ postgresql_upgrade_data_dir }}"
-#   register: postgresql_upgrade_new_data_dir
+- name: >-
+    Check if new postgres directory already exists
+  ansible.builtin.stat:
+    path: "{{ postgresql_upgrade_data_dir }}"
+  register: postgresql_upgrade_new_data_dir
 
-# - name: >-
-#     Fail if new postgres data directory already exists
-#   ansible.builtin.fail:
-#     msg: >
-#       Cannot upgrade because the new postgres directory
-#       {{ postgresql_upgrade_data_dir }} already exists; this suggests an
-#       upgrade has already been attempted
-#   when: postgresql_upgrade_new_data_dir.stat.exists and postgresql_upgrade_new_data_dir.stat.isdir
+- name: >-
+    Fail if new postgres data directory already exists
+  ansible.builtin.fail:
+    msg: >
+      Cannot upgrade because the new postgres directory
+      {{ postgresql_upgrade_data_dir }} already exists; this suggests an
+      upgrade has already been attempted
+  when: postgresql_upgrade_new_data_dir.stat.exists and postgresql_upgrade_new_data_dir.stat.isdir
 
-# - name: Back up PostgreSQL
-#   ansible.builtin.command: "{{ postgreql_upgrade_backup_script }}"
-#   become: true
-#   become_user: postgres
-#   changed_when: false
+- name: Back up PostgreSQL
+  ansible.builtin.command: "{{ postgreql_upgrade_backup_script }}"
+  become: true
+  become_user: postgres
+  changed_when: false
 
-# - name: Disable previous version of PostgreSQL - {{ postgreql_upgrade_current_version }}
-#   ansible.builtin.service:
-#     name: "postgresql-{{ postgreql_upgrade_current_version }}"
-#     state: stopped
-#     enabled: false
+- name: Disable previous version of PostgreSQL - {{ postgreql_upgrade_current_version }}
+  ansible.builtin.service:
+    name: "postgresql-{{ postgreql_upgrade_current_version }}"
+    state: stopped
+    enabled: false
 
-# - name: Install new version of PostgreSQL - {{ postgreql_upgrade_new_version }}
-#   ansible.builtin.include_role:
-#     name: mirsg.infrastructure.postgresql
-#   vars:
-#     postgresql_version: "{{ postgreql_upgrade_new_version }}" # noqa var-naming[no-role-prefix]
-#     postgresql_create_database: false
+- name: Install new version of PostgreSQL - {{ postgreql_upgrade_new_version }}
+  ansible.builtin.include_role:
+    name: mirsg.infrastructure.postgresql
+  vars:
+    postgresql_version: "{{ postgreql_upgrade_new_version }}" # noqa var-naming[no-role-prefix]
+    postgresql_create_database: false
 
 - name: Ensure new postgres is not running
   ansible.builtin.service:
