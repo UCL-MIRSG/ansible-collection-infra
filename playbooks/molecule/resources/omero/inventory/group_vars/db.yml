@@ -1,0 +1,7 @@
+---
+# mirsg.infrastructure.firewalld
+REMOVED
+  - "{{ web_server.subnet | default(web_server.ip + '/32') }}"
+
+firewalld_internal_zone_open_services:
+  - postgresql
