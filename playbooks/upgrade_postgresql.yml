@@ -13,6 +13,8 @@
   hosts: db
   become: true
   gather_facts: true
+  vars:
+    postgresql_generate_certs: false
   vars_prompt:
     - name: postgreql_upgrade_current_version
       prompt: What is the version of postgres to upgrade from?
