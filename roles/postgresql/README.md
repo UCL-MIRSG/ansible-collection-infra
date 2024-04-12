@@ -5,12 +5,15 @@ This role will install and configure a PostgreSQL database on a server.
 This role is tested on the following operating systems:
 
 - CentOS 7
+- Rocky Linux 9
 
 ## Role Variables
 
-There are several **optional** variables for the PostgreSQL server. See the [defaults here](defaults/main.yml).
+There are several **optional** variables for the PostgreSQL server. See the
+[defaults here](defaults/main.yml).
 
-There are also several **required** variables you will need to set before using this role.
+There are also several **required** variables you will need to set before using
+this role.
 
 ### Variables required by both the server and client
 
@@ -34,10 +37,14 @@ There are also several **required** variables you will need to set before using 
 | `postgresql_connection.listen_address`              | IP address(es) the server should listen on                                                                   |
 | `postgresql_connection.subnet_mask`                 | Subnet mask to apply to `postgresql_connection.client_ip` for incoming connections                           |
 
-Note, if `postgresql_use_ssl` is set to `true`, you will also need to define a `postgresql_ssl_certificate` variable
-for generating the server certificate.
-See the [`mirsg.infrastructure.ssl_certificates` README](../ssl_certificates/README.md) for a description of how to
-define this variable.
+Note, if `postgresql_use_ssl` is set to `true`, you will also need to define a
+`postgresql_ssl_certificate` variable. for generating the server certificate.
+Generation of new certificates can be disabled by setting
+`postgresql_generate_certs` to `false` (defaults to `true`).
+
+See the [`mirsg.infrastructure.ssl_certificates`
+README](../ssl_certificates/README.md) for a description of how to define this
+variable.
 
 ### Required variables for the PostgreSQL client
 
@@ -45,11 +52,14 @@ define this variable.
 | ------------------------------------------------------------- | ----------------------------------------------------- |
 | `postgresql_client_configuration.server_certificate_filename` | Where to copy the server certificate to on the client |
 
-Note, if `postgresql_use_ssl` is set to `true`, you can use [`mirsg.infrastructure.ssl_certificates`](../ssl_certificates/README.md) to generate an SSL certificate.
+Note, if `postgresql_use_ssl` is set to `true`, you can use
+[`mirsg.infrastructure.ssl_certificates`](../ssl_certificates/README.md) to
+generate an SSL certificate.
 
 ## Example Playbook
 
-To use this role with a dual-server setup (a dartase `db` and a web server `web`) you must first:
+To use this role with a dual-server setup (a dartase `db` and a web server
+`web`) you must first:
 
 - stop any running PostgreSQL service
 - create a SSL certificate for the client if using SSL:

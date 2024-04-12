@@ -153,7 +153,7 @@
   changed_when: false
 
 - name: Setup SSL
-  when: postgresql_use_ssl
+  when: postgresql_use_ssl and postgresql_generate_certs
   notify: Restart postgresql
   block:
     - name: Generate postgresql server certificate

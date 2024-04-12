@@ -30,12 +30,33 @@ collection](../../playbooks/upgrade_postgresql.yml). To use this role, add it to
 the list of roles in a play:
 
 ```yaml
+- name: Stop related web services
+  hosts: web
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Stop web service
+      ansible.builtin.service:
+        name: tomcat
+        state: stopped
+
 - name: Upgrade Postgresql from version 12 to 14
-  hosts: all
+  hosts: db
   vars:
     postgreql_upgrade_current_version: 12
     postgreql_upgrade_new_version: 14
     postgresql_upgrade_data_dir: "/var/lib/pgsql/{{ postgreql_upgrade_new_version }}/data"
+    postgresql_upgrade_scripts_dir: "/var/lib/pgsql/{{ postgreql_upgrade_current_version }}/upgrade"
   roles:
     - mirsg.postgresql_upgrade
+
+- name: Restart related web services
+  hosts: web
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Restart web service
+      ansible.builtin.service:
+        name: tomcat
+        state: restarted
 ```

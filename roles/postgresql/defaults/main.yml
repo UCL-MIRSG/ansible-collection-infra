@@ -5,6 +5,7 @@ postgresql_service_name: "postgresql-{{ postgresql_version }}"
 postgresql_package_name: "postgresql{{ postgresql_version | replace('.', '') }}"
 postgresql_bin_directory: "/usr/pgsql-{{ postgresql_version }}/bin"
 postgresql_data_directory: "/var/lib/pgsql/{{ postgresql_version }}/data"
+postgresql_generate_certs: true
 
 # mirsg.postgresql - download and install
 postgresql_install:

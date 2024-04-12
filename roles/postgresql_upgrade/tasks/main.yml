@@ -32,6 +32,7 @@
   vars:
     postgresql_version: "{{ postgreql_upgrade_new_version }}" # noqa var-naming[no-role-prefix]
     postgresql_create_database: false
+    postgresql_generate_certs: false
 
 - name: Ensure new postgres is not running
   ansible.builtin.service:
