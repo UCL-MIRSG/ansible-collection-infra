@@ -1,6 +1,6 @@
 ---
 - name: Stop related web services
-  hosts: web
+  hosts: omero,xnat
   become: true
   gather_facts: true
   tasks:
@@ -25,7 +25,7 @@
     - role: mirsg.infrastructure.postgresql_upgrade
 
 - name: Restart related web services
-  hosts: web
+  hosts: omero,xnat
   become: true
   gather_facts: true
   tasks:
