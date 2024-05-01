@@ -15,7 +15,7 @@ roles:
 
   # required for omero_web 4.0.1
   - src: ome.selinux_utils
-    version: 2.0.2
+    version: 2.1.1
 
   - src: ome.omero_common
     version: 0.4.0
