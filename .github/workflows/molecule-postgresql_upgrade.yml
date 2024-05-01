@@ -8,7 +8,7 @@ on:
       - molecule_configs/*
       - roles/postgresql_upgrade/**
       - .github/workflows/molecule.yml
-      - ".github/workflows/molecule-postgresql_upgrade.yml"
+      - .github/workflows/molecule-postgresql_upgrade.yml
 
 jobs:
   molecule-postgresql_upgrade:

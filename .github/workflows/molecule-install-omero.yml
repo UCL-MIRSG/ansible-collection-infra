@@ -8,7 +8,7 @@ on:
       - roles/omero_server/**
       - playbooks/install_omero.yml
       - playbooks/molecule/**/omero/**
-      - ".github/workflows/molecule-install-omero.yml"
+      - .github/workflows/molecule-install-omero.yml
   release:
     types:
       - published

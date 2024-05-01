@@ -28,11 +28,11 @@ firewalld_work_zone_open_services:
   - http
   - https
 firewalld_internal_zone_ports:
-  - "4063"
-  - "4064"
+  - 4063
+  - 4064
 firewalld_work_zone_ports:
-  - "4063"
-  - "4064"
+  - 4063
+  - 4064
 
 # ome.common
 omero_common_basedir: /opt/omero

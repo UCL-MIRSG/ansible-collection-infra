@@ -10,7 +10,7 @@ on:
       - roles/xnat_container_service/**
       - playbooks/install_xnat.yml
       - playbooks/molecule/**/xnat/**
-      - ".github/workflows/molecule-install-xnat.yml"
+      - .github/workflows/molecule-install-xnat.yml
   release:
     types:
       - published

@@ -1,7 +1,7 @@
 ---
 - name:
-    "Ensure any Tomcat restart handlers have been called before REST
-    configuration"
+    Ensure any Tomcat restart handlers have been called before REST
+    configuration
   ansible.builtin.meta: flush_handlers
 
 - name: Ensure Tomcat is running
