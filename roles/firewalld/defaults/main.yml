@@ -5,8 +5,8 @@ firewalld_allow_public_access: false
 # IP ranges allowing HTTP/HTTPS
 firewalld_internal_zone_open_services:
   - ssh
-firewalld_public_zone_open_services:
-firewalld_work_zone_open_services:
+firewalld_public_zone_open_services: [] # yamllint disable-line rule:brackets
+firewalld_work_zone_open_services: [] # yamllint disable-line rule:brackets
 
 firewalld_internal_zone_closed_services:
   - samba-client
@@ -15,13 +15,13 @@ firewalld_public_zone_closed_services:
 firewalld_work_zone_closed_services:
   - ssh
 
-firewalld_internal_zone_sources:
-firewalld_work_zone_sources:
-firewalld_public_zone_sources:
+firewalld_internal_zone_sources: [] # yamllint disable-line rule:brackets
+firewalld_work_zone_sources: [] # yamllint disable-line rule:brackets
+firewalld_public_zone_sources: [] # yamllint disable-line rule:brackets
 
-firewalld_internal_zone_ports:
-firewalld_public_zone_ports:
-firewalld_work_zone_ports:
+firewalld_internal_zone_ports: [] # yamllint disable-line rule:brackets
+firewalld_public_zone_ports: [] # yamllint disable-line rule:brackets
+firewalld_work_zone_ports: [] # yamllint disable-line rule:brackets
 
 firewalld_close_zone_services:
   internal: "{{ firewalld_internal_zone_closed_services }}"
@@ -44,4 +44,4 @@ firewalld_zone_ports:
   work: "{{ firewalld_work_zone_ports }}"
 
 # rich_rules should be a list of hashes
-firewalld_rich_rules:
+firewalld_rich_rules: [] # yamllint disable-line rule:brackets
