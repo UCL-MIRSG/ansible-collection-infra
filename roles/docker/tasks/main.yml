@@ -91,8 +91,8 @@
       when: docker_client_hostnames
 
 - name:
-    "Ensure docker service configuration is reloaded before restarting the
-    service"
+    Ensure docker service configuration is reloaded before restarting the
+    service
   ansible.builtin.meta: flush_handlers
 
 - name: Ensure docker daemon is running

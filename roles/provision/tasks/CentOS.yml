@@ -41,5 +41,5 @@
 
     - name: Set locale
       ansible.builtin.command:
-        "localectl set-locale LANG={{ server_locale | quote }}"
+        localectl set-locale LANG={{ server_locale | quote }}
       changed_when: false

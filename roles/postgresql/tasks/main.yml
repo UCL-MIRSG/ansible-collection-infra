@@ -128,7 +128,7 @@
 - name: Create PostgreSQL database directory if it does not already exist
   ansible.builtin.command: "{{ postgresql.setup_command }} initdb"
   environment:
-    PATH: "$PATH:/sbin:/bin"
+    PATH: $PATH:/sbin:/bin
   args:
     creates: "{{ postgresql.data_directory }}/PG_VERSION"
 
@@ -190,8 +190,8 @@
   when: selinux_enabled
 
 - name:
-    "Ensure that any required restore of selinux contexts happens before
-    postgres starts"
+    Ensure that any required restore of selinux contexts happens before postgres
+    starts
   ansible.builtin.meta: flush_handlers
 
 - name: Ensure postgresql is running
@@ -201,7 +201,7 @@
     enabled: true
   changed_when: false
 
-- name: Reload service daemon if custom service config changed # noqa no-handler
+- name: Reload service daemon if custom service config changed # noqa: no-handler
   ansible.builtin.service:
     name: "{{ postgresql_service.name }}"
     state: reloaded

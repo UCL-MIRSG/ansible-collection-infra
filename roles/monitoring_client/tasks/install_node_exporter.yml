@@ -22,7 +22,7 @@
     remote_src: true
     owner: "{{ monitoring_client_owner }}"
     group: "{{ monitoring_client_group }}"
-    extra_opts: "--strip-components=1"
+    extra_opts: --strip-components=1
   tags:
     - molecule-idempotence-notest
 

@@ -7,7 +7,7 @@
 - name: Set up for specific distribution
   ansible.builtin.include_tasks: "{{ ansible_distribution }}.yml"
 
-- name: Upgrade all packages # noqa package-latest
+- name: Upgrade all packages # noqa: package-latest
   ansible.builtin.yum:
     name: "*"
     state: latest

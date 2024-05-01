@@ -17,7 +17,6 @@ firewalld_internal_zone_sources:
   - "{{ monitoring_client_monitoring_server_ip }}"
 firewalld_rich_rules:
   - zone: internal
-    rule: "family=ipv4 source \
-      address={{ monitoring_client_monitoring_server_ip }}/32 \
-      port protocol=tcp \
-      port={{ monitoring_client_node_exporter_port }} accept"
+    rule:
+      family=ipv4 source address={{ monitoring_client_monitoring_server_ip }}/32
+      port protocol=tcp port={{ monitoring_client_node_exporter_port }} accept

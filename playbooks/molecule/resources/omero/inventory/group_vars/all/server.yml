@@ -27,13 +27,13 @@ ssl_certificate:
   group: root
   certificate_directory: /etc/ssl/certs
   privatekey_filename:
-    "/etc/ssl/certs/{{ hostvars['omero_server_web']['hostname'] }}.key"
+    /etc/ssl/certs/{{ hostvars['omero_server_web']['hostname'] }}.key
   use_pk8: false
   csr_filename:
-    "/etc/ssl/certs/{{ hostvars['omero_server_web']['hostname'] }}.csr"
+    /etc/ssl/certs/{{ hostvars['omero_server_web']['hostname'] }}.csr
   csr_common_name: "{{ hostvars['omero_server_web']['hostname'] }}"
   certificate_filename:
-    "/etc/ssl/certs/{{ hostvars['omero_server_web']['hostname'] }}.cert"
+    /etc/ssl/certs/{{ hostvars['omero_server_web']['hostname'] }}.cert
   provider: selfsigned
 
 # SSL certificate settings

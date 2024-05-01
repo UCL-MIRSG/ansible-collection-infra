@@ -11,7 +11,7 @@
         ca_cert: "{{ docker_client_directory }}/ca.pem"
         client_cert: "{{ docker_client_directory }}/cert.pem"
         client_key: "{{ docker_client_directory }}/key.pem"
-        docker_host: "tcp://{{ docker_server_ip }}:{{ docker_server_port }}"
+        docker_host: tcp://{{ docker_server_ip }}:{{ docker_server_port }}
         tls_hostname: "{{ docker_server_ip }}"
         validate_certs: true
         networks: true

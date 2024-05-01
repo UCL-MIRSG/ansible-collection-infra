@@ -5,7 +5,7 @@
     name: ca-certificates
     state: present
 
-- name: Disable default Postgres module # noqa command-instead-of-module
+- name: Disable default Postgres module # noqa: command-instead-of-module
   ansible.builtin.command: yum module disable -y postgresql
   register: disable_postgresql_module
   changed_when:
@@ -36,5 +36,5 @@
 
     - name: Set locale
       ansible.builtin.command:
-        "localectl set-locale LANG={{ server_locale | quote }}"
+        localectl set-locale LANG={{ server_locale | quote }}
       changed_when: false

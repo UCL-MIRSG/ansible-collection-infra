@@ -164,7 +164,7 @@
   tags:
     - molecule-idempotence-notest
 
-- name: Backup database # noqa no-changed-when
+- name: Backup database # noqa: no-changed-when
   become: true
   become_user: "{{ omero_server_system_user }}"
   ansible.builtin.command: >
@@ -180,7 +180,7 @@
     - molecule-idempotence-notest
 
 # Upgrade
-- name: Upgrade # noqa no-changed-when
+- name: Upgrade # noqa: no-changed-when
   become: true
   become_user: "{{ omero_server_system_user }}"
   ansible.builtin.command: >

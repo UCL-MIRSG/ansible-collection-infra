@@ -4,7 +4,7 @@ package_registry:
   enabled: false
   url: ""
   authentication_header:
-    "Bearer {{ vault_package_registry_token | default(omit) }}"
+    Bearer {{ vault_package_registry_token | default(omit) }}
 
 # Generally this should be set to true
 postgresql_use_ssl: true

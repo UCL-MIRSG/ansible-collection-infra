@@ -54,7 +54,7 @@
 - name: Add firewall rich rules
   become: true
   ansible.posix.firewalld:
-    rich_rule: "rule {{ item.rule }}"
+    rich_rule: rule {{ item.rule }}
     zone: "{{ item.zone }}"
     permanent: true
     immediate: true

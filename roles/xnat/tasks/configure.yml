@@ -58,8 +58,8 @@
     method: PUT
     body_format: json
     body:
-      '{"password":"{{ xnat_config.admin_password }}", "confirmPassword":"{{
-      xnat_config.admin_password }}"}'
+      password: "{{ xnat_config.admin_password }}"
+      confirmPassword: "{{ xnat_config.admin_password }}"
     validate_certs: "{{ ssl.validate_certs }}"
     status_code: 200
   register: create

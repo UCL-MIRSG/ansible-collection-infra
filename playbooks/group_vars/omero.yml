@@ -52,8 +52,8 @@ omero_server_datadir: "{{ web_server.storage_dir }}"
 
 omero_server_default_config:
   omero.db.poolsize: "{{ db_server.poolsize }}"
-  omero.db.properties: "ssl={{ postgresql_use_ssl }}&\
-    sslmode={{ postgresql_ssl_mode }}"
+  omero.db.properties:
+    ssl={{ postgresql_use_ssl }}&sslmode={{ postgresql_ssl_mode }}
 
 omero_server_config_set:
   "{{ omero_server_default_config |
