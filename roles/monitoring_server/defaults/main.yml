@@ -26,11 +26,11 @@ monitoring_server_server_cert:
 # mirsg.monitoring_server client related
 monitoring_server_client_certificate_directory:
   "{{ monitoring_server_certificate_directory }}/client_certs"
-monitoring_server_client_group: "monitoring_client"
+monitoring_server_client_group: monitoring_client
 
 monitoring_server_smtp_enabled: false
 monitoring_server_smtp_hostname: ""
-monitoring_server_smtp_port: "25"
+monitoring_server_smtp_port: 25
 monitoring_server_smtp_protocol: smtp
 monitoring_server_smtp_auth: ""
 monitoring_server_smtp_username: ""
@@ -38,7 +38,7 @@ monitoring_server_smtp_password: ""
 monitoring_server_smtp_start_tls: false
 ssl_trust: "*"
 
-monitoring_server_hostname_extractor: "ansible_host"
+monitoring_server_hostname_extractor: ansible_host
 
 monitoring_server_alertmanager:
   container_name: alertmanager

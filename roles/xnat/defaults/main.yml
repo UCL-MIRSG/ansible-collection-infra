@@ -18,7 +18,7 @@ xnat_link_data_directory: true
 # Mail server settings
 xnat_smtp_enabled: false
 xnat_smtp_hostname: ""
-xnat_smtp_port: "2525"
+xnat_smtp_port: 2525
 xnat_smtp_protocol: smtp
 xnat_smtp_auth: ""
 xnat_smtp_username: ""
@@ -56,7 +56,7 @@ xnat_server_specific_plugin_urls:
 xnat_server_specific_plugin_packages:
 
 # Path to server logo file
-xnat_config_logo: "/images/logo.png" # use the default XNAT logo
+xnat_config_logo: /images/logo.png # use the default XNAT logo
 
 # Pipeline engine
 xnat_pipeline_engine_enabled: true

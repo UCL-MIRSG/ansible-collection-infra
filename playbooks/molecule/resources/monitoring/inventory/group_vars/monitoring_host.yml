@@ -1,8 +1,7 @@
 ---
 monitoring_server_hostname: "{{ hostvars['mserv']['hostname'] }}"
-monitoring_server_ssl_cert:
-  "/etc/ssl/certs/{{ monitoring_server_hostname }}.cert"
-monitoring_server_ssl_key: "/etc/ssl/certs/{{ monitoring_server_hostname }}.key"
+monitoring_server_ssl_cert: /etc/ssl/certs/{{ monitoring_server_hostname }}.cert
+monitoring_server_ssl_key: /etc/ssl/certs/{{ monitoring_server_hostname }}.key
 monitoring_server_admin_username: mirsg_service
 monitoring_server_admin_password: password
 monitoring_server_admin_email: admin@monitoring.org

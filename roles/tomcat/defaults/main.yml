@@ -13,7 +13,7 @@ tomcat_group: tomcat
 
 # mirsg.tomcat: webapp
 tomcat_webapp_name: ROOT
-tomcat_root: "/usr/share/tomcat/webapps/{{ tomcat_webapp_name }}"
+tomcat_root: /usr/share/tomcat/webapps/{{ tomcat_webapp_name }}
 tomcat_root_webapp: "{{ tomcat_root }}.war"
 tomcat_binary_url: "https://archive.apache.org/dist/tomcat/tomcat-\
   {{ tomcat_version.split('.')[0] }}/v{{ tomcat_version }}/bin/\

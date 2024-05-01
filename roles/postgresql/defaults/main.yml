@@ -1,10 +1,10 @@
 ---
 # defaults for mirsg.postgresql
-postgresql_version: "12"
+postgresql_version: 12
 postgresql_service_name: postgresql-{{ postgresql_version }}
 postgresql_package_name: postgresql{{ postgresql_version | replace('.', '') }}
-postgresql_bin_directory: "/usr/pgsql-{{ postgresql_version }}/bin"
-postgresql_data_directory: "/var/lib/pgsql/{{ postgresql_version }}/data"
+postgresql_bin_directory: /usr/pgsql-{{ postgresql_version }}/bin
+postgresql_data_directory: /var/lib/pgsql/{{ postgresql_version }}/data
 postgresql_generate_certs: true
 
 # mirsg.postgresql - download and install
@@ -22,32 +22,32 @@ postgresql:
   owner: postgres
   group: postgres
   bin_directory: "{{ postgresql_bin_directory }}"
-  base_directory: "/var/lib/pgsql"
-  log_directory: "/var/log/postgresql"
+  base_directory: /var/lib/pgsql
+  log_directory: /var/log/postgresql
   data_directory: "{{ postgresql_data_directory }}"
   configuration_directory: "{{ postgresql_data_directory }}"
   configuration_filename: "{{ postgresql_data_directory }}/postgresql.conf"
   hba_configuration_filename: "{{ postgresql_data_directory }}/pg_hba.conf"
-  data_files_regex: "/var/lib/pgsql(/.*)?" # required if SELinux is enabled, allow postgresql to modify these files
+  data_files_regex: /var/lib/pgsql(/.*)? # required if SELinux is enabled, allow postgresql to modify these files
   setup_command:
     "{{ postgresql_bin_directory }}/{{ postgresql_service_name }}-setup"
 
 # mirsg.postgresql - service
 postgresql_service:
   name: "{{ postgresql_service_name }}"
-  directory: "/etc/systemd/system/{{ postgresql_service_name }}.service.d"
+  directory: /etc/systemd/system/{{ postgresql_service_name }}.service.d
   filename:
-    "/etc/systemd/system/{{ postgresql_service_name
-    }}.service.d/postgresql_service.conf"
+    /etc/systemd/system/{{ postgresql_service_name
+    }}.service.d/postgresql_service.conf
 
 # mirsg.postgresql - storage
 postgresql_storage:
-  storage_directory: "/storage/pgsql"
-  data_directory: "/storage/pgsql/{{ postgresql_version }}/data" # symlink to data_directory
+  storage_directory: /storage/pgsql
+  data_directory: /storage/pgsql/{{ postgresql_version }}/data # symlink to data_directory
 
 # mirsg.postgresql - backup
 postgresql_backup:
-  directory: "/var/lib/pgsql/backups"
-  script: "/var/lib/pgsql/run_db_backup.sh" # script to run cron backup job
+  directory: /var/lib/pgsql/backups
+  script: /var/lib/pgsql/run_db_backup.sh # script to run cron backup job
 
 postgresql_create_database: true

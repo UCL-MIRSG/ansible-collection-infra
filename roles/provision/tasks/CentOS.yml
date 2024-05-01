@@ -31,7 +31,7 @@
     - name: Allow install of other locales
       ansible.builtin.lineinfile:
         path: /etc/yum.conf
-        search_string: "override_install_langs=en_US.utf8"
+        search_string: override_install_langs=en_US.utf8
         state: absent
 
     - name: Install locales # noqa: package-latest

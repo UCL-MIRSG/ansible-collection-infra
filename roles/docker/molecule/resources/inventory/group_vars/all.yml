@@ -5,7 +5,7 @@ docker_client_certificate_cache_directory:
   }}/ansible_persistent_files/docker_server_certificates"
 docker_server_hostname: "{{ hostvars['server']['hostname'] }}"
 docker_server_ip: "{{ hostvars['server']['ansible_ip'] }}"
-docker_server_port: "2376"
+docker_server_port: 2376
 docker_service_name: docker
 docker_generate_certificates: true # generate TLS certs for clients
 docker_tls_verify: true

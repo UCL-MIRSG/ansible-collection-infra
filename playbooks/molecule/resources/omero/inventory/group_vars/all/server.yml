@@ -2,10 +2,10 @@
 # OMERO.server, OMERO.web VM
 web_server:
   host: "{{ hostvars['omero_server_web']['hostname'] }}"
-  url: "https://{{ hostvars['omero_server_web']['hostname'] }}"
+  url: https://{{ hostvars['omero_server_web']['hostname'] }}
   ip: "{{ hostvars['omero_server_web']['ansible_ip'] }}"
   storage_dir: /OMERO
-  subnet: "192.168.56.0/24"
+  subnet: 192.168.56.0/24
   dbhost: "{{ hostvars['omero_db']['hostname'] }}"
   rootpassword: "{{ vault_omero_rootpassword }}"
 
@@ -18,7 +18,7 @@ db_server:
   postgresql_user: omero
   postgresql_password: "{{ vault_postgres_omero_password }}"
   storage_dir: /var/lib/pgsql
-  data_dir: "/var/lib/pgsql/{{ postgresql_version }}/data"
+  data_dir: /var/lib/pgsql/{{ postgresql_version }}/data
   backups_dir: /var/lib/pgsql/backups
   poolsize: 10
 

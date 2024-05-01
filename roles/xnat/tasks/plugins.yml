@@ -149,6 +149,6 @@
   with_items:
     - "{{ remote_plugin_list.files }}"
   when:
-    - "item.path | basename not in local_plugin_list.files |
-      map(attribute='path') | map('basename') | list"
+    - item.path | basename not in local_plugin_list.files |
+      map(attribute='path') | map('basename') | list
     - plugin_changes | length > 0

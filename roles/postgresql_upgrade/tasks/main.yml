@@ -84,6 +84,5 @@
         disabled \
         but you may wish to remove it using the following commands on the db
         server:"
-      - "sudo yum remove postgresql{{ postgreql_upgrade_current_version
-        }}-server"
+      - sudo yum remove postgresql{{ postgreql_upgrade_current_version }}-server
       - sudo yum remove postgresql{{ postgreql_upgrade_current_version }}-libs

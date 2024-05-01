@@ -77,8 +77,8 @@
     networks:
       - name: monitor-net
     ports:
-      - "80:80"
-      - "443:443"
+      - 80:80
+      - 443:443
     volumes:
       - /etc/nginx/.htpasswd:/etc/nginx/.htpasswd
       - "{{ monitoring_server_nginx.conf_file }}:/etc/nginx/nginx.conf:ro"

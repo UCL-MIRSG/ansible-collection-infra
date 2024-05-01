@@ -1,5 +1,5 @@
 ---
-xnat_data_dir: "/data"
+xnat_data_dir: /data
 xnat_root_dir: "{{ xnat_data_dir }}/xnat"
 xnat_home_dir: "{{ xnat_root_dir }}/home"
 
@@ -13,7 +13,7 @@ xnat_common_config:
   par: false
   primaryAdminUsername: "{{ xnat_service_admin.username }}"
   receivedFileUser: "{{ xnat_service_admin.username }}"
-  ipsThatCanSendEmailsThroughRest: "127.0.0.1"
+  ipsThatCanSendEmailsThroughRest: 127.0.0.1
   sessionXmlRebuilderInterval: "5"
   # "^.*$" for all IPs
   enabledProviders:

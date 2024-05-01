@@ -3,7 +3,7 @@
   hosts: client
   vars:
     docker_client_directory: /root/docker_certs
-    docker_server_ip: "192.168.56.3"
+    docker_server_ip: 192.168.56.3
     docker_server_port: 2376
   tasks:
     - name: Get info about the docker server

@@ -16,5 +16,5 @@
     - name: Change firewalld backend to iptables
       ansible.builtin.lineinfile:
         path: /etc/firewalld/firewalld.conf
-        regexp: "^FirewallBackend="
+        regexp: ^FirewallBackend=
         line: FirewallBackend=iptables

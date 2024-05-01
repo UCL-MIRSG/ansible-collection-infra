@@ -3,14 +3,14 @@
   ansible.builtin.service:
     name: tomcat
     state: stopped
-  when: "tomcat_check.stat.exists"
+  when: tomcat_check.stat.exists
 
 - name: Back up existing Tomcat {{ tomcat_catalina_home }}
   ansible.builtin.command:
     "mv {{ tomcat_catalina_home }} {{ tomcat_backup_directory }}"
   args:
     creates: "{{ tomcat_backup_directory }}"
-  when: "tomcat_check.stat.exists"
+  when: tomcat_check.stat.exists
 
 - name: Remove currently installed Tomcat folder
   ansible.builtin.file:
@@ -78,14 +78,14 @@
     remote_src: true
   loop: "{{ tomcat_items_to_restore }}"
 
-  when: "tomcat_check.stat.exists"
+  when: tomcat_check.stat.exists
   notify: Restart tomcat
 
 - name: Show suggested commands for removing backed-up Tomcat folder
   ansible.builtin.debug:
     msg:
-      - "A backup of the previously installed Tomcat folder was created at {{
-        tomcat_backup_directory }}"
+      - A backup of the previously installed Tomcat folder was created at {{
+        tomcat_backup_directory }}
       - You may wish to remove this
       - e.g sudo rm -rf {{ tomcat_backup_directory }}
-  when: "tomcat_check.stat.exists"
+  when: tomcat_check.stat.exists

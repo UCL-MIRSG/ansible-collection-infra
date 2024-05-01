@@ -16,7 +16,7 @@
         set -o pipefail
         ./version.sh | grep -oP '(?<=Apache Tomcat/)([0-9]+\.?)+'
       args:
-        chdir: "/usr/share/tomcat/bin"
+        chdir: /usr/share/tomcat/bin
       register: tomcat_check_version
       changed_when: false
 

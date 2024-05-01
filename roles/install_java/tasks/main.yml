@@ -13,7 +13,7 @@
 
 - name: Get info for java package directory
   ansible.builtin.stat:
-    path: "/usr/lib/jvm/{{ java_package }}"
+    path: /usr/lib/jvm/{{ java_package }}
   register: java_package_info
 
 - name: Check if JRE exists

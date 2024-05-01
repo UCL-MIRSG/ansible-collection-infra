@@ -3,7 +3,7 @@
 omero_server_database_backupdir: "{{ omero_server_datadir }}/upgrade_backups"
 omero_server_basedir: /opt/omero/server
 
-omero_server_release: "5.6.9"
+omero_server_release: 5.6.9
 # omero_server_release: present
 
 # OMERO database connection parameters
@@ -35,10 +35,10 @@ omero_server_datadir: /OMERO
 omero_server_datadir_managedrepo: "{{ omero_server_datadir }}/ManagedRepository"
 
 # Permissions for OMERO data directories apart from ManagedRepository
-omero_server_datadir_mode: "u=rwX,g=rX,o=rX"
+omero_server_datadir_mode: u=rwX,g=rX,o=rX
 
 # Permissions for OMERO ManagedRepository
-omero_server_datadir_managedrepo_mode: "u=rwX,g=srwX,o=rX"
+omero_server_datadir_managedrepo_mode: u=rwX,g=srwX,o=rX
 
 # Setup systemd services
 omero_server_systemd_setup: true
@@ -62,16 +62,16 @@ omero_server_python_addons:
 # If true disable anonymous ciphers and use self-signed certificates
 omero_server_selfsigned_certificates: true
 
-omero_server_ice_version: "3.6"
+omero_server_ice_version: 3.6
 
 omero_server_python_requirements_ice_package:
   RedHat:
     8:
-      "https://github.com/glencoesoftware/zeroc-ice-py-rhel8-x86_64/releases/download/\
-      20230929/zeroc_ice-3.6.5-cp36-cp36m-linux_x86_64.whl"
+      https://github.com/glencoesoftware/zeroc-ice-py-rhel8-x86_64/releases/download/\
+      20230929/zeroc_ice-3.6.5-cp36-cp36m-linux_x86_64.whl
     9:
-      "https://github.com/glencoesoftware/zeroc-ice-py-rhel9-x86_64/releases/download/\
-      20230830/zeroc_ice-3.6.5-cp39-cp39-linux_x86_64.whl"
+      https://github.com/glencoesoftware/zeroc-ice-py-rhel9-x86_64/releases/download/\
+      20230830/zeroc_ice-3.6.5-cp39-cp39-linux_x86_64.whl
 
 # TODO: sort this out
 # ? pip install omero-server-dependencies=={{omero_server_release}}
@@ -145,7 +145,7 @@ omero_server_symlink: OMERO.server
 omero_server_omego: "{{ omero_server_virtualenv_basedir + '/bin/omego' }}"
 
 # Control verbosity of omego
-omero_server_omego_verbosity: "-qq"
+omero_server_omego_verbosity: -qq
 
 # Additional omego arguments passed to upgrade or install
 omero_server_omego_additional_args: ""
@@ -158,7 +158,7 @@ omero_server_upgrade: true
 # DEVELOPMENT: Operator for comparing current-version against
 # omero_server_release, e.g. '!='. Default is to upgrade when
 # current-version < omero_server_release
-omero_server_checkupgrade_comparator: "<"
+omero_server_checkupgrade_comparator: <
 
 # _omero_server_new_version is set in tasks/omero-install.yml
 # We can't just use omero_server_release because if it is "present"

@@ -1,6 +1,6 @@
 ---
 postgresql_client:
-  server_certificate_filename: "/opt/omero/server/.postgresql/root.crt" # where to copy the server certificate to on the client
+  server_certificate_filename: /opt/omero/server/.postgresql/root.crt # where to copy the server certificate to on the client
 
 # mirsg.ssl_certificates
 postgresql_client_ssl_certificate:
