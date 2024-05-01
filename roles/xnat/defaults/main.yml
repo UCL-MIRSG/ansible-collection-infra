@@ -1,5 +1,5 @@
 ---
-xnat_version: 1.8.10
+xnat_version: 1.8.10.1
 xnat_pipeline_version: 1.8.10
 xnat_archive_dir: "{{ xnat_root_dir }}/archive"
 xnat_prearchive_dir: "{{ xnat_root_dir }}/prearchive"
