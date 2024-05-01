@@ -1,14 +1,12 @@
 ---
-- name: Build `monitoring_server_client_hostnames` from `monitoring_client` group
+- name:
+    Build `monitoring_server_client_hostnames` from `monitoring_client` group
   ansible.builtin.set_fact:
     # Get hosts in the `monitoring_client`
     monitoring_server_client_hostnames: >
-      {{
-      query('inventory_hostnames', ansible_limit | default('')) |
-      intersect(groups['monitoring_client']) |
-      map('extract', hostvars, monitoring_server_hostname_extractor) |
-      list | default([])
-      }}
+      {{ query('inventory_hostnames', ansible_limit | default('')) |
+      intersect(groups['monitoring_client']) | map('extract', hostvars,
+      monitoring_server_hostname_extractor) | list | default([]) }}
   failed_when: monitoring_server_client_hostnames | length == 0
 
 - name: Find web servers in `monitoring_client` group
@@ -16,13 +14,10 @@
     # Get any hosts in the `monitoring_client` that are
     # also in the `web` group
     monitoring_server_web_clients: >
-      {{
-      query('inventory_hostnames', ansible_limit | default('')) |
-      intersect(groups['monitoring_client']) |
-      intersect(groups['web']) |
+      {{ query('inventory_hostnames', ansible_limit | default('')) |
+      intersect(groups['monitoring_client']) | intersect(groups['web']) |
       map('extract', hostvars, monitoring_server_hostname_extractor) |
-      map('regex_replace', '^', 'https://')
-      }}
+      map('regex_replace', '^', 'https://') }}
   failed_when: monitoring_server_web_clients | length == 0
 
 - name: Add monitoring_server group

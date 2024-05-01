@@ -1,13 +1,13 @@
 ---
-- name: "Check mounts are available"
+- name: Check mounts are available
   tags: restart
   ansible.builtin.include_tasks: check_mounts.yml
   when: external_storage_drive is defined
 
-- name: "Set up for specific distribution"
+- name: Set up for specific distribution
   ansible.builtin.include_tasks: "{{ ansible_distribution }}.yml"
 
-- name: Upgrade all packages # noqa package-latest
+- name: Upgrade all packages # noqa: package-latest
   ansible.builtin.yum:
     name: "*"
     state: latest
@@ -17,5 +17,5 @@
 - name: Ensure epel is installed
   become: true
   ansible.builtin.yum:
-    name: "epel-release"
+    name: epel-release
     state: installed

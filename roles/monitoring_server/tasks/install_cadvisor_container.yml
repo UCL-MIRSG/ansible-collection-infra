@@ -9,7 +9,7 @@
     networks:
       - name: monitor-net
     command:
-      - "-url_base_prefix=/cadvisor"
+      - -url_base_prefix=/cadvisor
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:rw

@@ -11,7 +11,7 @@
     path: "{{ docker_server_csr }}"
     privatekey_path: "{{ docker_server_key }}"
     common_name: "{{ docker_server_hostname }}"
-    subject_alt_name: "IP:{{ docker_server_ip }}"
+    subject_alt_name: IP:{{ docker_server_ip }}
 
 - name: Generate server certificate
   community.crypto.x509_certificate:

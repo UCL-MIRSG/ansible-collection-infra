@@ -19,7 +19,9 @@
     state: started
   when: "'is not a mountpoint' in check_mountpoint.stdout"
 
-- name: Check that storage has been mounted correctly if it was previously not mounted
+- name:
+    Check that storage has been mounted correctly if it was previously not
+    mounted
   ansible.builtin.command: mountpoint {{ external_storage_drive }}
   when: "'is not a mountpoint' in check_mountpoint.stdout"
   register: check_mountpoint_again

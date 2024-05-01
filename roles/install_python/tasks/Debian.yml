@@ -2,5 +2,5 @@
 # OS specific tasks for the Debian family
 - name: Update apt cache for Debian OSes
   ansible.builtin.apt:
-    update_cache: "true"
+    update_cache: true
     cache_valid_time: 600

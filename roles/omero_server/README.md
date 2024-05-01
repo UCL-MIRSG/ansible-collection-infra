@@ -6,9 +6,9 @@ role maintained by the OME team. The reasons for maintaining a separate role
 here are:
 
 1. The OME role no longer supports EL `8` OS variants
-2. There is a [bug in the OME
-   role](https://github.com/ome/ansible-role-omero-server/issues/72) which stops
-   a database backup working when OMERO.server is upgraded
+2. There is a
+   [bug in the OME role](https://github.com/ome/ansible-role-omero-server/issues/72)
+   which stops a database backup working when OMERO.server is upgraded
 
 If running EL `9` and you set `omero_server_release` to `latest` it is
 recommended that you use the `ome.omero_server` role in place of this one.
@@ -50,8 +50,8 @@ All variables are optional, see defaults/main.yml for the full list
 
 `omero_server_dbpassword`: Database password
 
-`omero_server_rootpassword`: OMERO root password, defaults to `omero`.
-This is only used when initialising a new database.
+`omero_server_rootpassword`: OMERO root password, defaults to `omero`. This is
+only used when initialising a new database.
 
 ### OMERO.server configuration
 
@@ -81,19 +81,17 @@ not support insecure ciphers
 `omero_server_systemd_setup`: Create and start the omero-server systemd service,
 default True
 
-`omero_server_systemd_limit_nofile`: Systemd limit for number of
-open files (default ignore)
+`omero_server_systemd_limit_nofile`: Systemd limit for number of open files
+(default ignore)
 
-`omero_server_systemd_after`: A list of strings with
-additional service names to appear in systemd unit file "After" statements.
-Default empty/none.
+`omero_server_systemd_after`: A list of strings with additional service names to
+appear in systemd unit file "After" statements. Default empty/none.
 
-`omero_server_systemd_requires`: A list of strings with
-additional service names to appear in systemd unit file "Requires" statements.
-Default empty/none.
+`omero_server_systemd_requires`: A list of strings with additional service names
+to appear in systemd unit file "Requires" statements. Default empty/none.
 
-`omero_server_systemd_environment`: Dictionary of additional
-environment variables. Python virtualenv
+`omero_server_systemd_environment`: Dictionary of additional environment
+variables. Python virtualenv
 
 `omero_server_python_addons`: List of additional Python packages to be installed
 into virtualenv. Alternatively you can install packages into
@@ -105,15 +103,15 @@ before upgrading, default empty (disabled)
 ### Configuring OMERO.server
 
 This role regenerates the OMERO configuration file using the configuration files
-and helper script in `/opt/omero/server/config`. `omero_server_config_set` can be
-used for simple configurations, for anything more complex consider creating one
-or more configuration files under: `/opt/omero/server/config/` with the
+and helper script in `/opt/omero/server/config`. `omero_server_config_set` can
+be used for simple configurations, for anything more complex consider creating
+one or more configuration files under: `/opt/omero/server/config/` with the
 extension .omero.
 
-Manual configuration changes (`omero config ...`) will be lost following a restart
-of omero-server with systemd, you can disable this by setting
-`omero_server_always_reset_config: false`. Manual configuration changes will never
-be copied during an upgrade.
+Manual configuration changes (`omero config ...`) will be lost following a
+restart of omero-server with systemd, you can disable this by setting
+`omero_server_always_reset_config: false`. Manual configuration changes will
+never be copied during an upgrade.
 
 See [ome/design#70](https://github.com/ome/design/issues/70) for a proposal to
 add support for a conf.d style directory directly into OMERO.

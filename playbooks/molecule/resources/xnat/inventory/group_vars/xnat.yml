@@ -3,7 +3,7 @@
 firewalld_allow_public_access: true
 
 firewalld_public_zone_sources:
-  - "0.0.0.0/0"
+  - 0.0.0.0/0
 
 # mirsg.xnat.xnat
 # Some times the default admin account hasn't finished creating even after tomcat has started

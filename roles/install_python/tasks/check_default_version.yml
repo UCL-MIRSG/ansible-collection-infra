@@ -3,20 +3,16 @@
   ansible.builtin.set_fact:
     default_python_version: "2"
   when: >-
-    (ansible_os_family == 'RedHat') and
-    (ansible_distribution_major_version | int < 8) or
-    (ansible_distribution == 'Debian') and
-    (ansible_distribution_major_version | int < 10) or
-    (ansible_distribution == 'Ubuntu') and
-    (ansible_distribution_major_version | int < 18)
+    (ansible_os_family == 'RedHat') and (ansible_distribution_major_version |
+    int < 8) or (ansible_distribution == 'Debian') and
+    (ansible_distribution_major_version | int < 10) or (ansible_distribution ==
+    'Ubuntu') and (ansible_distribution_major_version | int < 18)
 
 - name: Check if Python 3 is the default version for the OS
   ansible.builtin.set_fact:
     default_python_version: "3"
   when: >-
-    (ansible_os_family == 'RedHat') and
-    (ansible_distribution_major_version | int >= 8) or
-    (ansible_distribution == 'Debian') and
-    (ansible_distribution_major_version | int >= 10) or
-    (ansible_distribution == 'Ubuntu') and
-    (ansible_distribution_major_version | int >= 18)
+    (ansible_os_family == 'RedHat') and (ansible_distribution_major_version |
+    int >= 8) or (ansible_distribution == 'Debian') and
+    (ansible_distribution_major_version | int >= 10) or (ansible_distribution ==
+    'Ubuntu') and (ansible_distribution_major_version | int >= 18)

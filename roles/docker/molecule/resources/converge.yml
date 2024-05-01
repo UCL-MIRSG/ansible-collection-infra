@@ -21,7 +21,8 @@
         group: root
         mode: "0700"
 
-    - name: Copy Docker server certificate from Ansible Controller cache to client
+    - name:
+        Copy Docker server certificate from Ansible Controller cache to client
       ansible.builtin.copy:
         src: "{{ docker_client_certificate_cache_directory }}/ca.pem"
         dest: "{{ docker_client_directory }}/ca.pem"
@@ -29,9 +30,13 @@
         group: root
         mode: "0600"
 
-    - name: Copy signed Docker client certificate from Ansible Controller cache to client
+    - name:
+        Copy signed Docker client certificate from Ansible Controller cache to
+        client
       ansible.builtin.copy:
-        src: "{{ docker_client_certificate_cache_directory }}/molecule.docker-client.local.cert"
+        src:
+          "{{ docker_client_certificate_cache_directory
+          }}/molecule.docker-client.local.cert"
         dest: "{{ docker_client_directory }}/cert.pem"
         owner: root
         group: root

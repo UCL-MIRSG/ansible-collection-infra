@@ -2,10 +2,10 @@
 - name: Ensure the ca-certificates package is installed
   become: true
   ansible.builtin.yum:
-    name: "ca-certificates"
+    name: ca-certificates
     state: present
 
-- name: Disable default Postgres module # noqa command-instead-of-module
+- name: Disable default Postgres module # noqa: command-instead-of-module
   ansible.builtin.command: yum module disable -y postgresql
   register: disable_postgresql_module
   changed_when:
@@ -15,8 +15,8 @@
   ansible.builtin.rpm_key:
     state: present
     key: >-
-      {{ lookup('vars',
-      'postgresql_rpm_gpg_key_pgdg_' + ansible_architecture) }}
+      {{ lookup('vars', 'postgresql_rpm_gpg_key_pgdg_' + ansible_architecture)
+      }}
 
 - name: Check if locale already set
   ansible.builtin.shell: |
@@ -35,5 +35,6 @@
         state: present
 
     - name: Set locale
-      ansible.builtin.command: "localectl set-locale LANG={{ server_locale | quote }}"
+      ansible.builtin.command:
+        localectl set-locale LANG={{ server_locale | quote }}
       changed_when: false

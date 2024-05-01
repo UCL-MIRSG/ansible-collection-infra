@@ -16,7 +16,7 @@ containing:
 string with commas separating each group.
 
 For details on how to generated encrypted passwords, see:
-https://docs.ansible.com/ansible/latest/reference_appendices/faq.html#how-do-i-generate-encrypted-passwords-for-the-user-module
+<https://docs.ansible.com/ansible/latest/reference_appendices/faq.html#how-do-i-generate-encrypted-passwords-for-the-user-module>
 
 ## Dependencies
 

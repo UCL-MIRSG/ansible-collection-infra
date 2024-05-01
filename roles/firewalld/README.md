@@ -10,38 +10,50 @@ See `defaults/main.yml` for the full list.
 - `allow_public_access`: Allow access from an IP address. Defaults to `false`.
 - `internal_zone_open_services`: A list of services to allow in the `internal`
   zone. Defaults to:
+
   ```yaml
   - http
   - https
   - ssh
   ```
+
 - `public_zone_open_services`: A list of services to allow in the `public` zone.
   Defaults to:
+
   ```yaml
   - http
   - https
   ```
+
 - `work_zone_open_services`: A list of services to allow in the `work` zone.
   Defaults to:
+
   ```yaml
   - http
   - https
   ```
+
 - `internal_zone_closed_services`: A list of services to not allow in the
   `internal` zone. Defaults to:
+
   ```yaml
   - samba-client
   ```
+
 - `public_zone_closed_services`: A list of services to not allow in the `public`
   zone. Defaults to:
+
   ```yaml
   - ssh
   ```
+
 - `work_zone_closed_services`: A list of services to not allow in the `work`
   zone. Defaults to:
+
   ```yaml
   - ssh
   ```
+
 - `internal_zone_sources`: A list of IP addresses to allow in `internal` zone.
   Defaults to `[]`.
 - `public_zone_sources`: A list of IP addresses to allow in `public` zone.

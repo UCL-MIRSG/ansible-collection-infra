@@ -18,7 +18,8 @@
     immediate: true
     permanent: true
     state: disabled
-  loop: "{{ firewalld_close_zone_services | dict2items | subelements('value') }}"
+  loop:
+    "{{ firewalld_close_zone_services | dict2items | subelements('value') }}"
 
 - name: Open zones to services
   become: true
@@ -53,7 +54,7 @@
 - name: Add firewall rich rules
   become: true
   ansible.posix.firewalld:
-    rich_rule: "rule {{ item.rule }}"
+    rich_rule: rule {{ item.rule }}
     zone: "{{ item.zone }}"
     permanent: true
     immediate: true
@@ -72,7 +73,7 @@
 - name: Allow or drop default connections
   become: true
   ansible.builtin.command: >-
-    firewall-cmd
-    --set-default-zone={% if firewalld_allow_public_access %}public{% else %}drop{% endif %}
+    firewall-cmd --set-default-zone={% if firewalld_allow_public_access
+    %}public{% else %}drop{% endif %}
   when: firewall_default_zone.rc != 0
   changed_when: firewall_default_zone.rc != 0

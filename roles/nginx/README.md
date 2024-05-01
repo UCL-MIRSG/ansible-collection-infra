@@ -24,9 +24,9 @@ on CentOS 7 or RockyLinux 9.
 | `nginx_add_default_server` | Whether to add an additional server block for a default server that returns an empty response. Defaults to `true`                                                                               |
 | `nginx_ipv6_enabled`       | Whether to enable support for IPv6. Defaults to `false`                                                                                                                                         |
 
-If you would like to use SSL with NGINX, you will need to have the
-certificate and key on your Ansible Controller, and may also need to set
-the following variables:
+If you would like to use SSL with NGINX, you will need to have the certificate
+and key on your Ansible Controller, and may also need to set the following
+variables:
 
 | Name                            | Description                                                                               |
 | ------------------------------- | ----------------------------------------------------------------------------------------- |
@@ -41,7 +41,8 @@ the following variables:
 
 ## Dependencies
 
-You will need to install the following collections before using `mirsg.infrastructure.nginx`:
+You will need to install the following collections before using
+`mirsg.infrastructure.nginx`:
 
 - `ansible.posix`
 - `community.crypto`

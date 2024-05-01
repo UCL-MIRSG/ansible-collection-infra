@@ -1,11 +1,11 @@
 ---
-xnat_data_dir: "/data"
+xnat_data_dir: /data
 xnat_root_dir: "{{ xnat_data_dir }}/xnat"
 xnat_home_dir: "{{ xnat_root_dir }}/home"
 
 # XNAT configuration shared between all servers
 xnat_common_config:
-  admin_email: "xnatadmin@{{ hostvars['xnat_web']['hostname'] }}"
+  admin_email: xnatadmin@{{ hostvars['xnat_web']['hostname'] }}
   restrictUserListAccessToAdmins: true
   uiAllowNonAdminProjectCreation: false
   allowNonAdminsToClaimUnassignedSessions: true
@@ -13,15 +13,18 @@ xnat_common_config:
   par: false
   primaryAdminUsername: "{{ xnat_service_admin.username }}"
   receivedFileUser: "{{ xnat_service_admin.username }}"
-  ipsThatCanSendEmailsThroughRest: "127.0.0.1"
+  ipsThatCanSendEmailsThroughRest: 127.0.0.1
   sessionXmlRebuilderInterval: "5"
   # "^.*$" for all IPs
-  enabledProviders: ["localdb"]
+  enabledProviders:
+    - localdb
   enableSitewideAnonymizationScript: true
-  sitewideAnonymizationScript: "//\nversion \"6.1\"\nproject != \"Unassigned\" ? (0008,1030) := project\n(0010,0010) := subject\n(0010,0020) := session"
+  sitewideAnonymizationScript:
+    //\nversion \"6.1\"\nproject != \"Unassigned\" ? (0008,1030) :=
+    project\n(0010,0010) := subject\n(0010,0020) := session
 
 xnat_service_admin:
-  username: "service_admin"
-  firstname: "first"
-  lastname: "name"
+  username: service_admin
+  firstname: first
+  lastname: name
   password: "{{ vault_service_admin_password }}"

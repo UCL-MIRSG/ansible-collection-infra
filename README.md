@@ -15,15 +15,15 @@ collection can be used to configure infrastructure for deploying XNAT and OMERO.
 
 ## External requirements
 
-Before using this collection and its playbooks, you must install the [necessary
-Ansible collections and roles](meta/requirements.yml).
+Before using this collection and its playbooks, you must install the
+[necessary Ansible collections and roles](meta/requirements.yml).
 
 ## Using this collection
 
 This collection can be installed using the `ansible-galaxy` command-line tool:
 
 ansible-galaxy collection install
-https://github.com/UCL-MIRSG/ansible-collection-infra.git
+<https://github.com/UCL-MIRSG/ansible-collection-infra.git>
 
 It can also be included in a `requirements.yml` file and install it via
 `ansible-galaxy collection install -r requirements.yml` using the format:
@@ -75,15 +75,17 @@ python -m pip install molecule 'molecule-plugins[docker]' docker
 
 ### Testing the roles using Molecule
 
-Each role has its own Molecule configuration, which can be found it the `molecule/`
-folder of each role. Molecule base configurations are used to reduce to amount
-of duplication in the setup for testing each role. There are two base configurations
-that correspond to two [Molecule
-scenarios](https://ansible.readthedocs.io/projects/molecule/getting-started/#molecule-scenarios)
-one for testing on CentOS 7 and another for testing on RockyLinux 9. The base configurations
-are in the `ansible_collections/mirsg/infrastructure/molecule_configs` folder.
+Each role has its own Molecule configuration, which can be found it the
+`molecule/` folder of each role. Molecule base configurations are used to reduce
+to amount of duplication in the setup for testing each role. There are two base
+configurations that correspond to two
+[Molecule scenarios](https://ansible.readthedocs.io/projects/molecule/getting-started/#molecule-scenarios)
+one for testing on CentOS 7 and another for testing on RockyLinux 9. The base
+configurations are in the
+`ansible_collections/mirsg/infrastructure/molecule_configs` folder.
 
-To run the tests for a specific role, first navigate the the role directory, e.g.
+To run the tests for a specific role, first navigate the the role directory,
+e.g.
 
 ```shell
 cd ansible_collections/mirsg/infrastructure/roles/provision
@@ -102,10 +104,8 @@ This command will:
 - create a CentOS 7 container
 - run the `molecule/prepare.yml` playbook (if it exists) to do any required
   setup for the role
-- run the `molecule/converge.yml` playbook, which will run
-  the role being tested
-- run `molecule/converge.yml` a second time to check the
-  role is
+- run the `molecule/converge.yml` playbook, which will run the role being tested
+- run `molecule/converge.yml` a second time to check the role is
   [idempotent](https://docs.ansible.com/ansible/latest/reference_appendices/glossary.html#term-Idempotency)
 - run `molecule/verify.yml` playbook (if it exists) to perform verification
 - destroy the CentOS 7 container
@@ -152,8 +152,8 @@ molecule --base-config ../../molecule_configs/centos7_base_config.yml login --sc
 #### Destroy the container
 
 If you use the `molecule converge` command, you must remember to destroy the
-container, network, and volumes yourself. You can do this using the `molecule
-destroy` command:
+container, network, and volumes yourself. You can do this using the
+`molecule destroy` command:
 
 ```shell
 molecule --base-config ../../molecule_configs/centos7_base_config.yml  destroy --scenario centos7
@@ -165,19 +165,18 @@ Playbooks in the collection can also be tested using Molecule. The Molecule
 configuration for playbooks is in the
 `ansible_collections/mirsg/infrastructure/playbooks/molecule` folder.
 
-An example of how to setup testing for a playbook can be seen by looking at
-the tests for the `mirsg.install_monitoring` playbook in this collection.
-This is tested on CentOS 7 and RockyLinux 9 using the
+An example of how to setup testing for a playbook can be seen by looking at the
+tests for the `mirsg.install_monitoring` playbook in this collection. This is
+tested on CentOS 7 and RockyLinux 9 using the
 [centos7_monitoring](./playbooks/molecule/centos7_monitoring/) and
 [rocky9_monitoring](./playbooks/molecule/rocky9_monitoring/) scenarios.
 
-An inventory
-and associated group variables can be found in
+An inventory and associated group variables can be found in
 [playbooks/molecule/resources/monitoring/inventory](./playbooks/molecule/resources/monitoring/inventory/).
 Testing the playbook also requires its own
-[converge.yml](./playbooks/molecule/resources/monitoring/converge.yml), and optional
-`prepare.yml` and `verify.yml` playbooks.
-Running the tests then proceeds as with testing the roles:
+[converge.yml](./playbooks/molecule/resources/monitoring/converge.yml), and
+optional `prepare.yml` and `verify.yml` playbooks. Running the tests then
+proceeds as with testing the roles:
 
 ```shell
 molecule --base-config ../molecule_configs/centos7_base_config.yml test --scenario centos7_monitoring
@@ -203,6 +202,6 @@ This collection is licensed and distributed under the BSD 3-Clause License.
 
 ## Author Information
 
-This collection was created by the [Medical Imaging Research Software
-Group](https://www.ucl.ac.uk/advanced-research-computing/expertise/research-software-development/medical-imaging-research-software-group)
+This collection was created by the
+[Medical Imaging Research Software Group](https://www.ucl.ac.uk/advanced-research-computing/expertise/research-software-development/medical-imaging-research-software-group)
 at [UCL](https://www.ucl.ac.uk/).

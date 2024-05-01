@@ -5,10 +5,10 @@ name: Test install_java
 on:
   pull_request:
     paths:
-      - "molecule_configs/*"
-      - "roles/install_java/**"
-      - ".github/workflows/molecule.yml"
-      - ".github/workflows/molecule-java.yml"
+      - molecule_configs/*
+      - roles/install_java/**
+      - .github/workflows/molecule.yml
+      - .github/workflows/molecule-java.yml
 
 jobs:
   molecule-java:

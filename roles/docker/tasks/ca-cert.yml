@@ -19,9 +19,10 @@
     path: "{{ docker_ca_csr }}"
     privatekey_path: "{{ docker_ca_key }}"
     common_name: "{{ docker_server_hostname }}"
-    subject_alt_name: "IP:{{ docker_server_ip }}"
+    subject_alt_name: IP:{{ docker_server_ip }}
     basic_constraints_critical: true
-    basic_constraints: ["CA:TRUE"]
+    basic_constraints:
+      - CA:TRUE
 
 - name: Generate self-signed CA certificate
   community.crypto.x509_certificate:

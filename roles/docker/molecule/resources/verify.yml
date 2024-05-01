@@ -3,15 +3,15 @@
   hosts: client
   vars:
     docker_client_directory: /root/docker_certs
-    docker_server_ip: "192.168.56.3"
+    docker_server_ip: 192.168.56.3
     docker_server_port: 2376
   tasks:
     - name: Get info about the docker server
       community.docker.docker_host_info:
-        ca_path: "{{ docker_client_directory }}/ca.pem"
+        ca_cert: "{{ docker_client_directory }}/ca.pem"
         client_cert: "{{ docker_client_directory }}/cert.pem"
         client_key: "{{ docker_client_directory }}/key.pem"
-        docker_host: "tcp://{{ docker_server_ip }}:{{ docker_server_port }}"
+        docker_host: tcp://{{ docker_server_ip }}:{{ docker_server_port }}
         tls_hostname: "{{ docker_server_ip }}"
         validate_certs: true
         networks: true

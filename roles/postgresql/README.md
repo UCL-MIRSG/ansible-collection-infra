@@ -42,9 +42,9 @@ Note, if `postgresql_use_ssl` is set to `true`, you will also need to define a
 Generation of new certificates can be disabled by setting
 `postgresql_generate_certs` to `false` (defaults to `true`).
 
-See the [`mirsg.infrastructure.ssl_certificates`
-README](../ssl_certificates/README.md) for a description of how to define this
-variable.
+See the
+[`mirsg.infrastructure.ssl_certificates` README](../ssl_certificates/README.md)
+for a description of how to define this variable.
 
 ### Required variables for the PostgreSQL client
 
@@ -71,7 +71,9 @@ To use this role with a dual-server setup (a dartase `db` and a web server
   gather_facts: true
   tasks:
     - name: Disable default postgresl module and install rpm key on RedHat 8+
-      when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] is version('7', '>')
+      when:
+        ansible_facts['os_family'] == "RedHat" and
+        ansible_facts['distribution_major_version'] is version('7', '>')
       block:
         - name: Disable default Postgres module # noqa command-instead-of-module
           ansible.builtin.command: yum module disable -y postgresql

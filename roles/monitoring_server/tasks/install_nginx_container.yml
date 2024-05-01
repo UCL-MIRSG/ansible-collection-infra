@@ -3,13 +3,17 @@
   ansible.builtin.yum:
     name: python-passlib
     state: present
-  when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] is version("7")
+  when:
+    ansible_facts['os_family'] == "RedHat" and
+    ansible_facts['distribution_major_version'] is version("7")
 
 - name: Ensure passlib is installed on rocky9
   ansible.builtin.yum:
     name: python3-passlib
     state: present
-  when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] is version("9")
+  when:
+    ansible_facts['os_family'] == "RedHat" and
+    ansible_facts['distribution_major_version'] is version("9")
 
 - name: Ensure nginx certs directory exists on host
   ansible.builtin.file:
@@ -44,7 +48,9 @@
   notify:
     - Restart nginx
 
-- name: Generate Diffie-Hellman (DH) parameters with bits - {{ monitoring_server_nginx.diffie_helman_size_bits }}
+- name:
+    Generate Diffie-Hellman (DH) parameters with bits - {{
+    monitoring_server_nginx.diffie_helman_size_bits }}
   community.crypto.openssl_dhparam:
     path: "{{ monitoring_server_nginx.dh_params_file }}"
     size: "{{ monitoring_server_nginx.diffie_helman_size_bits }}"
@@ -71,8 +77,8 @@
     networks:
       - name: monitor-net
     ports:
-      - "80:80"
-      - "443:443"
+      - 80:80
+      - 443:443
     volumes:
       - /etc/nginx/.htpasswd:/etc/nginx/.htpasswd
       - "{{ monitoring_server_nginx.conf_file }}:/etc/nginx/nginx.conf:ro"

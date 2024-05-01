@@ -1,5 +1,5 @@
 ---
-- name: "Ensure directories exist for cert files"
+- name: Ensure directories exist for cert files
   ansible.builtin.file:
     path: "{{ item }}"
     owner: "{{ xnat.owner }}"
@@ -28,7 +28,7 @@
 
 - name: Configure LDAP for XNAT
   ansible.builtin.template:
-    src: "ldap1-provider.properties.j2"
+    src: ldap1-provider.properties.j2
     dest: "{{ xnat_config_dir }}/auth/ldap1-provider.properties"
     owner: "{{ xnat.owner }}"
     group: "{{ xnat.group }}"

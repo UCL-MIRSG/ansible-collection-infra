@@ -4,7 +4,7 @@
 # This also avoids problems with ordering of handlers:
 # http://stackoverflow.com/a/35130254
 
-- name: Rewrite omero-server configuration # noqa no-changed-when
+- name: Rewrite omero-server configuration # noqa: no-changed-when
   become: true
   become_user: "{{ omero_server_system_user }}"
   ansible.builtin.command: "{{ omero_server_config_update }}"

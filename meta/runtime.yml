@@ -10,13 +10,13 @@ requires_ansible: ">=2.15.0"
 #       redirect: ns.col.new_location
 #     deprecated_plugin_name:
 #       deprecation:
-#         removal_version: "4.0.0"
+#         removal_version: 4.0.0
 #         warning_text: |
 #           See the porting guide on how to update your playbook to
 #           use ns.col.another_plugin instead.
 #     removed_plugin_name:
 #       tombstone:
-#         removal_version: "2.0.0"
+#         removal_version: 2.0.0
 #         warning_text: |
 #           See the porting guide on how to update your playbook to
 #           use ns.col.another_plugin instead.

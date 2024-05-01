@@ -1,8 +1,11 @@
 ---
 - name: Configure SELinux if enabled and enforced
-  when: ansible_selinux.status == "enabled" and ansible_selinux.mode == "enforcing"
+  when:
+    ansible_selinux.status == "enabled" and ansible_selinux.mode == "enforcing"
   block:
-    - name: Configure SELinux to allow nginx to listen on port {{ nginx_upstream_listen_port }}
+    - name:
+        Configure SELinux to allow nginx to listen on port {{
+        nginx_upstream_listen_port }}
       community.general.seport:
         ports: "{{ nginx_upstream_listen_port }}"
         proto: tcp
@@ -10,21 +13,27 @@
         state: present
       when: nginx_upstream_listen_port is defined
 
-    - name: Configure SELinux to allow httpd to act as relay and keep it persistent across reboots
+    - name:
+        Configure SELinux to allow httpd to act as relay and keep it persistent
+        across reboots
       ansible.posix.seboolean:
         name: httpd_can_network_relay
         state: true
         persistent: true
-      when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] is version("8", ">=")
+      when:
+        ansible_facts['os_family'] == "RedHat" and
+        ansible_facts['distribution_major_version'] is version("8", ">=")
 
 - name: Ensure epel is installed
   ansible.builtin.yum:
-    name: "epel-release"
+    name: epel-release
     state: installed
 
 - name: Ensure nginx is installed
   ansible.builtin.yum:
-    name: ["nginx", "nginx-mod-stream"]
+    name:
+      - nginx
+      - nginx-mod-stream
     state: installed
 
 - name: Ensure nginx certs directory exists
@@ -52,7 +61,9 @@
   notify: Reload nginx
   when: nginx_use_ssl
 
-- name: Generate Diffie-Hellman (DH) parameters. Number of {{ nginx_diffie_helman_size_bits }}.
+- name:
+    Generate Diffie-Hellman (DH) parameters. Number of {{
+    nginx_diffie_helman_size_bits }}.
   community.crypto.openssl_dhparam:
     path: "{{ nginx_dh_params_file }}"
     size: "{{ nginx_diffie_helman_size_bits }}"

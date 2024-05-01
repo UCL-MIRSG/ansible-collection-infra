@@ -6,14 +6,14 @@
 
 - name: Set JAVA_HOME through shell script
   ansible.builtin.template:
-    src: "java_home.sh.j2"
+    src: java_home.sh.j2
     dest: "{{ java_profile_d }}/java_home.sh"
     mode: "0644"
   when: java_home is defined and java_home != ''
 
 - name: Get info for java package directory
   ansible.builtin.stat:
-    path: "/usr/lib/jvm/{{ java_package }}"
+    path: /usr/lib/jvm/{{ java_package }}
   register: java_package_info
 
 - name: Check if JRE exists

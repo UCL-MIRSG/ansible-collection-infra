@@ -3,11 +3,15 @@
   ansible.builtin.pip:
     name:
       - lxml
-  when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] is version('8', '>=')
+  when:
+    ansible_facts['os_family'] == "RedHat" and
+    ansible_facts['distribution_major_version'] is version('8', '>=')
 
 - name: Ensure dependencies are installed
   ansible.builtin.yum:
-    name: ["postgresql", "wget"]
+    name:
+      - postgresql
+      - wget
     state: installed
 
 - name: Get postgres server certificate from cache
@@ -19,25 +23,25 @@
     mode: "0600"
   when: postgresql_use_ssl
 
-- name: "Configure XNAT directories"
+- name: Configure XNAT directories
   ansible.builtin.include_tasks: directories.yml
 
-- name: "Add or upgrade XNAT code"
+- name: Add or upgrade XNAT code
   ansible.builtin.include_tasks: upgrade_xnat.yml
 
-- name: "Add or upgrade plugins"
+- name: Add or upgrade plugins
   ansible.builtin.include_tasks: plugins.yml
 
-- name: "Add or upgrade pipeline installer"
+- name: Add or upgrade pipeline installer
   ansible.builtin.include_tasks: pipelines.yml
   when: xnat_pipeline_engine_enabled
 
-- name: "Configure XNAT settings files"
+- name: Configure XNAT settings files
   ansible.builtin.include_tasks: settings_files.yml
 
-- name: "Configure LDAP for XNAT"
+- name: Configure LDAP for XNAT
   ansible.builtin.include_tasks: ldap.yml
   when: xnat_ldap_enabled
 
-- name: "XNAT site configuration"
+- name: XNAT site configuration
   ansible.builtin.include_tasks: configure.yml

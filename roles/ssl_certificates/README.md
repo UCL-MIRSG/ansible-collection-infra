@@ -1,12 +1,15 @@
 # Ansible Role: mirsg.ssl_certificates
 
-Generate SSL certificates using the [`community.crypto` collection](https://docs.ansible.com/ansible/latest/collections/community/crypto/index.html).
+Generate SSL certificates using the
+[`community.crypto` collection](https://docs.ansible.com/ansible/latest/collections/community/crypto/index.html).
 
 ## Requirements
 
 ### Using the role
 
-If you would like to convert the private key to `pk8` format (`ssl_certificate.use_pk8: true`), you first need to ensure `openssl` is installed before using this role:
+If you would like to convert the private key to `pk8` format
+(`ssl_certificate.use_pk8: true`), you first need to ensure `openssl` is
+installed before using this role:
 
 ```yaml
 - name: Install openssl
@@ -18,7 +21,9 @@ If you would like to convert the private key to `pk8` format (`ssl_certificate.u
 
 ### Testing the role
 
-If you would like to run Ansible Molecule to test this role, the requirements are in [`requirements.txt`](https://github.com/UCL-MIRSG/ansible-role-ssl-certificates/blob/main/requirements.txt).
+If you would like to run Ansible Molecule to test this role, the requirements
+are in
+[`requirements.txt`](https://github.com/UCL-MIRSG/ansible-role-ssl-certificates/blob/main/requirements.txt).
 
 ## Role Variables
 
@@ -34,19 +39,30 @@ The following values **must be included** in the `ssl_certificate` dictionary:
 
 `group`: name of the group that should own the certificate and associated files
 
-`certificate_directory`: directory in which to write the certificate and associated files
+`certificate_directory`: directory in which to write the certificate and
+associated files
 
-`privatekey_filename`: name of the file in which the generated SSL private key will be written
+`privatekey_filename`: name of the file in which the generated SSL private key
+will be written
 
-`use_pk8`: boolean; if `true`, will convert the SSL private key to PKCS8 format using the [`community.crypto.openssl_privatekey_convert`](https://docs.ansible.com/ansible/devel/collections/community/crypto/openssl_privatekey_convert_module.html) module
+`use_pk8`: boolean; if `true`, will convert the SSL private key to PKCS8 format
+using the
+[`community.crypto.openssl_privatekey_convert`](https://docs.ansible.com/ansible/devel/collections/community/crypto/openssl_privatekey_convert_module.html)
+module
 
-`pk8_filename`: name of the file in which the converted SSL private key will be written. A filename must be provided if `use_pk8` is `true`.
+`pk8_filename`: name of the file in which the converted SSL private key will be
+written. A filename must be provided if `use_pk8` is `true`.
 
-`csr_filename`: name of the file into which the generated OpenSSL certificate signing request will be written
+`csr_filename`: name of the file into which the generated OpenSSL certificate
+signing request will be written
 
-`csr_common_name`: the `commonName` field of the certificate signing request subject
+`csr_common_name`: the `commonName` field of the certificate signing request
+subject
 
-`provider`: name of the provider to use to generate/retrieve the OpenSSL certificate. See the [`community.crypto.x509_certificate`](https://docs.ansible.com/ansible/latest/collections/community/crypto/x509_certificate_module.html#parameter-provider) module documentation for options.
+`provider`: name of the provider to use to generate/retrieve the OpenSSL
+certificate. See the
+[`community.crypto.x509_certificate`](https://docs.ansible.com/ansible/latest/collections/community/crypto/x509_certificate_module.html#parameter-provider)
+module documentation for options.
 
 ### Optional variables
 
@@ -60,7 +76,8 @@ The following are **optional** values for the `ssl_certificate` dictionary:
 
 ## Example Playbook
 
-Let's see how to generate self-signed SSL certificates for a PostgreSQL server and client.
+Let's see how to generate self-signed SSL certificates for a PostgreSQL server
+and client.
 
 First define variables for the server:
 
@@ -78,10 +95,13 @@ ssl_certificate:
   csr_common_name: "db"
   certificate_filename: "/var/lib/pgsql/server.crt"
   provider: "selfsigned"
-  cache_filename: "{{ lookup('env', 'HOME') }}/ansible_persistent_files/pg_certificates/db.postgresql_server.crt"
+  cache_filename:
+    "{{ lookup('env', 'HOME')
+    }}/ansible_persistent_files/pg_certificates/db.postgresql_server.crt"
 ```
 
-We also need to define variables for the client - here we assume the postgresql client is a tomcat server:
+We also need to define variables for the client - here we assume the postgresql
+client is a tomcat server:
 
 > `host_vars/web/vars`
 
@@ -98,7 +118,9 @@ ssl_certificate:
   csr_common_name: "{{ web_hostname }}"
   certificate_filename: "/usr/share/tomcat/.postgresql/postgresql.crt"
   provider: "selfsigned"
-  cache_filename: "{{ lookup('env', 'HOME') }}/ansible_persistent_files/pg_certificates/db.postgresql_client.crt"
+  cache_filename:
+    "{{ lookup('env', 'HOME')
+    }}/ansible_persistent_files/pg_certificates/db.postgresql_client.crt"
 ```
 
 Then inside our playbook we can use the role:
@@ -110,7 +132,9 @@ Then inside our playbook we can use the role:
     - mirsg.ssl_certificates
 ```
 
-After creating the certificates and (optionally) copying them both to a shared cache, you will need to copy to server certificate to the client and the client certificate to the server.
+After creating the certificates and (optionally) copying them both to a shared
+cache, you will need to copy to server certificate to the client and the client
+certificate to the server.
 
 ## License
 
@@ -118,4 +142,6 @@ After creating the certificates and (optionally) copying them both to a shared c
 
 ## Author Information
 
-This role was created by the [Medical Imaging Research Software Group](https://www.ucl.ac.uk/advanced-research-computing/expertise/research-software-development/medical-imaging-research-software-group) at [UCL](https://www.ucl.ac.uk/).
+This role was created by the
+[Medical Imaging Research Software Group](https://www.ucl.ac.uk/advanced-research-computing/expertise/research-software-development/medical-imaging-research-software-group)
+at [UCL](https://www.ucl.ac.uk/).

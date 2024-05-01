@@ -15,4 +15,4 @@
         that:
           - response.status == 200
           - "'nginx' in response.server"
-          - "response.content is search('OMERO.web')"
+          - response.content is search('OMERO.web')

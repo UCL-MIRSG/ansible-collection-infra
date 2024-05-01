@@ -1,5 +1,7 @@
 ---
-- name: Ensure alertmanager data directory exists - {{ monitoring_server_alertmanager.external_data_dir }}
+- name:
+    Ensure alertmanager data directory exists - {{
+    monitoring_server_alertmanager.external_data_dir }}
   ansible.builtin.file:
     path: "{{ monitoring_server_alertmanager.external_data_dir }}"
     owner: "{{ monitoring_server_owner }}"
@@ -10,7 +12,8 @@
 - name: Copy alertmanager config file
   ansible.builtin.template:
     src: templates/alertmanager.yml.j2
-    dest: "{{ monitoring_server_alertmanager.external_data_dir }}/alertmanager.yml"
+    dest:
+      "{{ monitoring_server_alertmanager.external_data_dir }}/alertmanager.yml"
     owner: root
     mode: "0644"
 
@@ -21,12 +24,14 @@
     image: "{{ monitoring_server_alertmanager.image }}"
     state: started
     user: "{{ monitoring_server_uid }}:{{ monitoring_server_gid }}"
-    command: "{% for key in monitoring_server_alertmanager.commandline_args %}\
-      --{{ key }}={{ monitoring_server_alertmanager.commandline_args[key] }} {% endfor %}"
+    command:
+      "{% for key in monitoring_server_alertmanager.commandline_args %} --{{ key
+      }}={{ monitoring_server_alertmanager.commandline_args[key] }} {% endfor %}"
     networks:
       - name: monitor-net
     volumes:
-      - "{{ monitoring_server_alertmanager.external_data_dir }}:{{ monitoring_server_alertmanager.volume }}"
+      - "{{ monitoring_server_alertmanager.external_data_dir }}:{{
+        monitoring_server_alertmanager.volume }}"
     restart_policy: always
   notify:
     - Restart prometheus
