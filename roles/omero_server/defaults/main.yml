@@ -48,16 +48,16 @@ omero_server_systemd_limit_nofile:
 
 # Services which OMERO server needs to be running before it can start,
 # such as remote storage.
-omero_server_systemd_after:
+omero_server_systemd_after: [] # yamllint disable-line rule:brackets
 
 # Services which OMERO server needs to be concurrently running.
-omero_server_systemd_requires:
+omero_server_systemd_requires: [] # yamllint disable-line rule:brackets
 
 # Dictionary of additional environment variables
 omero_server_systemd_environment: {} # yamllint disable-line rule:braces
 
 # List of additional Python packages to be installed into virtualenv
-omero_server_python_addons:
+omero_server_python_addons: [] # yamllint disable-line rule:brackets
 
 # If true disable anonymous ciphers and use self-signed certificates
 omero_server_selfsigned_certificates: true
