@@ -17,9 +17,10 @@
   register: new_privatekey_generated
 
 - name: Convert private key to PKCS8 for use by JDBC # noqa no-changed-when
-  ansible.builtin.command:
-    "openssl pkcs8 -topk8 -inform PEM -outform DER -nocrypt \
-    -in {{ ssl_certificate.privatekey_filename }} -out {{ ssl_certificate.pk8_filename }}"
+  ansible.builtin.command: "openssl pkcs8 -topk8 -inform PEM -outform DER
+    -nocrypt \
+    -in {{ ssl_certificate.privatekey_filename }} -out {{
+    ssl_certificate.pk8_filename }}"
   when: new_privatekey_generated.changed and ssl_certificate.use_pk8
 
 - name: Generate OpenSSL CSR

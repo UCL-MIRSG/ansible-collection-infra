@@ -55,7 +55,9 @@ omero_server_default_config:
   omero.db.properties: "ssl={{ postgresql_use_ssl }}&\
     sslmode={{ postgresql_ssl_mode }}"
 
-omero_server_config_set: "{{ omero_server_default_config | ansible.builtin.combine(omero_server_additional_config | default({})) }}"
+omero_server_config_set:
+  "{{ omero_server_default_config |
+  ansible.builtin.combine(omero_server_additional_config | default({})) }}"
 
 # ome.omero_web
 # don't install nginx using ome.omero_web role
@@ -83,7 +85,9 @@ omero_web_apps_config_append:
 omero_web_default_config:
   omero.web.viewer.view: omero_iviewer.views.index
 
-omero_web_config_set: "{{ omero_web_default_config | ansible.builtin.combine(omero_web_additional_config | default({})) }}"
+omero_web_config_set:
+  "{{ omero_web_default_config |
+  ansible.builtin.combine(omero_web_additional_config | default({})) }}"
 
 # mirsg.infrastructure.nginx
 nginx_use_ssl: "{{ ssl.use_ssl }}"
@@ -91,7 +95,8 @@ nginx_server_cert_cache: "{{ ssl.server_cert }}"
 nginx_server_key_cache: "{{ ssl.server_key }}"
 
 # ome.omero_user
-omero_user_create: "{{ omero_service_user + (omero_additional_users | default([])) }}"
+omero_user_create:
+  "{{ omero_service_user + (omero_additional_users | default([])) }}"
 omero_user_system: "{{ omero_server_system_user }}"
 omero_user_admin_user: root
 omero_user_admin_pass: "{{ omero_server_rootpassword }}"

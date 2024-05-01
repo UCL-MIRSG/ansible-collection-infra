@@ -1,8 +1,10 @@
 ---
 ansible_cache_dir: "{{ lookup('env', 'HOME') }}/ansible_persistent_files"
 
-database_server_certificate_cache_filename: "{{ ansible_cache_dir }}/pg_certificates/{{ db_server.host }}.pg.server.crt"
-database_client_certificate_cache_filename: "{{ ansible_cache_dir }}/pg_certificates/{{ db_server.host }}.pg.client.crt"
+database_server_certificate_cache_filename:
+  "{{ ansible_cache_dir }}/pg_certificates/{{ db_server.host }}.pg.server.crt"
+database_client_certificate_cache_filename:
+  "{{ ansible_cache_dir }}/pg_certificates/{{ db_server.host }}.pg.client.crt"
 
 # mirsg.infrastructure.postgresql - download and install - we need to do this on both the web server and the db
 postgresql_install:

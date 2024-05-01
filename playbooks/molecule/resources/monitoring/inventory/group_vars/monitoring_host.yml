@@ -1,6 +1,7 @@
 ---
 monitoring_server_hostname: "{{ hostvars['mserv']['hostname'] }}"
-monitoring_server_ssl_cert: "/etc/ssl/certs/{{ monitoring_server_hostname }}.cert"
+monitoring_server_ssl_cert:
+  "/etc/ssl/certs/{{ monitoring_server_hostname }}.cert"
 monitoring_server_ssl_key: "/etc/ssl/certs/{{ monitoring_server_hostname }}.key"
 monitoring_server_admin_username: mirsg_service
 monitoring_server_admin_password: password
@@ -16,7 +17,7 @@ monitoring_server_cert_owner: root
 monitoring_server_cert_group: root
 monitoring_server_cert_dir: /root/monitoring_certs
 monitoring_server_client_cert_dir: /root/monitoring_certs/client_certs
-monitoring_server_hostname_extractor: "hostname"
+monitoring_server_hostname_extractor: hostname
 monitoring_server_grafana_username: grafana
 monitoring_server_grafana_password: grafana
 monitoring_server_grafana_host: "{{ monitoring_server_hostname }}"

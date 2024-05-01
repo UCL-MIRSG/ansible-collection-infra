@@ -1,5 +1,7 @@
 ---
-- name: Ensure grafana's directory exists - {{ monitoring_server_grafana.external_data_dir }}
+- name:
+    Ensure grafana's directory exists - {{
+    monitoring_server_grafana.external_data_dir }}
   ansible.builtin.file:
     path: "{{ monitoring_server_grafana.external_data_dir }}"
     owner: "{{ monitoring_server_owner }}"
@@ -35,8 +37,10 @@
     state: started
     user: "{{ monitoring_server_uid }}:{{ monitoring_server_gid }}"
     volumes:
-      - "{{ monitoring_server_grafana.external_storage_dir }}:{{ monitoring_server_grafana.volume }}"
-      - "{{ monitoring_server_grafana.external_datasource }}:{{ monitoring_server_grafana.volume_datasource }}"
+      - "{{ monitoring_server_grafana.external_storage_dir }}:{{
+        monitoring_server_grafana.volume }}"
+      - "{{ monitoring_server_grafana.external_datasource }}:{{
+        monitoring_server_grafana.volume_datasource }}"
     networks:
       - name: monitor-net
     env: "{{ monitoring_server_grafana.environment_variables }}"

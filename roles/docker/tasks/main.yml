@@ -12,7 +12,8 @@
   ansible.builtin.yum:
     name: epel-release
     state: installed
-  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "7"
+  when:
+    ansible_os_family == "RedHat" and ansible_distribution_major_version == "7"
 
 - name: Import docker rpm key
   ansible.builtin.rpm_key:
@@ -44,8 +45,8 @@
 - name: Ensure docker service directory exists
   ansible.builtin.file:
     path: "{{ docker_service_directory }}"
-    owner: "root"
-    group: "root"
+    owner: root
+    group: root
     state: directory
     mode: "0700"
 
@@ -53,8 +54,8 @@
   ansible.builtin.template:
     src: docker.conf.j2
     dest: "{{ docker_service_directory }}/docker.conf"
-    owner: "root"
-    group: "root"
+    owner: root
+    group: root
     mode: "0644"
   notify: Reload docker
 
@@ -89,7 +90,9 @@
       ansible.builtin.import_tasks: client-certs.yml
       when: docker_client_hostnames
 
-- name: "Ensure docker service configuration is reloaded before restarting the service"
+- name:
+    "Ensure docker service configuration is reloaded before restarting the
+    service"
   ansible.builtin.meta: flush_handlers
 
 - name: Ensure docker daemon is running

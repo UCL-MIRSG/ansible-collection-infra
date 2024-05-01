@@ -48,16 +48,16 @@ omero_server_systemd_limit_nofile:
 
 # Services which OMERO server needs to be running before it can start,
 # such as remote storage.
-omero_server_systemd_after: []
+omero_server_systemd_after:
 
 # Services which OMERO server needs to be concurrently running.
-omero_server_systemd_requires: []
+omero_server_systemd_requires:
 
 # Dictionary of additional environment variables
 omero_server_systemd_environment: {}
 
 # List of additional Python packages to be installed into virtualenv
-omero_server_python_addons: []
+omero_server_python_addons:
 
 # If true disable anonymous ciphers and use self-signed certificates
 omero_server_selfsigned_certificates: true
@@ -86,9 +86,11 @@ _omero_dropbox_version: ">=5.6.1"
 omero_server_python_requirements:
   - omego==0.7.0
   # TODO: make the use of our non-standard wheel optional
-  - "{{ omero_server_python_requirements_ice_package[ansible_os_family][ansible_distribution_major_version | int] | default('zeroc-ice') }}"
-  - "omero-py{{ _omero_py_version | default('') }}"
-  - "omero-dropbox{{ _omero_dropbox_version | default('') }}"
+  - "{{
+    omero_server_python_requirements_ice_package[ansible_os_family][ansible_distribution_major_version
+    | int] | default('zeroc-ice') }}"
+  - omero-py{{ _omero_py_version | default('') }}
+  - omero-dropbox{{ _omero_dropbox_version | default('') }}
   # TODO: keep or ditch ipython? It's a big dependency and mostly useful for
   # clients
   # - ipython
@@ -162,25 +164,18 @@ omero_server_checkupgrade_comparator: "<"
 # We can't just use omero_server_release because if it is "present"
 # it needs to be substituted with a value that omego will accept
 omero_server_omego_options: >
-  --release {{ _omero_server_new_version }}
-  --sym {{ omero_server_symlink }}
-  --ice {{ omero_server_ice_version }}
-  --no-start
-  --no-web
-  --ignoreconfig
-  --omerocli {{ omero_server_virtualenv_basedir + '/bin/omero' }}
-  {{ omero_server_omego_verbosity }}
-  {{ omero_server_omego_additional_args }}
+  --release {{ _omero_server_new_version }} --sym {{ omero_server_symlink }}
+  --ice {{ omero_server_ice_version }} --no-start --no-web --ignoreconfig
+  --omerocli {{ omero_server_virtualenv_basedir + '/bin/omero' }} {{
+  omero_server_omego_verbosity }} {{ omero_server_omego_additional_args }}
 
 omero_server_omego_db_options: >
-  --dbhost {{ omero_server_dbhost | quote }}
-  --dbuser {{ omero_server_dbuser | quote }}
-  --dbname {{ omero_server_dbname | quote }}
-  --dbpass {{ omero_server_dbpassword | quote }}
-  {{ omero_server_database_manage | ternary('--managedb', '') }}
+  --dbhost {{ omero_server_dbhost | quote }} --dbuser {{ omero_server_dbuser |
+  quote }} --dbname {{ omero_server_dbname | quote }} --dbpass {{
+  omero_server_dbpassword | quote }} {{ omero_server_database_manage |
+  ternary('--managedb', '') }}
 
 omero_server_omego_db_backup_options: >
-  --dbhost {{ omero_server_dbhost | quote }}
-  --dbuser {{ omero_server_dbuser | quote }}
-  --dbname {{ omero_server_dbname | quote }}
-  --dbpass {{ omero_server_dbpassword | quote }}
+  --dbhost {{ omero_server_dbhost | quote }} --dbuser {{ omero_server_dbuser |
+  quote }} --dbname {{ omero_server_dbname | quote }} --dbpass {{
+  omero_server_dbpassword | quote }}

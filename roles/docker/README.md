@@ -1,6 +1,7 @@
 # mirsg.docker
 
-This role is for installing [docker-ce](https://docs.docker.com/engine/install/) on CentOS 7 or Rocky Linux 8.
+This role is for installing [docker-ce](https://docs.docker.com/engine/install/)
+on CentOS 7 or Rocky Linux 8.
 
 ## Role Variables
 
@@ -14,9 +15,11 @@ This role is for installing [docker-ce](https://docs.docker.com/engine/install/)
 | `docker_repo_baseurl`      | URL to the directory containing the repodata. Defaults to `https://download.docker.com/linux/centos` |
 | `docker_yum_package`       | The name of the Docker package. Defaults to `docker`                                                 |
 
-If you would like to [configure](https://docs.docker.com/engine/security/protect-access/#use-tls-https-to-protect-the-docker-daemon-socket)
-your Docker server such that clients can connect to it via TLS, you can also use this role to generate the necessary certificates.
-The following variables can be used to configure certificate creation and signing:
+If you would like to
+[configure](https://docs.docker.com/engine/security/protect-access/#use-tls-https-to-protect-the-docker-daemon-socket)
+your Docker server such that clients can connect to it via TLS, you can also use
+this role to generate the necessary certificates. The following variables can be
+used to configure certificate creation and signing:
 
 | Name                                        | Description                                                                                                                                    |
 | ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -38,9 +41,10 @@ The following variables can be used to configure certificate creation and signin
 | `docker_client_certificate_directory`       | Directory in which to store the client certificates. Defaults to `/home/docker/.docker/client_certs`                                           |
 | `docker_client_certificate_cache_directory` | Directory in which to client certificates will be copied to. Defaults to `~/ansible_persistent_files/docker_certificates`                      |
 
-If you have specified a list of clients in `docker_client_hostnames`, the certificate for each client will be stored locally on your Ansible
-controller in the folder `docker_client_certificate_cache_directory`. You will then need to copy these certificates to the corresponding
-client.
+If you have specified a list of clients in `docker_client_hostnames`, the
+certificate for each client will be stored locally on your Ansible controller in
+the folder `docker_client_certificate_cache_directory`. You will then need to
+copy these certificates to the corresponding client.
 
 ## Example Playbook
 

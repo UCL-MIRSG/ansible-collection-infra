@@ -5,10 +5,10 @@ name: Test firewalld
 on:
   pull_request:
     paths:
-      - "molecule_configs/*"
-      - "roles/firewalld/**"
-      - ".github/workflows/molecule.yml"
-      - ".github/workflows/molecule-firewalld.yml"
+      - molecule_configs/*
+      - roles/firewalld/**
+      - .github/workflows/molecule.yml
+      - .github/workflows/molecule-firewalld.yml
 
 jobs:
   molecule-firewalld:

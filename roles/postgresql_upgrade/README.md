@@ -22,12 +22,12 @@ There are no Ansible-Galaxy dependencies for this role.
 
 ## Example Playbook
 
-This role will perform `postgresql_upgrade` tasks on a managed host. Note that to
-use this role you will need to make sure that any applications that use the
+This role will perform `postgresql_upgrade` tasks on a managed host. Note that
+to use this role you will need to make sure that any applications that use the
 associated Postgresql database are stopped before running the role. For
-convenience a [playbook is provided in this
-collection](../../playbooks/upgrade_postgresql.yml). To use this role, add it to
-the list of roles in a play:
+convenience a
+[playbook is provided in this collection](../../playbooks/upgrade_postgresql.yml).
+To use this role, add it to the list of roles in a play:
 
 ```yaml
 - name: Stop related web services
@@ -45,8 +45,10 @@ the list of roles in a play:
   vars:
     postgreql_upgrade_current_version: 12
     postgreql_upgrade_new_version: 14
-    postgresql_upgrade_data_dir: "/var/lib/pgsql/{{ postgreql_upgrade_new_version }}/data"
-    postgresql_upgrade_scripts_dir: "/var/lib/pgsql/{{ postgreql_upgrade_current_version }}/upgrade"
+    postgresql_upgrade_data_dir:
+      "/var/lib/pgsql/{{ postgreql_upgrade_new_version }}/data"
+    postgresql_upgrade_scripts_dir:
+      "/var/lib/pgsql/{{ postgreql_upgrade_current_version }}/upgrade"
   roles:
     - mirsg.postgresql_upgrade
 

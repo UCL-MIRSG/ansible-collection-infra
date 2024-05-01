@@ -35,6 +35,8 @@ jobs:
         with:
           scenario: ${{ matrix.scenario }}
           # yamllint disable-line rule:line-length
-          base_config: ${{ format('{0}{1}_base_config.yml', inputs.base-config-path, matrix.scenario ) }}
+          base_config:
+            ${{ format('{0}{1}_base_config.yml', inputs.base-config-path,
+            matrix.scenario ) }}
           checkout_path: ansible_collections/mirsg/infrastructure
           tests_path: ${{ inputs.tests-path }}

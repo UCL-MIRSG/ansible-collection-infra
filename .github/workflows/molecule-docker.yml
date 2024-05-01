@@ -5,10 +5,10 @@ name: Test Docker
 on:
   pull_request:
     paths:
-      - "molecule_configs/*"
-      - "roles/docker/**"
-      - ".github/workflows/molecule.yml"
-      - ".github/workflows/molecule-docker.yml"
+      - molecule_configs/*
+      - roles/docker/**
+      - .github/workflows/molecule.yml
+      - .github/workflows/molecule-docker.yml
 
 jobs:
   molecule-docker:

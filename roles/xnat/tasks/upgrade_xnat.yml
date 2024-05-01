@@ -1,5 +1,5 @@
 ---
-- name: "Ensure download directories exist"
+- name: Ensure download directories exist
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
@@ -18,7 +18,7 @@
     group: "{{ xnat.group }}"
     mode: "0644"
 
-- name: "Ensure directories exist for install files"
+- name: Ensure directories exist for install files
   ansible.builtin.file:
     path: "{{ item }}"
     owner: "{{ xnat.owner }}"
@@ -30,7 +30,7 @@
 
 # We do an advance check without modification using check_mode. This allows us
 # to stop Tomcat if required before updating the WAR file.
-- name: "Check if XNAT war file has changed"
+- name: Check if XNAT war file has changed
   ansible.builtin.copy:
     src: "{{ xnat_source.xnat_downloads_dir }}/{{ xnat_source.war_file_name }}"
     dest: "{{ tomcat_root_webapp }}"
@@ -64,7 +64,7 @@
     path: "{{ tomcat_root }}"
   when: xnat_war_file_check.changed
 
-- name: "Deploy XNAT war file"
+- name: Deploy XNAT war file
   ansible.builtin.copy:
     src: "{{ xnat_source.xnat_downloads_dir }}/{{ xnat_source.war_file_name }}"
     dest: "{{ tomcat_root_webapp }}"

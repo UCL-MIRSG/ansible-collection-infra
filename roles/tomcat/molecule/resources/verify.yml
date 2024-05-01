@@ -23,6 +23,7 @@
     - name: Check Tomcat version is correct
       ansible.builtin.assert:
         that:
-          - tomcat_check_version.stdout.split(".")[0] is version(expected_version)
+          - tomcat_check_version.stdout.split(".")[0] is
+            version(expected_version)
       vars:
         expected_version: "{{ '10' if 'tomcat10' in group_names else '9' }}"

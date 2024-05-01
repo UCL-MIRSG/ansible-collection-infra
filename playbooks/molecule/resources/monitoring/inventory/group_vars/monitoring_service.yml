@@ -1,6 +1,8 @@
 ---
 # mirsg.infrastructure.docker
-docker_client_certificate_cache_directory: "{{ lookup('env', 'HOME') }}/ansible_persistent_files/monitoring_server_certificates"
+docker_client_certificate_cache_directory:
+  "{{ lookup('env', 'HOME')
+  }}/ansible_persistent_files/monitoring_server_certificates"
 docker_server_hostname: "{{ hostvars['mserv']['hostname'] }}"
 docker_server_ip: "{{ hostvars['mserv']['ansible_ip'] }}"
 docker_server_port: "2376"
@@ -11,9 +13,13 @@ docker_tls_verify: true
 # mirsg.infrastructure.monitoring_client
 monitoring_client_exporter_username: prometheus
 monitoring_client_exporter_password: prometheus
-monitoring_client_certificate_cache_directory: "{{ docker_client_certificate_cache_directory }}"
+monitoring_client_certificate_cache_directory:
+  "{{ docker_client_certificate_cache_directory }}"
 
 # mirsg.infrastructure.monitoring_server
-monitoring_server_client_exporter_username: "{{ monitoring_client_exporter_username }}"
-monitoring_server_client_exporter_password: "{{ monitoring_client_exporter_password }}"
-monitoring_server_certificate_cache_directory: "{{ docker_client_certificate_cache_directory }}"
+monitoring_server_client_exporter_username:
+  "{{ monitoring_client_exporter_username }}"
+monitoring_server_client_exporter_password:
+  "{{ monitoring_client_exporter_password }}"
+monitoring_server_certificate_cache_directory:
+  "{{ docker_client_certificate_cache_directory }}"

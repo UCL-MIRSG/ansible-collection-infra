@@ -8,27 +8,34 @@ monitoring_server_cert_group: root
 monitoring_server_storage_root: /data/monitoring
 
 # mirsg.monitoring_server CA and server certificate
-monitoring_server_certificate_cache_directory: "{{ lookup('env', 'HOME') }}/ansible_persistent_files/monitoring_server_certificates"
+monitoring_server_certificate_cache_directory:
+  "{{ lookup('env', 'HOME')
+  }}/ansible_persistent_files/monitoring_server_certificates"
 monitoring_server_certificate_directory: /root/monitoring_certs
 monitoring_server_ca_key: "{{ monitoring_server_certificate_directory }}/ca.key"
 monitoring_server_ca_csr: "{{ monitoring_server_certificate_directory }}/ca.csr"
-monitoring_server_ca_cert: "{{ monitoring_server_certificate_directory }}/ca.pem"
-monitoring_server_server_key: "{{ monitoring_server_certificate_directory }}/server-key.pem"
-monitoring_server_server_csr: "{{ monitoring_server_certificate_directory }}/server.csr"
-monitoring_server_server_cert: "{{ monitoring_server_certificate_directory }}/server-cert.pem"
+monitoring_server_ca_cert:
+  "{{ monitoring_server_certificate_directory }}/ca.pem"
+monitoring_server_server_key:
+  "{{ monitoring_server_certificate_directory }}/server-key.pem"
+monitoring_server_server_csr:
+  "{{ monitoring_server_certificate_directory }}/server.csr"
+monitoring_server_server_cert:
+  "{{ monitoring_server_certificate_directory }}/server-cert.pem"
 
 # mirsg.monitoring_server client related
-monitoring_server_client_certificate_directory: "{{ monitoring_server_certificate_directory }}/client_certs"
+monitoring_server_client_certificate_directory:
+  "{{ monitoring_server_certificate_directory }}/client_certs"
 monitoring_server_client_group: "monitoring_client"
 
 monitoring_server_smtp_enabled: false
 monitoring_server_smtp_hostname: ""
 monitoring_server_smtp_port: "25"
-monitoring_server_smtp_protocol: "smtp"
+monitoring_server_smtp_protocol: smtp
 monitoring_server_smtp_auth: ""
 monitoring_server_smtp_username: ""
 monitoring_server_smtp_password: ""
-monitoring_server_smtp_start_tls: "false"
+monitoring_server_smtp_start_tls: false
 ssl_trust: "*"
 
 monitoring_server_hostname_extractor: "ansible_host"
@@ -53,14 +60,15 @@ monitoring_server_grafana:
   external_data_dir: "{{ monitoring_server_storage_root }}/grafana"
   external_storage_dir: "{{ monitoring_server_storage_root }}/grafana/storage"
   volume: /var/lib/grafana
-  external_datasource: "{{ monitoring_server_storage_root }}/grafana/datasources.yml"
+  external_datasource:
+    "{{ monitoring_server_storage_root }}/grafana/datasources.yml"
   volume_datasource: /etc/grafana/provisioning/datasources/datasources.yml
   environment_variables:
     GF_SECURITY_ADMIN_USER: "{{ monitoring_server_grafana_username }}"
     GF_SECURITY_ADMIN_PASSWORD: "{{ monitoring_server_grafana_password }}"
     GF_SERVER_DOMAIN: "{{ monitoring_server_grafana_host }}"
     GF_SERVER_ROOT_URL: "%(protocol)s://%(domain)s:%(http_port)s/grafana/"
-    GF_SERVER_SERVE_FROM_SUB_PATH: "true"
+    GF_SERVER_SERVE_FROM_SUB_PATH: true
 
 monitoring_server_nginx:
   owner: root

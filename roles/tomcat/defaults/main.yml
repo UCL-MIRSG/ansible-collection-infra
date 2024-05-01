@@ -21,7 +21,8 @@ tomcat_binary_url: "https://archive.apache.org/dist/tomcat/tomcat-\
 
 # mirsg.tomcat catalina
 tomcat_catalina_home: /usr/share/tomcat
-tomcat_catalina_opts: "-Xms4G -Xmx6G -XX:MetaspaceSize=300M -XX:+UseG1GC -server"
+tomcat_catalina_opts:
+  "-Xms4G -Xmx6G -XX:MetaspaceSize=300M -XX:+UseG1GC -server"
 
 # mirsg.tomcat configs
 tomcat_config_file: "{{ tomcat_catalina_home }}/conf/tomcat.conf"

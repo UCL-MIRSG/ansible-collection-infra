@@ -6,7 +6,8 @@
   when: "tomcat_check.stat.exists"
 
 - name: Back up existing Tomcat {{ tomcat_catalina_home }}
-  ansible.builtin.command: "mv {{ tomcat_catalina_home }} {{ tomcat_backup_directory }}"
+  ansible.builtin.command:
+    "mv {{ tomcat_catalina_home }} {{ tomcat_backup_directory }}"
   args:
     creates: "{{ tomcat_backup_directory }}"
   when: "tomcat_check.stat.exists"
@@ -63,11 +64,11 @@
     mode: preserve
     remote_src: true
   when:
-    - "tomcat_check.stat.exists"
-    - "pipeline_installer_folder.stat.exists"
+    - tomcat_check.stat.exists
+    - pipeline_installer_folder.stat.exists
   notify: Restart tomcat
 
-- name: "Restore previously installed apps and files"
+- name: Restore previously installed apps and files
   ansible.builtin.copy:
     src: "{{ item }}"
     dest: "{{ tomcat_catalina_home }}"
@@ -83,7 +84,8 @@
 - name: Show suggested commands for removing backed-up Tomcat folder
   ansible.builtin.debug:
     msg:
-      - "A backup of the previously installed Tomcat folder was created at {{ tomcat_backup_directory }}"
-      - "You may wish to remove this"
-      - "e.g sudo rm -rf {{ tomcat_backup_directory }}"
+      - "A backup of the previously installed Tomcat folder was created at {{
+        tomcat_backup_directory }}"
+      - You may wish to remove this
+      - e.g sudo rm -rf {{ tomcat_backup_directory }}
   when: "tomcat_check.stat.exists"

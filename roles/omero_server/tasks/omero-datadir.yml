@@ -42,8 +42,8 @@
     state: link
     force: true
   when: >-
-    omero_server_datadir_bioformatscache !=
-    (omero_server_datadir + "/BioFormatsCache")
+    omero_server_datadir_bioformatscache != (omero_server_datadir +
+    "/BioFormatsCache")
 
 - name: Create omero ManagedRepository
   become: true

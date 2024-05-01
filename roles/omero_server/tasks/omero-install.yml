@@ -36,11 +36,11 @@
 - name: Check omero version could be obtained
   ansible.builtin.assert:
     msg: >-
-      OMERO.server found but unable to get version,
-      you may have a corrupt installation
+      OMERO.server found but unable to get version, you may have a corrupt
+      installation
     that: >-
-      not _omero_server_matches_virtualenv or
-      (omero_server_version | default('') | length > 0)
+      not _omero_server_matches_virtualenv or (omero_server_version |
+      default('') | length > 0)
 
 # TODO: If server was started by systemd but stopped directly you may end up
 # with a hanging process
@@ -91,10 +91,8 @@
     - name: Print upgrade error
       ansible.builtin.debug:
         msg: >-
-          Error comparing current version
-          ({{ omero_server_version | default('') }})
-          and new version
-          ({{ _omero_server_new_version }}), upgrading
+          Error comparing current version ({{ omero_server_version | default('')
+          }}) and new version ({{ _omero_server_new_version }}), upgrading
 
     - name: Check upgrade failed
       ansible.builtin.set_fact:
@@ -103,17 +101,16 @@
 - name: Print upgrade required message
   ansible.builtin.debug:
     msg: >-
-      Upgrade needed: {{ omero_server_version | default('UNKNOWN') }} ->
-      {{ omero_server_release }}
+      Upgrade needed: {{ omero_server_version | default('UNKNOWN') }} -> {{
+      omero_server_release }}
   when: _omero_server_update_needed
 
 # If the OMERO.server symlink doesn't exist don't upgrade, this is a new
 # installation
 - name: Set upgrade flag
   ansible.builtin.set_fact:
-    _omero_server_execute_upgrade: "{{
-      omero_server_upgrade and
-      _omero_server_update_needed and
+    _omero_server_execute_upgrade:
+      "{{ omero_server_upgrade and _omero_server_update_needed and
       (omero_server_release != 'present') and
       omero_server_symlink_st.stat.exists }}"
 
@@ -121,7 +118,7 @@
 - name: Setup virtualenv3
   become: true
   ansible.builtin.pip:
-    name: "pip>=21"
+    name: pip>=21
     state: present
     virtualenv: "{{ omero_server_virtualenv_basedir }}"
     virtualenv_command: /usr/local/bin/ome-python3-virtualenv
@@ -141,11 +138,9 @@
   become: true
   become_user: "{{ omero_server_system_user }}"
   ansible.builtin.command: >
-    {{ omero_server_omego }}
-    install
-    {{ omero_server_omego_options }}
-    {{ omero_server_omego_db_options }}
-    --rootpass {{ omero_server_rootpassword | quote }}
+    {{ omero_server_omego }} install {{ omero_server_omego_options }} {{
+    omero_server_omego_db_options }} --rootpass {{ omero_server_rootpassword |
+    quote }}
   args:
     chdir: "{{ omero_server_basedir }}"
     creates: "{{ omero_server_basedir }}/{{ omero_server_symlink }}"
@@ -173,9 +168,7 @@
   become: true
   become_user: "{{ omero_server_system_user }}"
   ansible.builtin.command: >
-    {{ omero_server_omego }}
-    db dump
-    {{ omero_server_omego_db_backup_options }}
+    {{ omero_server_omego }} db dump {{ omero_server_omego_db_backup_options }}
     --serverdir {{ omero_server_basedir }}/{{ omero_server_symlink }}
   args:
     chdir: "{{ omero_server_database_backupdir }}"
@@ -191,9 +184,7 @@
   become: true
   become_user: "{{ omero_server_system_user }}"
   ansible.builtin.command: >
-    {{ omero_server_omego }}
-    install --upgrade
-    {{ omero_server_omego_options }}
+    {{ omero_server_omego }} install --upgrade {{ omero_server_omego_options }}
     {{ omero_server_omego_db_options }}
   args:
     chdir: "{{ omero_server_basedir }}"

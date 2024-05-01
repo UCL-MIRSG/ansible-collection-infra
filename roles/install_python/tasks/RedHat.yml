@@ -2,5 +2,5 @@
 # OS specific tasks for the RedHat family
 - name: Install EPEL for RedHat OSes
   ansible.builtin.yum:
-    name: "epel-release"
+    name: epel-release
     state: installed

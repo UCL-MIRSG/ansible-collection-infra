@@ -1,7 +1,7 @@
 ---
-- name: "Configure xnat-conf.properties"
+- name: Configure xnat-conf.properties
   ansible.builtin.template:
-    src: "xnat-conf.properties.j2"
+    src: xnat-conf.properties.j2
     dest: "{{ xnat_config_dir }}/xnat-conf.properties"
     owner: "{{ xnat.owner }}"
     group: "{{ xnat.group }}"
@@ -14,13 +14,13 @@
     that:
       - xnat_config.site_name is match('^[A-Za-z][A-Za-z0-9_]*$')
     fail_msg: >
-      xnat_config.site_name must start with a letter and contain only
-      letters, numbers, and underscores
+      xnat_config.site_name must start with a letter and contain only letters,
+      numbers, and underscores
     success_msg: xnat_config.site_name is valid
 
-- name: "Configure prefs-init"
+- name: Configure prefs-init
   ansible.builtin.template:
-    src: "prefs-init.j2"
+    src: prefs-init.j2
     dest: "{{ xnat_config_dir }}/prefs-init.ini"
     owner: "{{ xnat.owner }}"
     group: "{{ xnat.group }}"

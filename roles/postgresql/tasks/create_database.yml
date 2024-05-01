@@ -1,5 +1,5 @@
 ---
-- name: "Create PostgreSQL user"
+- name: Create PostgreSQL user
   become: true
   become_user: "{{ postgresql.owner }}"
   community.postgresql.postgresql_user:
@@ -7,7 +7,7 @@
     password: "{{ postgresql_database.user_password }}"
     port: "{{ postgresql_connection.port }}"
 
-- name: "Create PostgreSQL database"
+- name: Create PostgreSQL database
   become: true
   become_user: "{{ postgresql.owner }}"
   community.postgresql.postgresql_db:

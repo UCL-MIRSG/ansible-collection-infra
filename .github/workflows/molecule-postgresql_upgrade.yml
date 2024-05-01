@@ -5,9 +5,9 @@ name: Test PostgreSQL Upgrade
 on:
   pull_request:
     paths:
-      - "molecule_configs/*"
-      - "roles/postgresql_upgrade/**"
-      - ".github/workflows/molecule.yml"
+      - molecule_configs/*
+      - roles/postgresql_upgrade/**
+      - .github/workflows/molecule.yml
       - ".github/workflows/molecule-postgresql_upgrade.yml"
 
 jobs:

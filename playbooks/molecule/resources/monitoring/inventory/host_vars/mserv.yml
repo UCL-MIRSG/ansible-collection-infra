@@ -7,5 +7,6 @@ monitoring_server_ssl_certificate:
   use_pk8: false
   csr_filename: "/etc/ssl/certs/{{ hostvars['mserv']['hostname'] }}.csr"
   csr_common_name: "{{ hostvars['mserv']['hostname'] }}"
-  certificate_filename: "/etc/ssl/certs/{{ hostvars['mserv']['hostname'] }}.cert"
+  certificate_filename:
+    "/etc/ssl/certs/{{ hostvars['mserv']['hostname'] }}.cert"
   provider: selfsigned

@@ -1,10 +1,10 @@
 ---
 - name: Ensure unzip is installed
   ansible.builtin.yum:
-    name: "unzip"
+    name: unzip
     state: installed
 
-- name: "Ensure download directories exist"
+- name: Ensure download directories exist
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
@@ -61,30 +61,34 @@
   with_items:
     - "{{ cached_plugins.files }}"
   when:
-    - item.path | basename not in plugins_downloaded.results | map(attribute='dest')|map('basename')|list
-    - item.path | basename not in package_plugins_downloaded.results | map(attribute='dest')|map('basename')|list
+    - item.path | basename not in plugins_downloaded.results |
+      map(attribute='dest')|map('basename')|list
+    - item.path | basename not in package_plugins_downloaded.results |
+      map(attribute='dest')|map('basename')|list
 
-- name: "Get list of plugins on the local cache"
+- name: Get list of plugins on the local cache
   ansible.builtin.find:
     paths: "{{ xnat_source.plugins_downloads_dir }}"
     patterns: "*.jar"
     file_type: file
   register: local_plugin_list
 
-- name: "Get stats for local plugins"
+- name: Get stats for local plugins
   ansible.builtin.stat:
     path: "{{ item.path }}"
   with_items: "{{ local_plugin_list.files }}"
   register: local_plugins_stats
 
-- name: "Get list of hashes for local plugins"
+- name: Get list of hashes for local plugins
   vars:
-    local_stats: []
+    local_stats:
   ansible.builtin.set_fact:
-    local_stats: "{{ local_stats + [{'name': item.stat.path | basename, 'hash': item.stat.checksum}] }}"
+    local_stats:
+      "{{ local_stats + [{'name': item.stat.path | basename, 'hash':
+      item.stat.checksum}] }}"
   with_items: "{{ local_plugins_stats.results }}"
 
-- name: "Ensure directories exist for install files"
+- name: Ensure directories exist for install files
   ansible.builtin.file:
     path: "{{ item }}"
     owner: "{{ xnat.owner }}"
@@ -94,35 +98,38 @@
   with_items:
     - "{{ xnat.install_downloads }}"
 
-- name: "Get list of plugins on the remote server"
+- name: Get list of plugins on the remote server
   ansible.builtin.find:
     paths: "{{ xnat_plugins_dir }}"
     patterns: "*.jar"
     file_type: file
   register: remote_plugin_list
 
-- name: "Get stats for remote plugins"
+- name: Get stats for remote plugins
   ansible.builtin.stat:
     path: "{{ item.path }}"
   with_items: "{{ remote_plugin_list.files }}"
   register: remote_plugins_stats
 
-- name: "Get list of hashes for remote plugins"
+- name: Get list of hashes for remote plugins
   ansible.builtin.set_fact:
-    remote_stats: "{{ remote_stats | default([]) + [{'name': item.stat.path | basename, 'hash': item.stat.checksum}] }}"
+    remote_stats:
+      "{{ remote_stats | default([]) + [{'name': item.stat.path | basename,
+      'hash': item.stat.checksum}] }}"
   with_items: "{{ remote_plugins_stats.results }}"
 
-- name: "Check if any plugins have changed"
+- name: Check if any plugins have changed
   ansible.builtin.set_fact:
-    plugin_changes: "{{ remote_stats | default([]) | symmetric_difference(local_stats) }}"
+    plugin_changes:
+      "{{ remote_stats | default([]) | symmetric_difference(local_stats) }}"
 
-- name: "Ensure tomcat is not running when plugins are being updated"
+- name: Ensure tomcat is not running when plugins are being updated
   ansible.builtin.service:
     name: tomcat
     state: stopped
   when: plugin_changes | length > 0
 
-- name: "Copy XNAT plugins to {{ xnat_plugins_dir }}"
+- name: Copy XNAT plugins to {{ xnat_plugins_dir }}
   ansible.builtin.copy:
     src: "{{ item.path }}"
     dest: "{{ xnat_plugins_dir }}"
@@ -142,5 +149,6 @@
   with_items:
     - "{{ remote_plugin_list.files }}"
   when:
-    - "item.path | basename not in local_plugin_list.files | map(attribute='path') | map('basename') | list"
-    - "plugin_changes | length > 0"
+    - "item.path | basename not in local_plugin_list.files |
+      map(attribute='path') | map('basename') | list"
+    - plugin_changes | length > 0

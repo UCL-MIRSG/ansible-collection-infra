@@ -5,12 +5,13 @@ name: Test install_omero playbook
 on:
   pull_request:
     paths:
-      - "roles/omero_server/**"
-      - "playbooks/install_omero.yml"
-      - "playbooks/molecule/**/omero/**"
+      - roles/omero_server/**
+      - playbooks/install_omero.yml
+      - playbooks/molecule/**/omero/**
       - ".github/workflows/molecule-install-omero.yml"
   release:
-    types: [published]
+    types:
+      - published
 
 jobs:
   molecule:

@@ -10,7 +10,9 @@
 - name: Copy blackbox_exporter config file
   ansible.builtin.template:
     src: templates/blackbox-exporter.yml.j2
-    dest: "{{ monitoring_server_storage_root }}/blackbox-exporter/blackbox-exporter.yml"
+    dest:
+      "{{ monitoring_server_storage_root
+      }}/blackbox-exporter/blackbox-exporter.yml"
     owner: "{{ monitoring_server_owner }}"
     group: "{{ monitoring_server_group }}"
     mode: "0644"
@@ -26,5 +28,6 @@
     networks:
       - name: monitor-net
     volumes:
-      - "{{ monitoring_server_storage_root }}/blackbox-exporter/blackbox-exporter.yml:/config/blackbox-exporter.yml"
+      - "{{ monitoring_server_storage_root
+        }}/blackbox-exporter/blackbox-exporter.yml:/config/blackbox-exporter.yml"
     restart_policy: always

@@ -9,16 +9,16 @@
 
 - name: Generate Postgresql backup script
   ansible.builtin.template:
-    src: "run_db_backup.sh.j2"
+    src: run_db_backup.sh.j2
     dest: "{{ postgresql_backup.script }}"
     owner: "{{ postgresql.owner }}"
     group: "{{ postgresql.group }}"
     mode: "0550"
     force: true
 
-- name: "Ensure cron nightly backup exists for postgresql"
+- name: Ensure cron nightly backup exists for postgresql
   ansible.builtin.cron:
-    name: "postgresql backup"
+    name: postgresql backup
     user: "{{ postgresql.owner }}"
     minute: "0"
     hour: "2"

@@ -16,12 +16,15 @@ xnat_common_config:
   ipsThatCanSendEmailsThroughRest: "127.0.0.1"
   sessionXmlRebuilderInterval: "5"
   # "^.*$" for all IPs
-  enabledProviders: ["localdb"]
+  enabledProviders:
+    - localdb
   enableSitewideAnonymizationScript: true
-  sitewideAnonymizationScript: "//\nversion \"6.1\"\nproject != \"Unassigned\" ? (0008,1030) := project\n(0010,0010) := subject\n(0010,0020) := session"
+  sitewideAnonymizationScript:
+    "//\nversion \"6.1\"\nproject != \"Unassigned\" ? (0008,1030) :=
+    project\n(0010,0010) := subject\n(0010,0020) := session"
 
 xnat_service_admin:
-  username: "service_admin"
-  firstname: "first"
-  lastname: "name"
+  username: service_admin
+  firstname: first
+  lastname: name
   password: "{{ vault_service_admin_password }}"

@@ -3,7 +3,7 @@
 install_python:
   version: "2"
   pip_version: "20.3.4"
-  pip_executable: "pip"
+  pip_executable: pip
   system_packages:
     - python
     - python-pip

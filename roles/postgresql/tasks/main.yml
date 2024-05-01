@@ -7,7 +7,9 @@
       - policycoreutils-python
       - python-psycopg2
     state: installed
-  when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] is version('7')
+  when:
+    ansible_facts['os_family'] == "RedHat" and
+    ansible_facts['distribution_major_version'] is version('7')
 
 - name: Setup for RedHat 8+ - install sefcontext dependencies and psycopg2
   ansible.builtin.yum:
@@ -16,7 +18,9 @@
       - policycoreutils-python-utils
       - python3-psycopg2
     state: installed
-  when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] is version('7', '>')
+  when:
+    ansible_facts['os_family'] == "RedHat" and
+    ansible_facts['distribution_major_version'] is version('7', '>')
 
 - name: Ensure postgres RPM is installed
   ansible.builtin.yum:
@@ -33,7 +37,9 @@
   ansible.builtin.yum:
     name: "{{ postgresql_install.yum_contrib_package }}"
     state: installed
-  when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] is version('7')
+  when:
+    ansible_facts['os_family'] == "RedHat" and
+    ansible_facts['distribution_major_version'] is version('7')
 
 - name: Ensure postgresql is not running during configuration change
   ansible.builtin.service:
@@ -44,8 +50,8 @@
 - name: Ensure postgresql service configuration directory exists
   ansible.builtin.file:
     path: "{{ postgresql_service.directory }}"
-    owner: "root"
-    group: "root"
+    owner: root
+    group: root
     state: directory
     mode: "0755"
 
@@ -53,8 +59,8 @@
   ansible.builtin.template:
     src: postgresql.service.j2
     dest: "{{ postgresql_service.filename }}"
-    owner: "root"
-    group: "root"
+    owner: root
+    group: root
     mode: "0644"
   register: postgresql_custom_service_config
 
@@ -74,7 +80,8 @@
     state: directory
     mode: "0700"
 
-- name: Ensure postgresql base directory exists - {{ postgresql.base_directory }}
+- name:
+    Ensure postgresql base directory exists - {{ postgresql.base_directory }}
   ansible.builtin.file:
     path: "{{ postgresql.base_directory }}"
     owner: "{{ postgresql.owner }}"
@@ -105,9 +112,13 @@
   ansible.builtin.file:
     path: "{{ postgresql.data_directory }}"
     state: absent
-  when: postgresql_data_directory_exists.stat.isdir is defined and postgresql_data_directory_exists.stat.isdir and postgresql_data_files.matched | int == 0
+  when:
+    postgresql_data_directory_exists.stat.isdir is defined and
+    postgresql_data_directory_exists.stat.isdir and
+    postgresql_data_files.matched | int == 0
 
-- name: Ensure there is a symbolic link from postgresql data_directory to storage
+- name:
+    Ensure there is a symbolic link from postgresql data_directory to storage
   ansible.builtin.file:
     src: "{{ postgresql_storage.data_directory }}"
     dest: "{{ postgresql.data_directory }}"
@@ -178,7 +189,9 @@
   notify: Restore selinux contexts
   when: selinux_enabled
 
-- name: "Ensure that any required restore of selinux contexts happens before postgres starts"
+- name:
+    "Ensure that any required restore of selinux contexts happens before
+    postgres starts"
   ansible.builtin.meta: flush_handlers
 
 - name: Ensure postgresql is running
