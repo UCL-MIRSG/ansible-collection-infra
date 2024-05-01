@@ -66,12 +66,8 @@ omero_server_ice_version: 3.6
 
 omero_server_python_requirements_ice_package:
   RedHat:
-    8:
-      https://github.com/glencoesoftware/zeroc-ice-py-rhel8-x86_64/releases/download/\
-      20230929/zeroc_ice-3.6.5-cp36-cp36m-linux_x86_64.whl
-    9:
-      https://github.com/glencoesoftware/zeroc-ice-py-rhel9-x86_64/releases/download/\
-      20230830/zeroc_ice-3.6.5-cp39-cp39-linux_x86_64.whl
+    8: https://github.com/glencoesoftware/zeroc-ice-py-rhel8-x86_64/releases/download/20230929/zeroc_ice-3.6.5-cp36-cp36m-linux_x86_64.whl
+    9: https://github.com/glencoesoftware/zeroc-ice-py-rhel9-x86_64/releases/download/20230830/zeroc_ice-3.6.5-cp39-cp39-linux_x86_64.whl
 
 # TODO: sort this out
 # ? pip install omero-server-dependencies=={{omero_server_release}}
