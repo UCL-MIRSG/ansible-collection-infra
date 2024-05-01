@@ -1,24 +1,32 @@
 ---
 - name: Ensure Ansible seport dependencies are installed
   ansible.builtin.yum:
-    name: ["libselinux-python", "policycoreutils-python"]
+    name:
+      - libselinux-python
+      - policycoreutils-python
     state: installed
-  when: ansible_facts['os_family'] == 'RedHat' and ansible_facts['distribution_major_version'] is version('7')
+  when:
+    ansible_facts['os_family'] == 'RedHat' and
+    ansible_facts['distribution_major_version'] is version('7')
 
 - name: Ensure Ansible seport dependencies are installed
   ansible.builtin.yum:
-    name: ["python3-libselinux", "policycoreutils-python-utils"]
+    name:
+      - python3-libselinux
+      - policycoreutils-python-utils
     state: installed
-  when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] is version("8", ">=")
+  when:
+    ansible_facts['os_family'] == "RedHat" and
+    ansible_facts['distribution_major_version'] is version("8", ">=")
 
 - name: Ensure epel is installed
   ansible.builtin.yum:
-    name: "epel-release"
+    name: epel-release
     state: installed
 
 - name: Ensure Tomcat Native library is installed
   ansible.builtin.yum:
-    name: "tomcat-native"
+    name: tomcat-native
     state: installed
 
 - name: Configure SELinux to allow Tomcat to listen on port {{ tomcat_port }}
@@ -53,13 +61,15 @@
   args:
     chdir: "{{ tomcat_catalina_home }}/bin"
   register: tomcat_check_version
-  when: "tomcat_check.stat.exists"
+  when: tomcat_check.stat.exists
   changed_when: false
   failed_when: tomcat_check_version.stderr
 
 - name: Upgrade/install Tomcat if needed
   ansible.builtin.include_tasks: tasks/upgrade.yml
-  when: "not tomcat_check.stat.exists or tomcat_version not in tomcat_check_version.stdout"
+  when:
+    not tomcat_check.stat.exists or tomcat_version not in
+    tomcat_check_version.stdout
 
 - name: Copy tomcat service file
   ansible.builtin.template:
@@ -111,7 +121,7 @@
   block:
     - name: Trigger restart tomcat
       ansible.builtin.debug:
-        msg: "trigger restart tomcat"
+        msg: trigger restart tomcat
       notify: restart tomcat
       changed_when: false
     - name: Force handler to run now

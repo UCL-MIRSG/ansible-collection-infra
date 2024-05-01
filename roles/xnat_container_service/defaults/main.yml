@@ -1,9 +1,9 @@
 ---
-xnat_container_service_owner: "tomcat"
-xnat_container_service_group: "tomcat"
-xnat_container_service_certificate_directory: "/usr/share/tomcat/.docker"
-xnat_container_service_key: "/usr/share/tomcat/.docker/key.pem"
-xnat_container_service_csr: "/usr/share/tomcat/.docker/docker.csr"
-xnat_container_service_pk8: "/usr/share/tomcat/.docker/docker.pk8"
-xnat_container_service_cert: "/usr/share/tomcat/.docker/cert.pem"
-xnat_container_service_server_ca_cert: "/usr/share/tomcat/.docker/ca.pem"
+xnat_container_service_owner: tomcat
+xnat_container_service_group: tomcat
+xnat_container_service_certificate_directory: /usr/share/tomcat/.docker
+xnat_container_service_key: /usr/share/tomcat/.docker/key.pem
+xnat_container_service_csr: /usr/share/tomcat/.docker/docker.csr
+xnat_container_service_pk8: /usr/share/tomcat/.docker/docker.pk8
+xnat_container_service_cert: /usr/share/tomcat/.docker/cert.pem
+xnat_container_service_server_ca_cert: /usr/share/tomcat/.docker/ca.pem

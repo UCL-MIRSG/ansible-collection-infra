@@ -5,10 +5,10 @@ name: Test install_monitoring playbook
 on:
   pull_request:
     paths:
-      - "molecule_configs/*"
-      - "roles/monitoring_client/**"
-      - "roles/monitoring_server/**"
-      - ".github/workflows/molecule-monitoring.yml"
+      - molecule_configs/*
+      - roles/monitoring_client/**
+      - roles/monitoring_server/**
+      - .github/workflows/molecule-monitoring.yml
 
 jobs:
   molecule-monitoring:

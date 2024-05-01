@@ -7,31 +7,33 @@ xnat:
   processingUrl: ""
 
 xnat_source:
-  war_file_name: "xnat-web-{{ xnat_version }}.war"
-  plugins_downloads_dir: "/ansible/downloads/xnat_plugins"
-  xnat_downloads_dir: "/ansible/downloads/xnat"
-  pipeline_installer_file_name: "pipeline-installer-{{ xnat_pipeline_version }}.tar"
-  xnat_war_url: "https://api.bitbucket.org/2.0/repositories/xnatdev/xnat-web/downloads/xnat-web-{{ xnat_version }}.war"
-  pipelines_url: "https://api.github.com/repos/NrgXnat/xnat-pipeline-engine/tarball/{{ xnat_pipeline_version }}"
-  context_file_location: "/usr/share/tomcat/webapps/ROOT/META-INF/context.xml"
+  war_file_name: xnat-web-{{ xnat_version }}.war
+  plugins_downloads_dir: /ansible/downloads/xnat_plugins
+  xnat_downloads_dir: /ansible/downloads/xnat
+  pipeline_installer_file_name:
+    pipeline-installer-{{ xnat_pipeline_version }}.tar
+  xnat_war_url:
+    https://api.bitbucket.org/2.0/repositories/xnatdev/xnat-web/downloads/xnat-web-{{
+    xnat_version }}.war
+  pipelines_url:
+    https://api.github.com/repos/NrgXnat/xnat-pipeline-engine/tarball/{{
+    xnat_pipeline_version }}
+  context_file_location: /usr/share/tomcat/webapps/ROOT/META-INF/context.xml
 
 # mirsg.infrastructure.tomcat
 tomcat_version: 9.0.82
-tomcat_owner: "tomcat"
-tomcat_group: "tomcat"
+tomcat_owner: tomcat
+tomcat_group: tomcat
 
 tomcat_webapp_name: ROOT
-tomcat_root: "/usr/share/tomcat/webapps/{{ tomcat_webapp_name }}"
+tomcat_root: /usr/share/tomcat/webapps/{{ tomcat_webapp_name }}
 tomcat_root_webapp: "{{ tomcat_root }}.war"
 
 tomcat_catalina_home: /usr/share/tomcat
 tomcat_catalina_opts: >-
-  -Dxnat.home={{ xnat_home_dir }}
-  -Xms{{ java_mem.Xms | default("512M") }}
-  -Xmx{{ java_mem.Xmx | default("1G") }}
-  -XX:MetaspaceSize={{ java_mem.MetaspaceSize | default("100M") }}
-  -XX:+UseG1GC
-  -server
+  -Dxnat.home={{ xnat_home_dir }} -Xms{{ java_mem.Xms | default("512M") }}
+  -Xmx{{ java_mem.Xmx | default("1G") }} -XX:MetaspaceSize={{
+  java_mem.MetaspaceSize | default("100M") }} -XX:+UseG1GC -server
 
 tomcat_hostname: localhost
 tomcat_port: 8080
@@ -44,24 +46,24 @@ tomcat_items_to_restore:
   - "{{ tomcat_backup_directory }}/.postgresql"
 
 postgresql_client:
-  server_certificate_filename: "/usr/share/tomcat/.postgresql/root.crt" # where to copy the server certificate to on the client
+  server_certificate_filename: /usr/share/tomcat/.postgresql/root.crt # where to copy the server certificate to on the client
 
 # mirsg.infrastructure.ssl_certificates
 postgresql_client_ssl_certificate:
   owner: "{{ tomcat_owner }}"
   group: "{{ tomcat_owner }}"
-  certificate_directory: "/usr/share/tomcat/.postgresql"
-  privatekey_filename: "/usr/share/tomcat/.postgresql/postgresql.key"
+  certificate_directory: /usr/share/tomcat/.postgresql
+  privatekey_filename: /usr/share/tomcat/.postgresql/postgresql.key
   use_pk8: true
-  pk8_filename: "/usr/share/tomcat/.postgresql/postgresql.pk8"
-  csr_filename: "/usr/share/tomcat/.postgresql/postgresql.csr"
+  pk8_filename: /usr/share/tomcat/.postgresql/postgresql.pk8
+  csr_filename: /usr/share/tomcat/.postgresql/postgresql.csr
   csr_common_name: "{{ web_server.host }}"
-  certificate_filename: "/usr/share/tomcat/.postgresql/postgresql.crt"
-  provider: "selfsigned"
+  certificate_filename: /usr/share/tomcat/.postgresql/postgresql.crt
+  provider: selfsigned
   cache_filename: "{{ database_client_certificate_cache_filename }}" # where to store the client certificate in cache
 
 java:
-  keystore_path: "/usr/lib/jvm/jre/lib/security/cacerts/"
+  keystore_path: /usr/lib/jvm/jre/lib/security/cacerts/
 
 ldap_ca_cert_file_on_client: "{{ xnat.install_downloads }}/certs/ldap-ca.cert"
 

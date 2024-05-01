@@ -9,8 +9,8 @@ external_storage_drive: /storage/xnat
 # Docker network, and to avoid CORS issues inside the network
 web_server:
   host: "{{ hostvars['xnat_web']['hostname'] }}"
-  url: "http://{{ hostvars['xnat_web']['hostname'] }}:8080"
-  subnet: "192.168.56.0/24"
+  url: http://{{ hostvars['xnat_web']['hostname'] }}:8080
+  subnet: 192.168.56.0/24
   ip: "{{ hostvars['xnat_web']['ansible_ip'] }}"
   storage_dir: "{{ external_storage_drive }}/data"
 

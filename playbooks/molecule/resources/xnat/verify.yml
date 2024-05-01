@@ -15,4 +15,4 @@
         that:
           - response.status == 200
           - response.server == "nginx"
-          - "response.content is search('MIRSG XNAT')"
+          - response.content is search('MIRSG XNAT')

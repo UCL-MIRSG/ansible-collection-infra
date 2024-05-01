@@ -1,8 +1,10 @@
 ---
 ansible_cache_dir: "{{ lookup('env', 'HOME') }}/ansible_persistent_files"
 
-database_server_certificate_cache_filename: "{{ ansible_cache_dir }}/pg_certificates/{{ db_server.host }}.pg.server.crt"
-database_client_certificate_cache_filename: "{{ ansible_cache_dir }}/pg_certificates/{{ db_server.host }}.pg.client.crt"
+database_server_certificate_cache_filename:
+  "{{ ansible_cache_dir }}/pg_certificates/{{ db_server.host }}.pg.server.crt"
+database_client_certificate_cache_filename:
+  "{{ ansible_cache_dir }}/pg_certificates/{{ db_server.host }}.pg.client.crt"
 
 # mirsg.infrastructure.postgresql - download and install - we need to do this on both the web server and the db
 postgresql_install:
@@ -11,6 +13,6 @@ postgresql_install:
     https://download.postgresql.org/pub/repos/yum/reporpms/EL-{{
     ansible_facts['distribution_major_version'] }}-{{
     ansible_facts['architecture'] }}/pgdg-redhat-repo-latest.noarch.rpm
-  yum_package: "postgresql{{ postgresql_version }}-server"
-  yum_contrib_package: "postgresql{{ postgresql_version }}-contrib" # required only on CentOS 7
-  yum_client_package: "postgresql{{ postgresql_version }}"
+  yum_package: postgresql{{ postgresql_version }}-server
+  yum_contrib_package: postgresql{{ postgresql_version }}-contrib # required only on CentOS 7
+  yum_client_package: postgresql{{ postgresql_version }}

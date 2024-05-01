@@ -9,4 +9,6 @@
         state: present
   roles:
     - role: mirsg.infrastructure.install_java
-      java_package: "{{ 'java-11-openjdk' if 'tomcat10' in group_names else 'java-1.8.0-openjdk'}}"
+      java_package:
+        "{{ 'java-11-openjdk' if 'tomcat10' in group_names else
+        'java-1.8.0-openjdk'}}"

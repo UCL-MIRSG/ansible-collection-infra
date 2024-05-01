@@ -5,10 +5,10 @@ name: Test tomcat
 on:
   pull_request:
     paths:
-      - "molecule_configs/*"
-      - "roles/tomcat/**"
-      - ".github/workflows/molecule.yml"
-      - ".github/workflows/molecule-tomcat.yml"
+      - molecule_configs/*
+      - roles/tomcat/**
+      - .github/workflows/molecule.yml
+      - .github/workflows/molecule-tomcat.yml
 
 jobs:
   molecule-tomcat:

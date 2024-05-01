@@ -16,13 +16,14 @@
         set -o pipefail
         ./version.sh | grep -oP '(?<=Apache Tomcat/)([0-9]+\.?)+'
       args:
-        chdir: "/usr/share/tomcat/bin"
+        chdir: /usr/share/tomcat/bin
       register: tomcat_check_version
       changed_when: false
 
     - name: Check Tomcat version is correct
       ansible.builtin.assert:
         that:
-          - tomcat_check_version.stdout.split(".")[0] is version(expected_version)
+          - tomcat_check_version.stdout.split(".")[0] is
+            version(expected_version)
       vars:
         expected_version: "{{ '10' if 'tomcat10' in group_names else '9' }}"

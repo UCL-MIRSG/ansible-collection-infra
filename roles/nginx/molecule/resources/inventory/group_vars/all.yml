@@ -2,5 +2,5 @@
 nginx_server_name: molecule.instance.local
 nginx_proxy_port: 8000
 nginx_diffie_helman_size_bits: 2048
-nginx_root: "/home/"
+nginx_root: /home/
 nginx_use_ssl: false

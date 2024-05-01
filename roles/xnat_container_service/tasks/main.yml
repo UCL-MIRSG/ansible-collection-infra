@@ -15,9 +15,13 @@
     group: "{{ xnat_container_service_group }}"
     mode: "0600"
 
-- name: Copy signed Docker client certificate from Ansible Controller cache to client
+- name:
+    Copy signed Docker client certificate from Ansible Controller cache to
+    client
   ansible.builtin.copy:
-    src: "{{ xnat_container_service_certificate_cache_directory }}/{{ xnat_container_service_client_hostname }}.cert"
+    src:
+      "{{ xnat_container_service_certificate_cache_directory }}/{{
+      xnat_container_service_client_hostname }}.cert"
     dest: "{{ xnat_container_service_cert }}"
     owner: "{{ xnat_container_service_owner }}"
     group: "{{ xnat_container_service_group }}"
@@ -31,7 +35,7 @@
     group: "{{ xnat_container_service_group }}"
     mode: "0600"
 
-- name: "Configure XNAT to talk to container service"
+- name: Configure XNAT to talk to container service
   ansible.builtin.uri:
     url: "{{ xnat_container_service_url }}"
     user: "{{ xnat_service_admin.username }}"
@@ -40,11 +44,15 @@
     body_format: json
     body:
       name: "{{ xnat_container_service_name }}"
-      host: "https://{{ xnat_container_service_hostname }}:{{ xnat_container_service_port }}"
+      host:
+        https://{{ xnat_container_service_hostname }}:{{
+        xnat_container_service_port }}
       cert-path: "{{ xnat_container_service_certificate_directory }}"
       swarm-mode: false
-      path-translation-xnat-prefix: "{{ xnat_container_service_path_translation_xnat_prefix }}"
-      path-translation-docker-prefix: "{{ xnat_container_service_path_translation_docker_prefix }}"
+      path-translation-xnat-prefix:
+        "{{ xnat_container_service_path_translation_xnat_prefix }}"
+      path-translation-docker-prefix:
+        "{{ xnat_container_service_path_translation_docker_prefix }}"
       pull-images-on-xnat-init: false
       container-user: ""
     validate_certs: "{{ xnat_container_service_validate_certs }}"

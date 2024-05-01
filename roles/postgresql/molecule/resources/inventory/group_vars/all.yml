@@ -1,15 +1,15 @@
 ---
-external_storage_drive: "/storage/molecule"
+external_storage_drive: /storage/molecule
 selinux_enabled: false
 
 # mirsg.infrastructure.postgresql
 postgresql_use_ssl: false
 postgresql_database:
-  database_name: "database"
-  user_name: "user"
-  user_password: "password"
+  database_name: database
+  user_name: user
+  user_password: password
 postgresql_connection:
-  host: "molecule.instance.local"
+  host: molecule.instance.local
   port: 5432
   client_ip: 0.0.0.0
   listen_addresses: "'*'"

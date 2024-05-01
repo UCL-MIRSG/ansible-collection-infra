@@ -1,6 +1,6 @@
 ---
 postgresql_client:
-  server_certificate_filename: "/opt/omero/server/.postgresql/root.crt" # where to copy the server certificate to on the client
+  server_certificate_filename: /opt/omero/server/.postgresql/root.crt # where to copy the server certificate to on the client
 
 # mirsg.ssl_certificates
 postgresql_client_ssl_certificate:
@@ -28,11 +28,11 @@ firewalld_work_zone_open_services:
   - http
   - https
 firewalld_internal_zone_ports:
-  - "4063"
-  - "4064"
+  - 4063
+  - 4064
 firewalld_work_zone_ports:
-  - "4063"
-  - "4064"
+  - 4063
+  - 4064
 
 # ome.common
 omero_common_basedir: /opt/omero
@@ -52,10 +52,12 @@ omero_server_datadir: "{{ web_server.storage_dir }}"
 
 omero_server_default_config:
   omero.db.poolsize: "{{ db_server.poolsize }}"
-  omero.db.properties: "ssl={{ postgresql_use_ssl }}&\
-    sslmode={{ postgresql_ssl_mode }}"
+  omero.db.properties:
+    ssl={{ postgresql_use_ssl }}&sslmode={{ postgresql_ssl_mode }}
 
-omero_server_config_set: "{{ omero_server_default_config | ansible.builtin.combine(omero_server_additional_config | default({})) }}"
+omero_server_config_set:
+  "{{ omero_server_default_config |
+  ansible.builtin.combine(omero_server_additional_config | default({})) }}"
 
 # ome.omero_web
 # don't install nginx using ome.omero_web role
@@ -83,7 +85,9 @@ omero_web_apps_config_append:
 omero_web_default_config:
   omero.web.viewer.view: omero_iviewer.views.index
 
-omero_web_config_set: "{{ omero_web_default_config | ansible.builtin.combine(omero_web_additional_config | default({})) }}"
+omero_web_config_set:
+  "{{ omero_web_default_config |
+  ansible.builtin.combine(omero_web_additional_config | default({})) }}"
 
 # mirsg.infrastructure.nginx
 nginx_use_ssl: "{{ ssl.use_ssl }}"
@@ -91,7 +95,8 @@ nginx_server_cert_cache: "{{ ssl.server_cert }}"
 nginx_server_key_cache: "{{ ssl.server_key }}"
 
 # ome.omero_user
-omero_user_create: "{{ omero_service_user + (omero_additional_users | default([])) }}"
+omero_user_create:
+  "{{ omero_service_user + (omero_additional_users | default([])) }}"
 omero_user_system: "{{ omero_server_system_user }}"
 omero_user_admin_user: root
 omero_user_admin_pass: "{{ omero_server_rootpassword }}"

@@ -1,5 +1,5 @@
 ---
-postgresql_version: "14"
+postgresql_version: 14
 postgresql_use_ssl: false
 postgresql_ssl_mode: disable
 
