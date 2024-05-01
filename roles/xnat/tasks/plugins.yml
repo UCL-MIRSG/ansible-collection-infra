@@ -81,7 +81,7 @@
 
 - name: Get list of hashes for local plugins
   vars:
-    local_stats:
+    local_stats: [] # yamllint disable-line rule:brackets
   ansible.builtin.set_fact:
     local_stats:
       "{{ local_stats + [{'name': item.stat.path | basename, 'hash':

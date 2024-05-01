@@ -54,7 +54,7 @@ omero_server_systemd_after:
 omero_server_systemd_requires:
 
 # Dictionary of additional environment variables
-omero_server_systemd_environment:
+omero_server_systemd_environment: {} # yamllint disable-line rule:braces
 
 # List of additional Python packages to be installed into virtualenv
 omero_server_python_addons:

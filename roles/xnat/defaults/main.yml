@@ -50,10 +50,10 @@ xnat_plugin_urls:
   - https://api.bitbucket.org/2.0/repositories/xnatdev/xnat-image-viewer-plugin/downloads/ximgview-plugin-1.0.2.jar
   - https://api.bitbucket.org/2.0/repositories/xnatx/xnatx-dxm-settings-plugin/downloads/dxm-settings-plugin-1.0.jar
 
-xnat_plugin_bundle_urls:
-xnat_plugin_packages:
-xnat_server_specific_plugin_urls:
-xnat_server_specific_plugin_packages:
+xnat_plugin_bundle_urls: [] # yamllint disable-line rule:brackets
+xnat_plugin_packages: [] # yamllint disable-line rule:brackets
+xnat_server_specific_plugin_urls: [] # yamllint disable-line rule:brackets
+xnat_server_specific_plugin_packages: [] # yamllint disable-line rule:brackets
 
 # Path to server logo file
 xnat_config_logo: /images/logo.png # use the default XNAT logo

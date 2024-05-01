@@ -35,7 +35,8 @@ docker_server_csr: "{{ docker_certificate_directory }}/server.csr"
 docker_server_cert: "{{ docker_certificate_directory }}/server-cert.pem"
 
 # mirsg.docker client certificates
-docker_client_hostnames: # list of hostnames of clients that will connect to the server
+# list of hostnames of clients that will connect to the server
+docker_client_hostnames: [] # yamllint disable-line rule:brackets
 docker_client_certificate_directory:
   "{{ docker_certificate_directory }}/client_certs"
 docker_client_certificate_cache_directory:
