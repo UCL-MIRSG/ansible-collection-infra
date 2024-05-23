@@ -34,7 +34,7 @@
   ansible.builtin.yum:
     name: "{{ item }}"
     state: installed
-  allow_downgrade: true
+    allow_downgrade: true
   loop:
     # https://groups.google.com/g/xnat_discussion/c/yyPBkN4kayE/m/LUe5GQH5AAAJ
     - docker-ce-24.0.9
