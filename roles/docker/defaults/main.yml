@@ -1,5 +1,5 @@
 ---
-# defaults for mirsg.docker
+docker_version: latest
 docker_owner: root
 docker_group: root
 
