@@ -28,15 +28,9 @@
 
     - name: Get Docker client version
       ansible.builtin.command:
-        cmd: "{% raw %}docker version -f '{{.Server.Version}}'{% endraw %}"
+        cmd: "{% raw %}docker version -f '{{.Client.Version}}'{% endraw %}"
       changed_when: false
       register: client_version
-
-    - name: Print versions
-      ansible.builtin.debug:
-        msg:
-          "Server version: {{ server_version.stdout }} Client version: {{
-          client_version.stdout }}"
 
     - name: Check Docker server version
       ansible.builtin.assert:
@@ -77,10 +71,6 @@
         status_code:
           - 200
       register: response
-
-    - name: Print images
-      ansible.builtin.debug:
-        var: response.json
 
     - name: Check for sample image
       ansible.builtin.assert:
