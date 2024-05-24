@@ -36,9 +36,9 @@
     state: installed
     allow_downgrade: true
   loop:
-    # https://groups.google.com/g/xnat_discussion/c/yyPBkN4kayE/m/LUe5GQH5AAAJ
-    - docker-ce-24.0.9
-    - docker-ce-cli-24.0.9
+    - docker-ce{{ "" if docker_version == "latest" else "-" ~ docker_version }}
+    - docker-ce-cli{{ "" if docker_version == "latest" else "-" ~ docker_version
+      }}
     - containerd.io
     - docker-buildx-plugin
     - docker-compose-plugin

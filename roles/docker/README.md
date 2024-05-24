@@ -7,6 +7,7 @@ on CentOS 7 or Rocky Linux 8.
 
 | Name                       | Description                                                                                          |
 | -------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `docker_version`           | The version of Docker to install. Defaults to `latest`.                                              |
 | `docker_owner`             | The OS user that will have ownership of the Docker service file and directory. Defaults to `root`    |
 | `docker_group`             | The OS group that will have ownership of the Docker service file and directory. Defaults to `root`   |
 | `docker_service_directory` | The path to the Docker service. Defaults to `/etc/systemd/system/docker.service.d`                   |
