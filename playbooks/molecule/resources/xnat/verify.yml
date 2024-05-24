@@ -35,8 +35,8 @@
     - name: Check Docker server version
       ansible.builtin.assert:
         that:
-          - server_version.stdout is version("24.0.9")
-          - client_version.stdout is version("24.0.9")
+          - server_version.stdout is version( docker_version )
+          - client_version.stdout is version( docker_version )
 
 - name: Verify container service is running
   hosts: localhost

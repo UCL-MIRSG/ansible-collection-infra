@@ -1,5 +1,5 @@
 ---
-# defaults for mirsg.docker
+docker_version: 24.0.9
 docker_owner: root
 docker_group: root
 
