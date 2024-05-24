@@ -6,7 +6,3 @@ docker_client_certificate_cache_directory:
 docker_server_hostname: "{{ hostvars['xnat_cserv']['hostname'] }}"
 docker_server_ip: "{{ hostvars['xnat_cserv']['ansible_ip'] }}"
 docker_server_port: 2376
-
-# docker<25 is required for XNAT
-# see: https://groups.google.com/g/xnat_discussion/c/yyPBkN4kayE/m/LUe5GQH5AAAJ
-docker_version: 24.0.9
