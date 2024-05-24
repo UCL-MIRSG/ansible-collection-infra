@@ -1,8 +1,5 @@
 ---
-# docker<25 is required for XNAT
-# see: https://groups.google.com/g/xnat_discussion/c/yyPBkN4kayE/m/LUe5GQH5AAAJ
-docker_version: 24.0.9
-
+docker_version: latest
 docker_owner: root
 docker_group: root
 
