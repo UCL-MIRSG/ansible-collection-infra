@@ -16,3 +16,73 @@
           - response.status == 200
           - response.server == "nginx"
           - response.content is search('MIRSG XNAT')
+
+- name: Verify correct Docker version is installed
+  hosts: xnat_cserv
+  tasks:
+    - name: Get Docker server version
+      ansible.builtin.command:
+        cmd: "{% raw %}docker version -f '{{.Server.Version}}'{% endraw %}"
+      changed_when: false
+      register: server_version
+
+    - name: Get Docker client version
+      ansible.builtin.command:
+        cmd: "{% raw %}docker version -f '{{.Server.Version}}'{% endraw %}"
+      changed_when: false
+      register: client_version
+
+    - name: Print versions
+      ansible.builtin.debug:
+        msg:
+          "Server version: {{ server_version.stdout }} Client version: {{
+          client_version.stdout }}"
+
+    - name: Check Docker server version
+      ansible.builtin.assert:
+        that:
+          - server_version.stdout is version("24.0.9")
+          - client_version.stdout is version("24.0.9")
+
+- name: Verify container service is running
+  hosts: localhost
+  tasks:
+    - name: Check container service is running
+      ansible.builtin.uri:
+        url: http://localhost:8080/xapi/docker/server/ping
+        user: "{{ xnat_service_admin.username }}"
+        password: "{{ xnat_service_admin.password }}"
+        method: GET
+        validate_certs: false
+        status_code:
+          - 200
+
+    - name: Upload sample image to the Container Service
+      ansible.builtin.uri:
+        user: "{{ xnat_service_admin.username }}"
+        password: "{{ xnat_service_admin.password }}"
+        url: http://localhost:8080/xapi/docker/pull?image=xnat/dcm2niix:latest&save-commands=true
+        method: POST
+        validate_certs: false
+        status_code:
+          - 200
+
+    - name: Get all Docker images
+      ansible.builtin.uri:
+        url: http://localhost:8080/xapi/docker/images
+        user: "{{ xnat_service_admin.username }}"
+        password: "{{ xnat_service_admin.password }}"
+        method: GET
+        validate_certs: false
+        status_code:
+          - 200
+      register: response
+
+    - name: Print images
+      ansible.builtin.debug:
+        var: response.json
+
+    - name: Check for sample image
+      ansible.builtin.assert:
+        that:
+          - response.json[0].tags[0] == "xnat/dcm2niix:latest"
