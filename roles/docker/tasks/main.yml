@@ -36,7 +36,6 @@
     state: installed
     allow_downgrade: true
   loop:
-    # https://groups.google.com/g/xnat_discussion/c/yyPBkN4kayE/m/LUe5GQH5AAAJ
     - docker-ce-{{ docker_version }}
     - docker-ce-cli-{{ docker_version }}
     - containerd.io
