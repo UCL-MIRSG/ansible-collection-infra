@@ -16,6 +16,7 @@ installed before using this role:
   ansible.builtin.dnf:
     name: openssl
     state: present
+    use_backend: dnf5
   when: ssl_certificate.use_pk8
 ```
 

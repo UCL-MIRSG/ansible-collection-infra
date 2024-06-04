@@ -13,6 +13,7 @@
       - postgresql
       - wget
     state: installed
+    use_backend: dnf5
 
 - name: Get postgres server certificate from cache
   ansible.builtin.copy:

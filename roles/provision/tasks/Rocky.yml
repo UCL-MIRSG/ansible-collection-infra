@@ -4,6 +4,7 @@
   ansible.builtin.dnf:
     name: ca-certificates
     state: present
+    use_backend: dnf5
 
 - name: Disable default Postgres module # noqa: command-instead-of-module
   ansible.builtin.command: yum module disable -y postgresql
@@ -33,6 +34,7 @@
       ansible.builtin.dnf:
         name: glibc-langpack-en
         state: present
+        use_backend: dnf5
 
     - name: Set locale
       ansible.builtin.command:

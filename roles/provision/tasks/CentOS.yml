@@ -38,6 +38,7 @@
       ansible.builtin.dnf:
         name: glibc-common
         state: latest
+        use_backend: dnf5
 
     - name: Set locale
       ansible.builtin.command:

@@ -3,6 +3,7 @@
   ansible.builtin.dnf:
     name: "{{ item }}"
     state: installed
+    use_backend: dnf5
   loop:
     - yum-utils
     - device-mapper-persistent-data
@@ -12,6 +13,7 @@
   ansible.builtin.dnf:
     name: epel-release
     state: installed
+    use_backend: dnf5
   when:
     ansible_os_family == "RedHat" and ansible_distribution_major_version == "7"
 
@@ -35,6 +37,7 @@
     name: "{{ item }}"
     state: installed
     allow_downgrade: true
+    use_backend: dnf5
   loop:
     - docker-ce{{ "" if docker_version == "latest" else "-" ~ docker_version }}
     - docker-ce-cli{{ "" if docker_version == "latest" else "-" ~ docker_version

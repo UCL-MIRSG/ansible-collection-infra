@@ -3,6 +3,7 @@
   ansible.builtin.dnf:
     name: unzip
     state: installed
+    use_backend: dnf5
 
 - name: Ensure download directories exist
   ansible.builtin.file:

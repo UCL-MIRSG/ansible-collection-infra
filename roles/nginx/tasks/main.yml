@@ -28,6 +28,7 @@
   ansible.builtin.dnf:
     name: epel-release
     state: installed
+    use_backend: dnf5
 
 - name: Ensure nginx is installed
   ansible.builtin.dnf:
@@ -35,6 +36,7 @@
       - nginx
       - nginx-mod-stream
     state: installed
+    use_backend: dnf5
 
 - name: Ensure nginx certs directory exists
   ansible.builtin.file:

@@ -17,6 +17,7 @@
       ansible.builtin.dnf:
         name: cronie
         state: present
+        use_backend: dnf5
     - name: Start crontabs service
       ansible.builtin.service:
         name: crond.service

@@ -95,6 +95,7 @@ To use this role with a dual-server setup (a dartase `db` and a web server
       ansible.builtin.dnf:
         name: openssl
         state: present
+        use_backend: dnf5
 
     - name: Create self-signed SSL certificate for the client
       ansible.builtin.include_role:

@@ -5,6 +5,7 @@
       - libselinux-python
       - policycoreutils-python
     state: installed
+    use_backend: dnf5
   when:
     ansible_facts['os_family'] == 'RedHat' and
     ansible_facts['distribution_major_version'] is version('7')
@@ -15,6 +16,7 @@
       - python3-libselinux
       - policycoreutils-python-utils
     state: installed
+    use_backend: dnf5
   when:
     ansible_facts['os_family'] == "RedHat" and
     ansible_facts['distribution_major_version'] is version("8", ">=")
@@ -23,11 +25,13 @@
   ansible.builtin.dnf:
     name: epel-release
     state: installed
+    use_backend: dnf5
 
 - name: Ensure Tomcat Native library is installed
   ansible.builtin.dnf:
     name: tomcat-native
     state: installed
+    use_backend: dnf5
 
 - name: Configure SELinux to allow Tomcat to listen on port {{ tomcat_port }}
   community.general.seport:

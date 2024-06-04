@@ -15,6 +15,7 @@
       # https://groups.google.com/g/xnat_discussion/c/yyPBkN4kayE/m/LUe5GQH5AAAJ
       - docker-ce
       - docker-ce-cli
+    use_backend: dnf5
   tags:
     - molecule-idempotence-notest
 
@@ -23,3 +24,4 @@
   ansible.builtin.dnf:
     name: epel-release
     state: installed
+    use_backend: dnf5

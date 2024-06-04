@@ -22,11 +22,13 @@
     name: "{{ postgresql_install.rpm }}"
     state: present
     disable_gpg_check: "{{ postgresql_install.disable_gpg_check }}"
+    use_backend: dnf5
 
 - name: Ensure postgresql is installed
   ansible.builtin.dnf:
     name: "{{ postgresql_install.yum_client_package }}"
     state: installed
+    use_backend: dnf5
 
 - name: Get postgres server certificate from cache
   ansible.builtin.copy:
