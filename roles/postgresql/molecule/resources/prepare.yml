@@ -11,7 +11,7 @@
     - role: mirsg.infrastructure.provision
   tasks:
     - name: Install crontabs
-      ansible.builtin.yum:
+      ansible.builtin.dnf:
         name: cronie
         state: present
 

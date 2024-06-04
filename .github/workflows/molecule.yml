@@ -31,7 +31,7 @@ jobs:
 
     steps:
       - name: Run `molecule test`
-        uses: UCL-MIRSG/.github/actions/molecule-test@561536e2ee67e89d148c1c9830c9debcf3a7ff07 # v0.69.0
+        uses: UCL-MIRSG/.github/actions/molecule-test@270d5d2c3a93f1e30394f9dfdd1f53298de8e2cd # v0.85.0
         with:
           scenario: ${{ matrix.scenario }}
           # yamllint disable-line rule:line-length

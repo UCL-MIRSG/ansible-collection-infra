@@ -1,6 +1,6 @@
 ---
 - name: Ensure docker dependencies are installed
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name: "{{ item }}"
     state: installed
   loop:
@@ -9,7 +9,7 @@
     - lvm2
 
 - name: Install "epel-release" for centos:7
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name: epel-release
     state: installed
   when:
@@ -31,7 +31,7 @@
       - "{{ docker_rpm_gpg_key_url }}"
 
 - name: Ensure docker is installed
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name: "{{ item }}"
     state: installed
     allow_downgrade: true

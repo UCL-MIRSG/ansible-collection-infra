@@ -13,7 +13,7 @@ installed before using this role:
 
 ```yaml
 - name: Install openssl
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name: openssl
     state: present
   when: ssl_certificate.use_pk8
