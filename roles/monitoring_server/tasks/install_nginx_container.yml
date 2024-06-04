@@ -1,18 +1,16 @@
 ---
 - name: Ensure passlib is installed on centos7
-  ansible.builtin.dnf:
+  ansible.builtin.yum:
     name: python-passlib
     state: present
-    use_backend: dnf5
   when:
     ansible_facts['os_family'] == "RedHat" and
     ansible_facts['distribution_major_version'] is version("7")
 
 - name: Ensure passlib is installed on rocky9
-  ansible.builtin.dnf:
+  ansible.builtin.yum:
     name: python3-passlib
     state: present
-    use_backend: dnf5
   when:
     ansible_facts['os_family'] == "RedHat" and
     ansible_facts['distribution_major_version'] is version("9")

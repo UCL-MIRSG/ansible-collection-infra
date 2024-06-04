@@ -1,19 +1,18 @@
 ---
 - name: Ensure docker dependencies are installed
-  ansible.builtin.dnf:
+  ansible.builtin.yum:
     name: "{{ item }}"
     state: installed
-    use_backend: dnf5
+
   loop:
     - yum-utils
     - device-mapper-persistent-data
     - lvm2
 
 - name: Install "epel-release" for centos:7
-  ansible.builtin.dnf:
+  ansible.builtin.yum:
     name: epel-release
     state: installed
-    use_backend: dnf5
   when:
     ansible_os_family == "RedHat" and ansible_distribution_major_version == "7"
 
@@ -33,11 +32,11 @@
       - "{{ docker_rpm_gpg_key_url }}"
 
 - name: Ensure docker is installed
-  ansible.builtin.dnf:
+  ansible.builtin.yum:
     name: "{{ item }}"
     state: installed
     allow_downgrade: true
-    use_backend: dnf5
+
   loop:
     - docker-ce{{ "" if docker_version == "latest" else "-" ~ docker_version }}
     - docker-ce-cli{{ "" if docker_version == "latest" else "-" ~ docker_version

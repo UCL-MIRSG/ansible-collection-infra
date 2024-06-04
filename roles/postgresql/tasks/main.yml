@@ -1,47 +1,42 @@
 ---
 # tasks file for postgresql
 - name: Setup for RedHat 7 - install sefcontext dependencies and psycopg2
-  ansible.builtin.dnf:
+  ansible.builtin.yum:
     name:
       - libselinux-python
       - policycoreutils-python
       - python-psycopg2
     state: installed
-    use_backend: dnf5
   when:
     ansible_facts['os_family'] == "RedHat" and
     ansible_facts['distribution_major_version'] is version('7')
 
 - name: Setup for RedHat 8+ - install sefcontext dependencies and psycopg2
-  ansible.builtin.dnf:
+  ansible.builtin.yum:
     name:
       - python3-libselinux
       - policycoreutils-python-utils
       - python3-psycopg2
     state: installed
-    use_backend: dnf5
   when:
     ansible_facts['os_family'] == "RedHat" and
     ansible_facts['distribution_major_version'] is version('7', '>')
 
 - name: Ensure postgres RPM is installed
-  ansible.builtin.dnf:
+  ansible.builtin.yum:
     name: "{{ postgresql_install.rpm }}"
     state: present
     disable_gpg_check: "{{ postgresql_install.disable_gpg_check }}"
-    use_backend: dnf5
 
 - name: Ensure postgresql is installed
-  ansible.builtin.dnf:
+  ansible.builtin.yum:
     name: "{{ postgresql_install.yum_package }}"
     state: installed
-    use_backend: dnf5
 
 - name: Ensure postgresql contrib is installed
-  ansible.builtin.dnf:
+  ansible.builtin.yum:
     name: "{{ postgresql_install.yum_contrib_package }}"
     state: installed
-    use_backend: dnf5
   when:
     ansible_facts['os_family'] == "RedHat" and
     ansible_facts['distribution_major_version'] is version('7')

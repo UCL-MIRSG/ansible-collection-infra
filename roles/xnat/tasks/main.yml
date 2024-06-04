@@ -8,12 +8,11 @@
     ansible_facts['distribution_major_version'] is version('8', '>=')
 
 - name: Ensure dependencies are installed
-  ansible.builtin.dnf:
+  ansible.builtin.yum:
     name:
       - postgresql
       - wget
     state: installed
-    use_backend: dnf5
 
 - name: Get postgres server certificate from cache
   ansible.builtin.copy:

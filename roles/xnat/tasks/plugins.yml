@@ -1,9 +1,8 @@
 ---
 - name: Ensure unzip is installed
-  ansible.builtin.dnf:
+  ansible.builtin.yum:
     name: unzip
     state: installed
-    use_backend: dnf5
 
 - name: Ensure download directories exist
   ansible.builtin.file:

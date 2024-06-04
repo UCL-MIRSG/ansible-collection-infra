@@ -25,18 +25,16 @@
         ansible_facts['distribution_major_version'] is version("8", ">=")
 
 - name: Ensure epel is installed
-  ansible.builtin.dnf:
+  ansible.builtin.yum:
     name: epel-release
     state: installed
-    use_backend: dnf5
 
 - name: Ensure nginx is installed
-  ansible.builtin.dnf:
+  ansible.builtin.yum:
     name:
       - nginx
       - nginx-mod-stream
     state: installed
-    use_backend: dnf5
 
 - name: Ensure nginx certs directory exists
   ansible.builtin.file:

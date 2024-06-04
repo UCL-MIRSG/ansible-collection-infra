@@ -1,10 +1,9 @@
 ---
 - name: Ensure the ca-certificates package is installed
   become: true
-  ansible.builtin.dnf:
+  ansible.builtin.yum:
     name: ca-certificates
     state: present
-    use_backend: dnf5
 
 - name: Disable default Postgres module # noqa: command-instead-of-module
   ansible.builtin.command: yum module disable -y postgresql
@@ -31,10 +30,9 @@
   when: found_locale.rc != 0
   block:
     - name: Install locale
-      ansible.builtin.dnf:
+      ansible.builtin.yum:
         name: glibc-langpack-en
         state: present
-        use_backend: dnf5
 
     - name: Set locale
       ansible.builtin.command:

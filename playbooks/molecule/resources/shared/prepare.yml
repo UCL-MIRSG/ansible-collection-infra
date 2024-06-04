@@ -14,10 +14,10 @@
   gather_facts: true
   tasks:
     - name: Install crontabs
-      ansible.builtin.dnf:
+      ansible.builtin.yum:
         name: cronie
         state: present
-        use_backend: dnf5
+
     - name: Start crontabs service
       ansible.builtin.service:
         name: crond.service
