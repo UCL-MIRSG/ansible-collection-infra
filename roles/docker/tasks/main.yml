@@ -3,7 +3,6 @@
   ansible.builtin.yum:
     name: "{{ item }}"
     state: installed
-
   loop:
     - yum-utils
     - device-mapper-persistent-data
@@ -36,7 +35,6 @@
     name: "{{ item }}"
     state: installed
     allow_downgrade: true
-
   loop:
     - docker-ce{{ "" if docker_version == "latest" else "-" ~ docker_version }}
     - docker-ce-cli{{ "" if docker_version == "latest" else "-" ~ docker_version

@@ -17,7 +17,6 @@
       ansible.builtin.yum:
         name: cronie
         state: present
-
     - name: Start crontabs service
       ansible.builtin.service:
         name: crond.service
