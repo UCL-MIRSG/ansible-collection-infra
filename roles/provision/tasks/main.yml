@@ -8,7 +8,7 @@
   ansible.builtin.include_tasks: "{{ ansible_distribution }}.yml"
 
 - name: Upgrade all packages # noqa: package-latest
-  ansible.builtin.dnf:
+  ansible.builtin.yum:
     name: "*"
     state: latest
     exclude:
@@ -20,6 +20,6 @@
 
 - name: Ensure epel is installed
   become: true
-  ansible.builtin.dnf:
+  ansible.builtin.yum:
     name: epel-release
     state: installed
