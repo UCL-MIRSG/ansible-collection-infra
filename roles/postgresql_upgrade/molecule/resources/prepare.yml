@@ -9,7 +9,7 @@
         state: present
 
     - name: Install crontabs
-      ansible.builtin.yum:
+      ansible.builtin.dnf:
         name: cronie
         state: present
 
