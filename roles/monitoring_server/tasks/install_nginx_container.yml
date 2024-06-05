@@ -1,6 +1,6 @@
 ---
 - name: Ensure passlib is installed on centos7
-  ansible.builtin.dnf:
+  ansible.builtin.yum:
     name: python-passlib
     state: present
   when:
@@ -8,7 +8,7 @@
     ansible_facts['distribution_major_version'] is version("7")
 
 - name: Ensure passlib is installed on rocky9
-  ansible.builtin.dnf:
+  ansible.builtin.yum:
     name: python3-passlib
     state: present
   when:
@@ -72,7 +72,7 @@
   community.docker.docker_container:
     name: nginx
     hostname: nginx
-    image: nginx@sha256:ed6d2c43c8fbcd3eaa44c9dab6d94cb346234476230dc1681227aa72d07181ee
+    image: nginx@sha256:0f04e4f646a3f14bf31d8bc8d885b6c951fdcf42589d06845f64d18aec6a3c4d
     state: started
     networks:
       - name: monitor-net

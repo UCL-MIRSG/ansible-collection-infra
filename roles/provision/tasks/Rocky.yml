@@ -1,7 +1,7 @@
 ---
 - name: Ensure the ca-certificates package is installed
   become: true
-  ansible.builtin.dnf:
+  ansible.builtin.yum:
     name: ca-certificates
     state: present
 
@@ -30,7 +30,7 @@
   when: found_locale.rc != 0
   block:
     - name: Install locale
-      ansible.builtin.dnf:
+      ansible.builtin.yum:
         name: glibc-langpack-en
         state: present
 

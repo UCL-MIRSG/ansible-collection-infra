@@ -92,7 +92,7 @@ To use this role with a dual-server setup (a dartase `db` and a web server
   gather_facts: true
   tasks:
     - name: Install openssl
-      ansible.builtin.dnf:
+      ansible.builtin.yum:
         name: openssl
         state: present
 

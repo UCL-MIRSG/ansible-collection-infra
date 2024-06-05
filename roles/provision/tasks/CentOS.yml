@@ -35,7 +35,7 @@
         state: absent
 
     - name: Install locales # noqa: package-latest
-      ansible.builtin.dnf:
+      ansible.builtin.yum:
         name: glibc-common
         state: latest
 
