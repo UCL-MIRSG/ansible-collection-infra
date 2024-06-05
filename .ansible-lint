@@ -1,6 +1,7 @@
 ---
 warn_list:
-  - no-handler
+  - fqcn[action-core]
   - galaxy[no-changelog]
   - galaxy[tags]
+  - no-handler
   - var-naming[no-role-prefix]

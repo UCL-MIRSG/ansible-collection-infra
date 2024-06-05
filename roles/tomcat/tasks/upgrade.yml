@@ -77,7 +77,6 @@
     mode: preserve
     remote_src: true
   loop: "{{ tomcat_items_to_restore }}"
-
   when: tomcat_check.stat.exists
   notify: Restart tomcat
 
