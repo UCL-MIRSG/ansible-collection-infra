@@ -11,9 +11,7 @@ on:
 
 jobs:
   molecule-monitoring:
-    runs-on:
-      - self-hosted
-      - mirsg-linux
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: true
       matrix:
