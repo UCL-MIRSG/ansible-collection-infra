@@ -12,6 +12,25 @@ on:
 
 jobs:
   molecule-nginx:
-    uses: ./.github/workflows/molecule.yml
-    with:
-      tests-path: ansible_collections/mirsg/infrastructure/roles/nginx
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        scenario:
+          - centos7
+          - rocky9
+    env:
+      MOLECULE_RUN_TAGS: all
+      PY_COLORS: 1
+      ANSIBLE_FORCE_COLOR: 1
+
+    steps:
+      - name: Run `molecule test`
+        uses: UCL-MIRSG/.github/actions/molecule-test@270d5d2c3a93f1e30394f9dfdd1f53298de8e2cd # v0.85.0
+        with:
+          scenario: ${{ matrix.scenario }}
+          base_config:
+            ${{ format('{0}{1}_base_config.yml', '../../molecule_configs/',
+            matrix.scenario ) }}
+          checkout_path: ansible_collections/mirsg/infrastructure
+          tests_path: ansible_collections/mirsg/infrastructure/roles/nginx
