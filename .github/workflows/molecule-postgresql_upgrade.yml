@@ -33,3 +33,4 @@ jobs:
             matrix.scenario ) }}
           checkout_path: ansible_collections/mirsg/infrastructure
           tests_path: ansible_collections/mirsg/infrastructure/roles/postgresql_upgrade
+          molecule_command: converge
