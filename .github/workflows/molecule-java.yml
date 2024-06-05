@@ -7,7 +7,6 @@ on:
     paths:
       - molecule_configs/*
       - roles/install_java/**
-      - .github/workflows/molecule.yml
       - .github/workflows/molecule-java.yml
 
 jobs:

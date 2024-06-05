@@ -7,7 +7,6 @@ on:
     paths:
       - molecule_configs/*
       - roles/nginx/**
-      - .github/workflows/molecule.yml
       - .github/workflows/molecule-nginx.yml
 
 jobs:
