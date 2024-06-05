@@ -30,7 +30,7 @@ jobs:
 
     steps:
       - name: Run `molecule test`
-        uses: UCL-MIRSG/.github/actions/molecule-test@270d5d2c3a93f1e30394f9dfdd1f53298de8e2cd # v0.85.0
+        uses: UCL-MIRSG/.github/actions/molecule-test@f2439a7de7e04a251b95d44624d7e913a932d667 # v0.86.0
         with:
           scenario: ${{ matrix.scenario }}
           # yamllint disable-line rule:line-length
@@ -39,3 +39,4 @@ jobs:
             matrix.scenario ) }}
           checkout_path: ansible_collections/mirsg/infrastructure
           tests_path: ${{ inputs.tests-path }}
+          ansible_version: 9.6.0
