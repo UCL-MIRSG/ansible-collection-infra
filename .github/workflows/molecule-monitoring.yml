@@ -22,6 +22,7 @@ jobs:
       MOLECULE_RUN_TAGS: all
       PY_COLORS: 1
       ANSIBLE_FORCE_COLOR: 1
+      ANSIBLE_ROLES_PATH: ansible_collections/mirsg/infrastructure/roles
 
     steps:
       - uses: UCL-MIRSG/.github/actions/molecule-test@04085067e63a06dac56fc4393a3674cdc3f61fa4 # v0.88.0
