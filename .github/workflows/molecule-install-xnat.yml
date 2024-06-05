@@ -43,7 +43,7 @@ jobs:
           sudo apt-get update && sudo apt-get -y install rsync
           python3 -m pip install --upgrade pip
           python3 -m pip install \
-          ansible==9.6.0 \
+          ansible==${{ vars.ANSIBLE_MAJOR_VERSION }}.* \
           molecule \
           molecule-plugins[docker] \
           docker \
