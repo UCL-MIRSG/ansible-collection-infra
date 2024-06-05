@@ -24,8 +24,7 @@ jobs:
       ANSIBLE_FORCE_COLOR: 1
 
     steps:
-      - name: Run `molecule test`
-        uses: UCL-MIRSG/.github/actions/molecule-test@270d5d2c3a93f1e30394f9dfdd1f53298de8e2cd # v0.85.0
+      - uses: UCL-MIRSG/.github/actions/molecule-test@270d5d2c3a93f1e30394f9dfdd1f53298de8e2cd # v0.85.0
         with:
           scenario: ${{ matrix.scenario }}
           base_config:
