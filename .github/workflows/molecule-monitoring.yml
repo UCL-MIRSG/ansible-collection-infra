@@ -16,38 +16,16 @@ jobs:
       fail-fast: true
       matrix:
         scenario:
-          - centos7_monitoring
-          - rocky9_monitoring
+        - centos7_monitoring
+        - rocky9_monitoring
     env:
+      MOLECULE_RUN_TAGS: all
       PY_COLORS: 1
       ANSIBLE_FORCE_COLOR: 1
 
     steps:
-      - name: Check out the codebase
-        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4
+      - uses: UCL-MIRSG/.github/actions/molecule-test@270d5d2c3a93f1e30394f9dfdd1f53298de8e2cd # v0.85.0
         with:
-          path: ansible_collections/mirsg/infrastructure
-
-      - name: Set up Python
-        uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5
-        with:
-          python-version: 3.11
-
-      - name: Install test dependencies
-        shell: bash
-        run: |
-          sudo apt-get update && sudo apt-get -y install rsync
-          python3 -m pip install --upgrade pip
-          python3 -m pip install \
-          ansible \
-          molecule \
-          molecule-plugins[docker] \
-          docker \
-          passlib \
-          requests
-
-      - name: Test with molecule
-        shell: bash
-        run: |
-          cd ansible_collections/mirsg/infrastructure/playbooks
-          molecule test --scenario-name  ${{ matrix.scenario }}
+          scenario: ${{ matrix.scenario }}
+          checkout_path: ansible_collections/mirsg/infrastructure
+          tests_path: ansible_collections/mirsg/infrastructure/playbooks
