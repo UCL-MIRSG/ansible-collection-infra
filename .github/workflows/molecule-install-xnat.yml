@@ -1,7 +1,6 @@
 ---
 name: Test install_xnat playbook
 
-# yamllint disable-line rule:truthy
 on:
   pull_request:
     paths:

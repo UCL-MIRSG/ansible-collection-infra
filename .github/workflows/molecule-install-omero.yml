@@ -1,7 +1,6 @@
 ---
 name: Test install_omero playbook
 
-# yamllint disable-line rule:truthy
 on:
   pull_request:
     paths:

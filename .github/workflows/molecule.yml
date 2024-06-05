@@ -1,7 +1,6 @@
 ---
 name: Test with Molecule
 
-# yamllint disable-line rule:truthy
 on:
   workflow_call:
     inputs:
