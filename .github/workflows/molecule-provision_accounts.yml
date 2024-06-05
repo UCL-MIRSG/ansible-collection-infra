@@ -7,12 +7,29 @@ on:
       - molecule_configs/*
       - roles/provision_accounts/**
       - playbooks/setup_user_accounts.yml
-      - .github/workflows/molecule.yml
       - .github/workflows/molecule-provision_accounts.yml
 
 jobs:
   molecule-provision-accounts:
-    uses: ./.github/workflows/molecule.yml
-    with:
-      tests-path: >-
-        ansible_collections/mirsg/infrastructure/roles/provision_accounts
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        scenario:
+          - centos7
+          - rocky9
+    env:
+      MOLECULE_RUN_TAGS: all
+      PY_COLORS: 1
+      ANSIBLE_FORCE_COLOR: 1
+
+    steps:
+      - uses: UCL-MIRSG/.github/actions/molecule-test@475e28aa109d05ee1381c0602949730d92d9c3d2 # v0.87.0
+        with:
+          ansible_version: 9.6.0
+          scenario: ${{ matrix.scenario }}
+          base_config:
+            ${{ format('{0}{1}_base_config.yml', '../../molecule_configs/',
+            matrix.scenario ) }}
+          checkout_path: ansible_collections/mirsg/infrastructure
+          tests_path: ansible_collections/mirsg/infrastructure/roles/provision_accounts
