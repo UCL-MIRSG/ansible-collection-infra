@@ -1,17 +1,15 @@
 ---
 name: Test PostgreSQL Upgrade
 
-# yamllint disable-line rule:truthy
 on:
   pull_request:
     paths:
       - molecule_configs/*
       - roles/postgresql_upgrade/**
-      - .github/workflows/molecule.yml
       - .github/workflows/molecule-postgresql_upgrade.yml
 
 jobs:
-  molecule-postgresql_upgrade:
+  molecule-postgresql-upgrade:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
@@ -20,36 +18,18 @@ jobs:
           - centos7
           - rocky9
     env:
+      MOLECULE_RUN_TAGS: all
       PY_COLORS: 1
       ANSIBLE_FORCE_COLOR: 1
 
     steps:
-      - name: Check out the codebase
-        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4
+      - uses: UCL-MIRSG/.github/actions/molecule-test@04085067e63a06dac56fc4393a3674cdc3f61fa4 # v0.88.0
         with:
-          path: ansible_collections/mirsg/infrastructure
-
-      - name: Set up Python
-        uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5
-        with:
-          python-version: 3.11
-
-      - name: Install test dependencies
-        shell: bash
-        run: |
-          sudo apt-get update && sudo apt-get -y install rsync
-          python3 -m pip install --upgrade pip
-          python3 -m pip install \
-          ansible==${{ vars.ANSIBLE_MAJOR_VERSION }}.* \
-          molecule \
-          molecule-plugins[docker] \
-          docker \
-          requests
-
-      - name: Test with molecule
-        shell: bash
-        run: |
-          cd ansible_collections/mirsg/infrastructure/roles/postgresql_upgrade
-          molecule --base-config \
-          ../../molecule_configs/${{ matrix.scenario }}_base_config.yml \
-          converge --scenario-name  ${{ matrix.scenario }}
+          ansible_major_version: ${{ vars.ANSIBLE_MAJOR_VERSION }}
+          scenario: ${{ matrix.scenario }}
+          base_config:
+            ${{ format('{0}{1}_base_config.yml', '../../molecule_configs/',
+            matrix.scenario ) }}
+          checkout_path: ansible_collections/mirsg/infrastructure
+          tests_path: ansible_collections/mirsg/infrastructure/roles/postgresql_upgrade
+          molecule_command: converge
