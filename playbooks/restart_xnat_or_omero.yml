@@ -34,8 +34,8 @@
         name: "postgresql-{{ postgresql_version }}"
         state: restarted
 
-- name: Ensure the web server is available
-  hosts: web
+- name: Ensure the application services are available
+  hosts: omero,xnat
   become: true
   tasks:
     - name: Ensure services are running
