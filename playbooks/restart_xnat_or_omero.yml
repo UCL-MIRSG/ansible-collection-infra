@@ -18,7 +18,9 @@
             state: started
           when: "'is not a mountpoint' in check_mountpoint.stdout"
 
-        - name: Check that storage has been mounted correctly if it was previously not mounted
+        - name:
+            Check that storage has been mounted correctly if it was previously
+            not mounted
           ansible.builtin.command: mountpoint {{ external_storage_drive }}
           when: "'is not a mountpoint' in check_mountpoint.stdout"
           register: check_mountpoint_again
@@ -44,7 +46,9 @@
         state: restarted
       loop: "{{ services_to_restart | default(['tomcat']) }}"
 
-    - name: "Waiting for application to start - this could take several minutes: {{ web_server.url }}"
+    - name:
+        "Waiting for application to start - this could take several minutes: {{
+        web_server.url }}"
       ansible.builtin.uri:
         url: "{{ web_server.url }}"
         method: GET
