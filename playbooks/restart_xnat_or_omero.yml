@@ -33,7 +33,7 @@
   tasks:
     - name: "Ensure PostgreSQL is running: postgresql-{{ postgresql_version }}"
       ansible.builtin.service:
-        name: "postgresql-{{ postgresql_version }}"
+        name: postgresql-"{{ postgresql_version }}"
         state: restarted
 
 - name: Ensure the application services are available
