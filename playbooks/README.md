@@ -88,3 +88,14 @@ jobs:
 This uses the
 [`.github/workflows/molecule.yml` reusable workflow](.github/workflows/molecule.yml)
 to run molecule on the relevant role.
+
+## Playbooks
+
+| Playbook                                                 | Description                                                                                                                                                                                                                                                                    |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [install_monitoring.yml](./install_monitoring.yml)       | Playbook for installing Dockerised deployment of Prometheus on the monitoring server and `node_exporter` on each of the client servers to be monitored.                                                                                                                        |
+| [install_omero.yml](./install_omero.yml)                 | Playbook for installing OMERO.server and OMERO.web along with Postgresql in a separate host.                                                                                                                                                                                   |
+| [install_xnat.yml](./install_xnat.yml)                   | Playbook for installing XNAT along with Postgresql in a separate host.                                                                                                                                                                                                         |
+| [restart_xnat_or_omero.yml](./restart_xnat_or_omero.yml) | Playbook for restarting XNAT or OMERO (as well as the associated Postgresql service). To be used in the event of a system outage. To run a restart for OMERO make sure to set the `services_to_restart` variable when calling the playbook to `['omero-server', 'omero-web']`. |
+| [setup_user_accounts.yml](./setup_user_accounts.yml)     | Playbook for adding MIRSG administrator accounts to the application and database hosts.                                                                                                                                                                                        |
+| [upgrade_postgresql.yml](./upgrade_postgresql.yml)       | Playbook for running an upgrade of Postgresql.                                                                                                                                                                                                                                 |
