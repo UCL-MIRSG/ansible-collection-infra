@@ -24,6 +24,7 @@ stream {
 {% endif %}
 
 http {
+    server_names_hash_bucket_size  128;
     sendfile            off;
 #    sendfile            on; can cause a problem in VirtualBox
     tcp_nopush          on;
