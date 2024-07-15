@@ -1,21 +1,46 @@
 ---
-- name: Ensure base mirrorlist is in repository file (CentOS)
-  community.general.ini_file:
-    path: /etc/yum.repos.d/CentOS-Base.repo
-    section: base
-    option: mirrorlist
-    value: http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=os
-    backup: true
-    mode: "0644"
+- name: Ensure os baseurl is present in repository file
+  ansible.builtin.yum_repository:
+    name: base
+    description: CentOS-$releasever - Base
+    file: CentOS-Base
+    baseurl: "{{ provision_yum_repo_base_baseurl }}"
+    gpgcheck: true
+    gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+    enabled: true
+    state: present
 
-- name: Ensure updates mirrorlist is in repository file (CentOS)
-  community.general.ini_file:
-    path: /etc/yum.repos.d/CentOS-Base.repo
-    section: updates
-    option: mirrorlist
-    value: http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=updates
-    backup: true
-    mode: "0644"
+- name: Ensure updates baseurl is present in repository file
+  ansible.builtin.yum_repository:
+    name: updates
+    description: CentOS-$releasever - Updates
+    file: CentOS-Base
+    baseurl: "{{ provision_yum_repo_updates_baseurl }}"
+    gpgcheck: true
+    gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+    enabled: true
+    state: present
+
+- name: Ensure extras baseurl is present in repository file
+  ansible.builtin.yum_repository:
+    name: extras
+    description: CentOS-$releasever - Extras
+    file: CentOS-Base
+    baseurl: "{{ provision_yum_repo_extras_baseurl }}"
+    gpgcheck: true
+    gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+    state: present
+
+- name: Ensure centosplus baseurl is present in repository file
+  ansible.builtin.yum_repository:
+    name: centosplus
+    description: CentOS-$releasever - Plus
+    file: CentOS-Base
+    baseurl: "{{ provision_yum_repo_centosplus_baseurl }}"
+    gpgcheck: true
+    gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+    enabled: false
+    state: present
 
 - name: Check if locale already set
   ansible.builtin.shell: |
