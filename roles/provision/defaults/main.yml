@@ -1,4 +1,9 @@
 ---
+provision_yum_repo_base_baseurl: http://vault.centos.org/centos/$releasever/os/$basearch/
+provision_yum_repo_updates_baseurl: http://vault.centos.org/centos/$releasever/updates/$basearch/
+provision_yum_repo_extras_baseurl: http://vault.centos.org/centos/$releasever/extras/$basearch/
+provision_yum_repo_centosplus_baseurl: http://vault.centos.org/centos/$releasever/centosplus/$basearch/
+
 # not needed for CentOS 7
 postgresql_rpm_gpg_key_pgdg_x86_64: >-
   https://apt.postgresql.org/pub/repos/yum/keys/PGDG-RPM-GPG-KEY-RHEL
