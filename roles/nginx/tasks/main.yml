@@ -5,13 +5,13 @@
   block:
     - name:
         Configure SELinux to allow nginx to listen on port {{
-        nginx_default_dicom_listen_port }}
+        nginx_upstream_listen_port }}
       community.general.seport:
-        ports: "{{ nginx_default_dicom_listen_port }}"
+        ports: "{{ nginx_upstream_listen_port }}"
         proto: tcp
         setype: http_port_t
         state: present
-      when: nginx_default_dicom_listen_port is defined
+      when: nginx_upstream_listen_port is defined
 
     - name:
         Configure SELinux to allow httpd to act as relay and keep it persistent
