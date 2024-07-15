@@ -10,19 +10,6 @@ events {
     worker_connections  1024;
 }
 
-{% if nginx_upstream_port is defined and nginx_upstream_listen_port is defined %}
-stream {
-    upstream backend {
-        server localhost:{{ nginx_upstream_port }};
-    }
-
-    server {
-        listen {{ nginx_upstream_listen_port }};
-        proxy_pass backend;
-    }
-}
-{% endif %}
-
 http {
     sendfile            off;
 #    sendfile            on; can cause a problem in VirtualBox
