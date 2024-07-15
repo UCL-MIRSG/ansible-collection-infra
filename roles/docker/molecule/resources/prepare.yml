@@ -3,9 +3,17 @@
   hosts: all
   gather_facts: true
   pre_tasks:
+    - name: Update YUM repo baseurls
+      ansible.builtin.include_role:
+        name: mirsg.infrastructure.provision
+        tasks_from: CentOS.yml
+      when:
+        ansible_facts['os_family'] == "RedHat" and
+        ansible_facts['distribution_major_version'] is version('7')
     - name: Install sudo
       ansible.builtin.package:
         name: sudo
         state: present
+
   roles:
     - role: mirsg.infrastructure.install_python
