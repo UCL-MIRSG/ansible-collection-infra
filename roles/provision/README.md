@@ -24,10 +24,11 @@ The following variables can be set for provisioning Rocky 8+:
 
 The following variables can be set for either CentOS 7 or Rocky 8+:
 
-| Name                     | Description                                                          |
-| ------------------------ | -------------------------------------------------------------------- |
-| `server_locale`          | sets the user's language, region, etc. This is set to "en_GB.UTF-8"  |
-| `external_storage_drive` | path to mounted storage (if using it). By default this is undefined. |
+| Name                      | Description                                                                                        |
+| ------------------------- | -------------------------------------------------------------------------------------------------- |
+| `server_locale`           | sets the user's language, region, etc. This is set to "en_GB.UTF-8"                                |
+| `external_storage_drive`  | single path to mounted storage (if using it). By default this is undefined.                        |
+| `external_storage_mounts` | list of paths to mounted storage (if using multiple storage mounts). By default this is undefined. |
 
 ## Dependencies
 
