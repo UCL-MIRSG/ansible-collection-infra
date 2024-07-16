@@ -6,6 +6,9 @@
 
   roles:
     - role: mirsg.infrastructure.provision
+      vars:
+        provision_mount_points:
+          - "{{ external_storage_drive }}"
     - role: mirsg.infrastructure.install_python
     - role: mirsg.infrastructure.install_java
     - role: mirsg.infrastructure.tomcat
@@ -22,6 +25,9 @@
 
   roles:
     - role: mirsg.infrastructure.provision
+      vars:
+        provision_mount_points:
+          - "{{ external_storage_drive }}"
     - role: mirsg.infrastructure.install_python
     - role: mirsg.infrastructure.postgresql
     - role: mirsg.infrastructure.firewalld
@@ -42,6 +48,9 @@
 
   roles:
     - role: mirsg.infrastructure.provision
+      vars:
+        provision_mount_points:
+          "{{ container_service_mounts | default([ external_storage_drive ]) }} "
     - role: mirsg.infrastructure.install_python
     - role: mirsg.infrastructure.docker
     - role: mirsg.infrastructure.firewalld
