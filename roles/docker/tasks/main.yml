@@ -88,8 +88,11 @@
       ansible.builtin.import_tasks: server-cert.yml
 
     - name: Generate TLS certificates for each client
-      ansible.builtin.import_tasks: client-certs.yml
+      ansible.builtin.include_tasks: client-certs.yml
       when: docker_client_hostnames
+      vars:
+        client_hostname: "{{ item }}"
+      loop: "{{ docker_client_hostnames }}"
 
 - name:
     Ensure docker service configuration is reloaded before restarting the
