@@ -5,8 +5,8 @@
   when: external_storage_drive is defined
 
 - name: Set up for specific distribution
-  ansible.builtin.include_tasks: >-
-    "{{ ansible_os_family }}{{ ansible_distribution_major_version }}.yml"
+  ansible.builtin.include_tasks:
+    RedHat{{ ansible_distribution_major_version }}.yml
 
 - name: Upgrade all packages # noqa: package-latest
   ansible.builtin.yum:
