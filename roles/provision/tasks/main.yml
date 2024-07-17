@@ -6,7 +6,7 @@
 
 - name: Set up for specific distribution
   ansible.builtin.include_tasks: >-
-    "{{ ansible_os_family}}{{ ansible_distribution_major_version }}.yml"
+    "{{ ansible_os_family }}{{ ansible_distribution_major_version }}.yml"
 
 - name: Upgrade all packages # noqa: package-latest
   ansible.builtin.yum:
