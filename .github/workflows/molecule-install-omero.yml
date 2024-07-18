@@ -4,15 +4,19 @@ name: Test install_omero playbook
 on:
   pull_request:
     paths:
-      - roles/omero_server/**
-      - playbooks/install_omero.yml
-      - playbooks/molecule/*_omero/
-      - playbooks/molecule/resources/omero/**
-      - playbooks/molecule/resources/shared/**
+      - molecule_configs/*
+      - playbooks/**
+      - roles/**
       - .github/workflows/molecule-install-omero.yml
+      - "!**/README.md"
   release:
     types:
       - published
+
+concurrency:
+  cancel-in-progress: true
+  group: >-
+    ${{ github.workflow }}-${{ github.event.pull_request.number }}
 
 jobs:
   molecule-install-omero:

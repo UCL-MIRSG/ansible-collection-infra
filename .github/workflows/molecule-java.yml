@@ -5,8 +5,15 @@ on:
   pull_request:
     paths:
       - molecule_configs/*
-      - roles/install_java/**
+      - playbooks/**
+      - roles/**
       - .github/workflows/molecule-java.yml
+      - "!**/README.md"
+
+concurrency:
+  cancel-in-progress: true
+  group: >-
+    ${{ github.workflow }}-${{ github.event.pull_request.number }}
 
 jobs:
   molecule-java:

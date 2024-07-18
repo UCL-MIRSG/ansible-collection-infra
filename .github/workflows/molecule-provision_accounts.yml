@@ -5,9 +5,15 @@ on:
   pull_request:
     paths:
       - molecule_configs/*
-      - roles/provision_accounts/**
-      - playbooks/setup_user_accounts.yml
+      - playbooks/**
+      - roles/**
       - .github/workflows/molecule-provision_accounts.yml
+      - "!**/README.md"
+
+concurrency:
+  cancel-in-progress: true
+  group: >-
+    ${{ github.workflow }}-${{ github.event.pull_request.number }}
 
 jobs:
   molecule-provision-accounts:
