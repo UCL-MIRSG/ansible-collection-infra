@@ -5,14 +5,18 @@ on:
   pull_request:
     paths:
       - molecule_configs/*
-      - roles/xnat/**
-      - roles/xnat_container_service/**
-      - playbooks/install_xnat.yml
-      - playbooks/molecule/**/xnat/**
+      - playbooks/**
+      - roles/**
       - .github/workflows/molecule-install-xnat.yml
+      - "!**/README.md"
   release:
     types:
       - published
+
+concurrency:
+  cancel-in-progress: true
+  group: >-
+    ${{ github.workflow }}-${{ github.event.pull_request.number }}
 
 jobs:
   molecule-install-xnat:

@@ -4,9 +4,13 @@
   ansible.builtin.include_tasks: check_mounts.yml
   when: external_storage_drive is defined
 
-- name: Set up for specific distribution
-  ansible.builtin.include_tasks:
-    RedHat{{ ansible_distribution_major_version }}.yml
+- name: Set up for RedHat 7
+  ansible.builtin.include_tasks: RedHat7.yml
+  when: ansible_facts['distribution_major_version'] is version('7')
+
+- name: Set up for RedHat > 7
+  ansible.builtin.include_tasks: RedHat.yml
+  when: ansible_facts['distribution_major_version'] is not version('7')
 
 - name: Upgrade all packages # noqa: package-latest
   ansible.builtin.yum:

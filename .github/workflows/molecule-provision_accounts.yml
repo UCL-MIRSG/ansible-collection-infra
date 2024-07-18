@@ -8,6 +8,12 @@ on:
       - roles/provision_accounts/**
       - playbooks/setup_user_accounts.yml
       - .github/workflows/molecule-provision_accounts.yml
+      - "!**/README.md"
+
+concurrency:
+  cancel-in-progress: true
+  group: >-
+    ${{ github.workflow }}-${{ github.event.pull_request.number }}
 
 jobs:
   molecule-provision-accounts:

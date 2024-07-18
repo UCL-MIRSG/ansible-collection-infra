@@ -5,8 +5,15 @@ on:
   pull_request:
     paths:
       - molecule_configs/*
-      - roles/provision/**
+      - playbooks/**
+      - roles/**
       - .github/workflows/molecule-provision.yml
+      - "!**/README.md"
+
+concurrency:
+  cancel-in-progress: true
+  group: >-
+    ${{ github.workflow }}-${{ github.event.pull_request.number }}
 
 jobs:
   molecule-provision:

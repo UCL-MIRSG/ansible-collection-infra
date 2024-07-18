@@ -7,6 +7,12 @@ on:
       - molecule_configs/*
       - roles/postgresql_upgrade/**
       - .github/workflows/molecule-postgresql_upgrade.yml
+      - "!**/README.md"
+
+concurrency:
+  cancel-in-progress: true
+  group: >-
+    ${{ github.workflow }}-${{ github.event.pull_request.number }}
 
 jobs:
   molecule-postgresql-upgrade:
