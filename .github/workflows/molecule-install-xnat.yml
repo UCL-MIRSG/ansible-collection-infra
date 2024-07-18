@@ -8,7 +8,9 @@ on:
       - roles/xnat/**
       - roles/xnat_container_service/**
       - playbooks/install_xnat.yml
-      - playbooks/molecule/**/xnat/**
+      - playbooks/molecule/*_xnat/
+      - playbooks/molecule/resources/xnat/**
+      - playbooks/molecule/resources/shared/**
       - .github/workflows/molecule-install-xnat.yml
   release:
     types:

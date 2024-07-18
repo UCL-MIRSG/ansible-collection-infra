@@ -6,7 +6,9 @@ on:
     paths:
       - roles/omero_server/**
       - playbooks/install_omero.yml
-      - playbooks/molecule/**/omero/**
+      - playbooks/molecule/*_omero/
+      - playbooks/molecule/resources/omero/**
+      - playbooks/molecule/resources/shared/**
       - .github/workflows/molecule-install-omero.yml
   release:
     types:
