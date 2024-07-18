@@ -5,8 +5,7 @@ on:
   pull_request:
     paths:
       - molecule_configs/*
-      - playbooks/**
-      - roles/**
+      - roles/postgresql_upgrade/**
       - .github/workflows/molecule-postgresql_upgrade.yml
       - "!**/README.md"
 

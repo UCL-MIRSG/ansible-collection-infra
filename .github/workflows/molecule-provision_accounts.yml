@@ -5,8 +5,8 @@ on:
   pull_request:
     paths:
       - molecule_configs/*
-      - playbooks/**
-      - roles/**
+      - roles/provision_accounts/**
+      - playbooks/setup_user_accounts.yml
       - .github/workflows/molecule-provision_accounts.yml
       - "!**/README.md"
 
