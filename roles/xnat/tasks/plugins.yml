@@ -40,7 +40,9 @@
     owner: "{{ xnat.owner }}"
     group: "{{ xnat.group }}"
     verify_checksum: always
-    headers: "{{ package_registry.authentication_header }}"
+    headers: "{{ package_registry.authentication_header | default(omit) }}"
+    username: "{{ package_registry.username | default(omit) }}"
+    password: "{{ package_registry.token | default(omit) }}"
   register: package_plugins_downloaded
   with_items:
     - "{{ xnat_plugin_packages | default([]) }}"

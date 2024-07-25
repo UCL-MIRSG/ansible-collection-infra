@@ -1,0 +1,29 @@
+---
+- name: Check if Image Host already configured
+  ansible.builtin.uri:
+    url:
+      "{{ web_server.url }}/xapi/docker/hubs/{{ container_registry.name |
+      urlencode }}"
+    user: "{{ xnat_service_admin.username }}"
+    password: "{{ xnat_service_admin.password }}"
+    method: GET
+    validate_certs: "{{ ssl.validate_certs }}"
+    status_code: 200, 404
+  register: hub_check
+
+- name: Configure Image Host
+  ansible.builtin.uri:
+    url: "{{ web_server.url }}/xapi/docker/hubs"
+    user: "{{ xnat_service_admin.username }}"
+    password: "{{ xnat_service_admin.password }}"
+    method: POST
+    body_format: json
+    body:
+      name: "{{ container_registry.name }}"
+      url: "{{ container_registry.url }}"
+      username: "{{ container_registry.username }}"
+      password: "{{ container_registry.password }}"
+      default: "{{ container_registry.default }}"
+    validate_certs: "{{ ssl.validate_certs }}"
+    status_code: 200, 201
+  when: hub_check.status != 200

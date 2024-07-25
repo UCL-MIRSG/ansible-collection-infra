@@ -2,7 +2,9 @@
 - name: Check mounts are available
   tags: restart
   ansible.builtin.include_tasks: check_mounts.yml
-  when: external_storage_drive is defined
+  vars:
+    mount_point: "{{ item }}"
+  loop: "{{ provision_mount_points }}"
 
 - name: Set up for RedHat 7
   ansible.builtin.include_tasks: RedHat7.yml

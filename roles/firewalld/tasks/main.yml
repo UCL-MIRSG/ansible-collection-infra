@@ -1,5 +1,10 @@
 ---
 # tasks file for ../ansible-role-firewalld
+- name: Install firewalld
+  ansible.builtin.package:
+    name: firewalld
+    state: present
+
 - name: Make sure firewalld service is enabled
   ansible.builtin.systemd:
     name: firewalld

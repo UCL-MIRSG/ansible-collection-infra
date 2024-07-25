@@ -57,3 +57,10 @@
       container-user: ""
     validate_certs: "{{ xnat_container_service_validate_certs }}"
     status_code: 200, 201
+
+- name: Set up container service registries
+  ansible.builtin.include_tasks: add_container_service_hub.yml
+  vars:
+    container_registry: "{{ item }}"
+  loop: "{{ xnat_container_service_hubs | default([]) }}"
+  when: external_storage_drive is defined
