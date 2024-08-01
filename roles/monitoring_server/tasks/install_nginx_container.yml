@@ -72,7 +72,7 @@
   community.docker.docker_container:
     name: nginx
     hostname: nginx
-    image: nginx@sha256:9c367186df9a6b18c6735357b8eb7f407347e84aea09beb184961cb83543d46e
+    image: nginx@sha256:6af79ae5de407283dcea8b00d5c37ace95441fd58a8b1d2aa1ed93f5511bb18c
     state: started
     networks:
       - name: monitor-net
