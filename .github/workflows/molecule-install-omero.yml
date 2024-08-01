@@ -27,7 +27,7 @@ jobs:
       ANSIBLE_FORCE_COLOR: 1
 
     steps:
-      - uses: UCL-MIRSG/.github/actions/molecule-test@fc4089d50caeaacf6c343bcf626fb7fd91718d20 # v0.94.0
+      - uses: UCL-MIRSG/.github/actions/molecule-test@786c4954743c97b4d8f4d2ceeaf4c6c3348231d5 # v0.96.0
         with:
           ansible_major_version: 8
           scenario: rocky8_omero
