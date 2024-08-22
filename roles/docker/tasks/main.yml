@@ -47,7 +47,6 @@
   ansible.builtin.yum:
     name: yum-plugin-versionlock
     state: installed
-  when: docker_version != "latest"
 
 - name: Prevent docker from being updated
   community.general.yum_versionlock:
