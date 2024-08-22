@@ -51,11 +51,10 @@
 
 - name: Prevent docker from being updated
   community.general.yum_versionlock:
-    state: present
+    state: "{{ 'absent' if docker_version == 'latest' else 'present' }}"
     name:
-      - docker-ce{{ "-" ~ docker_version }}
-      - docker-ce-cli{{ "-" ~ docker_version }}
-  when: docker_version != "latest"
+      - docker-ce
+      - docker-ce-cli
 
 - name: Ensure docker service directory exists
   ansible.builtin.file:
