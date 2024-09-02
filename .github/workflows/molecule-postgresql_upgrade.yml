@@ -29,7 +29,7 @@ jobs:
       ANSIBLE_FORCE_COLOR: 1
 
     steps:
-      - uses: UCL-MIRSG/.github/actions/molecule-test@786c4954743c97b4d8f4d2ceeaf4c6c3348231d5 # v0.96.0
+      - uses: UCL-MIRSG/.github/actions/molecule-test@71d7add4c830770ae28f6eaba2a696b15356c54f # v0.106.0
         with:
           ansible_major_version: ${{ vars.ANSIBLE_MAJOR_VERSION }}
           scenario: ${{ matrix.scenario }}
