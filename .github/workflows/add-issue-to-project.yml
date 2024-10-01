@@ -10,7 +10,7 @@ jobs:
   add-issue-to-project:
     runs-on: ubuntu-latest
     steps:
-      - uses: UCL-MIRSG/.github/actions/add-to-project@71d7add4c830770ae28f6eaba2a696b15356c54f # v0.106.0
+      - uses: UCL-MIRSG/.github/actions/add-to-project@eec857fd453c82e80f724869d952d2ef27d8609c # v0.108.0
         with:
           app-id: ${{ secrets.APP_ID }}
           app-pem: ${{ secrets.APP_PEM }}
