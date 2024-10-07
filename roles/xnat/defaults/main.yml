@@ -41,7 +41,7 @@ xnat_ldap_keystore_alias: ""
 xnat_plugin_urls:
   - https://api.bitbucket.org/2.0/repositories/xnatdev/xsync/downloads/xsync-plugin-all-1.7.0.jar
   - https://api.bitbucket.org/2.0/repositories/xnatx/ldap-auth-plugin/downloads/ldap-auth-plugin-1.1.0.jar
-  - https://api.bitbucket.org/2.0/repositories/xnatdev/container-service/downloads/container-service-3.5.0-fat.jar
+  - https://api.bitbucket.org/2.0/repositories/xnatdev/container-service/downloads/container-service-3.6.0-fat.jar
   - https://api.bitbucket.org/2.0/repositories/xnatx/xnatx-batch-launch-plugin/downloads/batch-launch-0.6.0.jar
   - https://github.com/VUIIS/dax/raw/main/misc/xnat-plugins/dax-plugin-genProcData-1.4.2.jar
   - https://api.bitbucket.org/2.0/repositories/icrimaginginformatics/ohif-viewer-xnat-plugin/downloads/ohif-viewer-3.6.2.jar
