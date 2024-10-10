@@ -203,3 +203,15 @@
     validate_certs: "{{ ssl.validate_certs }}"
     status_code: 200, 201, 304
   loop: "{{ automation_scripts | default([]) }}"
+
+- name: Enable AutoRun pipeline
+  ansible.builtin.uri:
+    url: "{{ web_server.url }}/xapi/pipelines"
+    user: "{{ xnat_service_admin.username }}"
+    password: "{{ xnat_service_admin.password }}"
+    method: POST
+    body_format: json
+    body: "{\"autoRunEnabled\":true,\"allowAutoRunProjectOverride\":false}"
+    validate_certs: "{{ ssl.validate_certs }}"
+    status_code: 200
+  when: xnat_autorun_enabled
