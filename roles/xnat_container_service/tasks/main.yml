@@ -67,7 +67,8 @@
 - name: Pull containers
   ansible.builtin.uri:
     url:
-      "{{ web_server.url }}/xapi/docker/hubs/{{ item.hub_name }}/pull?image={{ item.image }}&save-commands=true"
+      "{{ web_server.url }}/xapi/docker/hubs/{{ item.hub_name }}/pull?image={{
+      item.image }}&save-commands=true"
     user: "{{ xnat_service_admin.username }}"
     password: "{{ xnat_service_admin.password }}"
     method: POST
