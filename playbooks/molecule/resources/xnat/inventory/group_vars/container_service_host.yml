@@ -5,9 +5,9 @@ docker_client_hostnames:
   - "{{ hostvars['xnat_web']['hostname'] }}"
 docker_tls_verify: false
 
-# docker<25 is required for XNAT
+# docker<25 is required for XNAT for Container Service plugin < 3.5.0
 # see: https://groups.google.com/g/xnat_discussion/c/yyPBkN4kayE/m/LUe5GQH5AAAJ
-docker_version: 24.0.9
+docker_version: latest
 
 # mirsg.infrastructure.firewalld
 firewalld_internal_zone_sources:
