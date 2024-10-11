@@ -212,7 +212,7 @@
     method: POST
     body_format: json
     body:
-      autoRunEnabled: true,
+      autoRunEnabled: true
       allowAutoRunProjectOverride: false
     validate_certs: "{{ ssl.validate_certs }}"
     status_code: 200
