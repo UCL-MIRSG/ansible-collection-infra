@@ -55,6 +55,7 @@
         "{{ xnat_container_service_path_translation_docker_prefix }}"
       pull-images-on-xnat-init: false
       container-user: ""
+      auto-cleanup: true
     validate_certs: "{{ xnat_container_service_validate_certs }}"
     status_code: 200, 201
 
