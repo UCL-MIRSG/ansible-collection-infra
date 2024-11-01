@@ -55,6 +55,7 @@
         "{{ xnat_container_service_path_translation_docker_prefix }}"
       pull-images-on-xnat-init: false
       container-user: ""
+      auto-cleanup: true
     validate_certs: "{{ xnat_container_service_validate_certs }}"
     status_code: 200, 201
 
@@ -63,4 +64,16 @@
   vars:
     container_registry: "{{ item }}"
   loop: "{{ xnat_container_service_hubs | default([]) }}"
-  when: external_storage_drive is defined
+
+- name: Pull containers
+  ansible.builtin.uri:
+    url:
+      "{{ web_server.url }}/xapi/docker/hubs/{{ item.hub_name }}/pull?image={{
+      item.image }}&save-commands=true"
+    user: "{{ xnat_service_admin.username }}"
+    password: "{{ xnat_service_admin.password }}"
+    method: POST
+    body_format: json
+    validate_certs: "{{ ssl.validate_certs }}"
+    status_code: 200, 404
+  loop: "{{ xnat_container_service_images | default([]) }}"
