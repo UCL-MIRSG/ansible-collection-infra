@@ -19,6 +19,31 @@
     name: "*"
     state: latest
 
+- name: Clean DNF cache
+  ansible.builtin.dnf:
+    name: "*"
+    autoremove: true
+  when: ansible_facts['distribution_major_version'] | int >= 9
+
+- name: Attempt to update all packages to latest version
+  ansible.builtin.yum:
+    name: "*"
+  when: ansible_facts['distribution_major_version'] | int >= 9
+
+- name: Reinstall python3 to resolve dependency issues
+  ansible.builtin.yum:
+    name: python3
+  when: ansible_facts['distribution_major_version'] | int >= 9
+
+- name:
+    Install specific version of python3 and python-unversioned-command if needed
+  ansible.builtin.yum:
+    name:
+      - python3-3.9.18-3.el9_4.5
+      - python-unversioned-command-3.9.18-3.el9_4.5
+    state: present
+  when: ansible_facts['distribution_major_version'] | int >= 9
+
   tags:
     - molecule-idempotence-notest
 
