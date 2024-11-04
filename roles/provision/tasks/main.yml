@@ -23,7 +23,7 @@
 - name: Clean DNF cache if needed
   ansible.builtin.dnf:
     name: "*"
-    state: present
+    state: absent
     autoremove: true
   when:
     - ansible_facts['distribution_major_version'] is version("8", ">=")
