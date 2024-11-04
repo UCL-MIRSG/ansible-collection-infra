@@ -24,6 +24,7 @@
   ansible.builtin.dnf:
     name: "*"
     state: present
+    autoremove: false
   when:
     - ansible_facts['distribution_major_version'] is version("8", ">=")
     - dnf_repolist.stdout is defined and dnf_repolist.stdout != ""
