@@ -14,35 +14,24 @@
   ansible.builtin.include_tasks: RedHat.yml
   when: ansible_facts['distribution_major_version'] is not version('7')
 
+- name: Check if DNF cache needs cleaning
+  ansible.builtin.command: dnf repolist
+  register: dnf_repolist
+  changed_when: false
+  when: ansible_facts['distribution_major_version'] is version("8", ">=")
+
+- name: Clean DNF cache if needed # noqa: dnf-cache
+  ansible.builtin.shell: |
+    dnf clean all
+    dnf makecache
+  changed_when: dnf_repolist.stdout is defined and dnf_repolist.stdout != ""
+  when:
+    - ansible_facts['distribution_major_version'] is version("8", ">=")
+
 - name: Upgrade all packages # noqa: package-latest
   ansible.builtin.yum:
     name: "*"
     state: latest
-
-- name: Clean DNF cache
-  ansible.builtin.dnf:
-    name: "*"
-    autoremove: true
-  when: ansible_facts['distribution_major_version'] | int >= 9
-
-- name: Attempt to update all packages to latest version
-  ansible.builtin.yum:
-    name: "*"
-  when: ansible_facts['distribution_major_version'] | int >= 9
-
-- name: Reinstall python3 to resolve dependency issues
-  ansible.builtin.yum:
-    name: python3
-  when: ansible_facts['distribution_major_version'] | int >= 9
-
-- name:
-    Install specific version of python3 and python-unversioned-command if needed
-  ansible.builtin.yum:
-    name:
-      - python3-3.9.18-3.el9_4.5
-      - python-unversioned-command-3.9.18-3.el9_4.5
-    state: present
-  when: ansible_facts['distribution_major_version'] | int >= 9
 
   tags:
     - molecule-idempotence-notest
