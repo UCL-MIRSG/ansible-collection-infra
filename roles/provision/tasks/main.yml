@@ -20,13 +20,14 @@
   changed_when: false
   when: ansible_facts['distribution_major_version'] is version("8", ">=")
 
-- name: Clean DNF cache if needed # noqa: dnf-cache
-  ansible.builtin.shell: |
-    dnf clean all
-    dnf makecache
-  changed_when: dnf_repolist.stdout is defined and dnf_repolist.stdout != ""
+- name: Clean DNF cache if needed
+  ansible.builtin.dnf:
+    name: "*"
+    state: present
+    autoremove: true
   when:
     - ansible_facts['distribution_major_version'] is version("8", ">=")
+    - dnf_repolist.stdout is defined and dnf_repolist.stdout != ""
 
 - name: Upgrade all packages # noqa: package-latest
   ansible.builtin.yum:
