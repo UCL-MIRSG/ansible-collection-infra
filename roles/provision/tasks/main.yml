@@ -20,11 +20,10 @@
     state: present
   when: ansible_facts['distribution_major_version'] is version("8", ">=")
 
-- name: Ensure AppStream repository is enabled
-  ansible.builtin.yum_repository:
-    name: appstream
-    enabled: true
+- name: Enable AppStream repository
+  ansible.builtin.command: dnf config-manager --set-enabled appstream
   when: ansible_facts['distribution_major_version'] is version("8", ">=")
+  changed_when: true
 
 - name:
     Install specific versions of python3 and python-unversioned-command if
