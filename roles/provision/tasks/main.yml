@@ -20,6 +20,12 @@
     state: present
   when: ansible_facts['distribution_major_version'] is version("8", ">=")
 
+- name: Install dnf-plugins-core for config-manager command
+  ansible.builtin.yum:
+    name: dnf-plugins-core
+    state: present
+  when: ansible_facts['distribution_major_version'] is version("8", ">=")
+
 - name: Enable AppStream repository
   ansible.builtin.command: dnf config-manager --set-enabled appstream
   when: ansible_facts['distribution_major_version'] is version("8", ">=")
