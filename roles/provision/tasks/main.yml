@@ -20,10 +20,9 @@
     state: present
   when: ansible_facts['distribution_major_version'] is version("8", ">=")
 
-- name: Enable AppStream repository if not enabled
-  ansible.builtin.dnf:
+- name: Ensure AppStream repository is enabled
+  ansible.builtin.yum_repository:
     name: appstream
-    state: present
     enabled: true
   when: ansible_facts['distribution_major_version'] is version("8", ">=")
 
