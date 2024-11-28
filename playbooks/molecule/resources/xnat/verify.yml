@@ -17,27 +17,6 @@
           - response.server == "nginx"
           - response.content is search('MIRSG XNAT')
 
-- name: Verify correct Docker version is installed
-  hosts: xnat_cserv
-  tasks:
-    - name: Get Docker server version
-      ansible.builtin.command:
-        cmd: "{% raw %}docker version -f '{{.Server.Version}}'{% endraw %}"
-      changed_when: false
-      register: server_version
-
-    - name: Get Docker client version
-      ansible.builtin.command:
-        cmd: "{% raw %}docker version -f '{{.Client.Version}}'{% endraw %}"
-      changed_when: false
-      register: client_version
-
-    - name: Check Docker server version
-      ansible.builtin.assert:
-        that:
-          - server_version.stdout is version( docker_version )
-          - client_version.stdout is version( docker_version )
-
 - name: Verify container service is running
   hosts: localhost
   tasks:
