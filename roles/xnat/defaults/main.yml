@@ -46,7 +46,7 @@ xnat_plugin_urls:
   - https://github.com/VUIIS/dax/raw/main/misc/xnat-plugins/dax-plugin-genProcData-1.4.2.jar
   - https://api.bitbucket.org/2.0/repositories/icrimaginginformatics/ohif-viewer-xnat-plugin/downloads/ohif-viewer-3.7.0-XNAT-1.8.10.jar
   - https://api.bitbucket.org/2.0/repositories/xnatx/ml-schema-plugin/downloads/ml-schema-plugin-1.0.0.jar
-  - https://api.bitbucket.org/2.0/xnatx/datasets-schema-plugin/downloads/datasets-schema-plugin-1.0.0.jar
+  - https://api.bitbucket.org/2.0/repositories/xnatx/datasets-schema-plugin/downloads/datasets-schema-plugin-1.0.0.jar
   - https://api.bitbucket.org/2.0/repositories/xnatdev/xnat-image-viewer-plugin/downloads/ximgview-plugin-1.0.2.jar
   - https://api.bitbucket.org/2.0/repositories/xnatx/xnatx-dxm-settings-plugin/downloads/dxm-settings-plugin-1.0.jar
   - https://api.bitbucket.org/2.0/repositories/xnatx/pipeline_engine_plugin/downloads/pipeline_engine_ui-1.1.0-xpl.jar
