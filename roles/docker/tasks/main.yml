@@ -68,28 +68,19 @@
     state: directory
     mode: "0700"
 
-- name: Write docker daemon configuration file with TLS disabled
+- name: Write docker daemon configuration file
   ansible.builtin.template:
-    src: daemon_no_tls.json.j2
+    src: daemon.json.j2
     dest: "{{ docker_daemon_conf_file }}"
     owner: "{{ docker_owner }}"
     group: "{{ docker_group }}"
     mode: "0640"
-  when: not docker_generate_certificates
 
 - name: Generate CA, server, and client certificates
   when: docker_generate_certificates
   notify:
     - Restart docker
   block:
-    - name: Write docker daemon configuration file with TLS enabled
-      ansible.builtin.template:
-        src: daemon.json.j2
-        dest: "{{ docker_daemon_conf_file }}"
-        owner: "{{ docker_owner }}"
-        group: "{{ docker_group }}"
-        mode: "0640"
-
     - name: Generate CA certificate
       ansible.builtin.import_tasks: ca-cert.yml
 
