@@ -43,18 +43,6 @@
     - docker-buildx-plugin
     - docker-compose-plugin
 
-- name: Ensure yum-plugin-versionlock is installed
-  ansible.builtin.yum:
-    name: yum-plugin-versionlock
-    state: installed
-
-- name: Prevent docker from being updated
-  community.general.yum_versionlock:
-    state: "{{ 'absent' if docker_version == 'latest' else 'present' }}"
-    name:
-      - docker-ce
-      - docker-ce-cli
-
 - name: Ensure docker service directory exists
   ansible.builtin.file:
     path: "{{ docker_service_directory }}"
