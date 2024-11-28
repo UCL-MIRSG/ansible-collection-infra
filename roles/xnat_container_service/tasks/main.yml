@@ -13,7 +13,7 @@
     body:
       name: "{{ xnat_container_service_name }}"
       host:
-        https://{{ xnat_container_service_hostname }}:{{
+        tcp://{{ xnat_container_service_hostname }}:{{
         xnat_container_service_port }}
       cert-path:
         "{{ xnat_container_service_certificate_directory }} if {{
