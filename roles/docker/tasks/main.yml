@@ -72,27 +72,27 @@
     mode: "0644"
   notify: Reload docker
 
+- name: Ensure docker config directory exists - {{ docker_config_dir }}
+  ansible.builtin.file:
+    path: "{{ docker_config_dir }}"
+    owner: "{{ docker_owner }}"
+    group: "{{ docker_group }}"
+    state: directory
+    mode: "0700"
+
+- name: Write docker daemon configuration file
+  ansible.builtin.template:
+    src: daemon.json.j2
+    dest: "{{ docker_daemon_conf_file }}"
+    owner: "{{ docker_owner }}"
+    group: "{{ docker_group }}"
+    mode: "0640"
+
 - name: Generate CA, server, and client certificates
   when: docker_generate_certificates
   notify:
     - Restart docker
   block:
-    - name: Ensure docker config directory exists - {{ docker_config_dir }}
-      ansible.builtin.file:
-        path: "{{ docker_config_dir }}"
-        owner: "{{ docker_owner }}"
-        group: "{{ docker_group }}"
-        state: directory
-        mode: "0700"
-
-    - name: Write docker daemon configuration file
-      ansible.builtin.template:
-        src: daemon.json.j2
-        dest: "{{ docker_daemon_conf_file }}"
-        owner: "{{ docker_owner }}"
-        group: "{{ docker_group }}"
-        mode: "0640"
-
     - name: Generate CA certificate
       ansible.builtin.import_tasks: ca-cert.yml
 
