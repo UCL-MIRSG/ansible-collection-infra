@@ -1,6 +1,6 @@
 ---
 # mirsg.infrastructure.docker
-docker_generate_certificates: true # generate TLS certs for clients
+docker_generate_certificates: false # generate TLS certs for clients
 docker_client_hostnames:
   - "{{ hostvars['xnat_web']['hostname'] }}"
 docker_tls_verify: false

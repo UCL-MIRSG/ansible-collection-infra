@@ -1,39 +1,7 @@
 ---
-- name: Ensure Docker certificate directory exists on the client
-  ansible.builtin.file:
-    path: "{{ xnat_container_service_certificate_directory }}"
-    state: directory
-    owner: "{{ xnat_container_service_owner }}"
-    group: "{{ xnat_container_service_group }}"
-    mode: "0700"
-
-- name: Copy Docker server certificate from Ansible Controller cache to client
-  ansible.builtin.copy:
-    src: "{{ xnat_container_service_certificate_cache_directory }}/ca.pem"
-    dest: "{{ xnat_container_service_server_ca_cert }}"
-    owner: "{{ xnat_container_service_owner }}"
-    group: "{{ xnat_container_service_group }}"
-    mode: "0600"
-
-- name:
-    Copy signed Docker client certificate from Ansible Controller cache to
-    client
-  ansible.builtin.copy:
-    src:
-      "{{ xnat_container_service_certificate_cache_directory }}/{{
-      xnat_container_service_client_hostname }}.cert"
-    dest: "{{ xnat_container_service_cert }}"
-    owner: "{{ xnat_container_service_owner }}"
-    group: "{{ xnat_container_service_group }}"
-    mode: "0600"
-
-- name: Copy private key from Ansible Controller cache to client
-  ansible.builtin.copy:
-    src: "{{ xnat_container_service_certificate_cache_directory }}/key.pem"
-    dest: "{{ xnat_container_service_key }}"
-    owner: "{{ xnat_container_service_owner }}"
-    group: "{{ xnat_container_service_group }}"
-    mode: "0600"
+- name: Copy SSL certificates to client
+  ansible.builtin.include_tasks: copy_certs_to_client.yml
+  when: xnat_container_service_use_ssl
 
 - name: Configure XNAT to talk to container service
   ansible.builtin.uri:
@@ -47,7 +15,9 @@
       host:
         https://{{ xnat_container_service_hostname }}:{{
         xnat_container_service_port }}
-      cert-path: "{{ xnat_container_service_certificate_directory }}"
+      cert-path:
+        "{{ xnat_container_service_certificate_directory }} if {{
+        xnat_container_service_use_ssl }} else ''"
       swarm-mode: false
       path-translation-xnat-prefix:
         "{{ xnat_container_service_path_translation_xnat_prefix }}"
