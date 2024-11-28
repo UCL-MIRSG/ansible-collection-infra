@@ -45,6 +45,20 @@
     mode: "0700"
   when: nginx_use_ssl
 
+- name: Check current SSL certificate hash
+  ansible.builtin.stat:
+    path: "{{ nginx_ssl_cert_file }}"
+    get_checksum: true
+  register: current_cert_stat
+  when: nginx_use_ssl
+
+- name: Check cached SSL certificate hash
+  ansible.builtin.stat:
+    path: "{{ nginx_server_cert_cache }}"
+    get_checksum: true
+  register: cached_cert_stat
+  when: nginx_use_ssl
+
 - name: Copy server certificates to nginx
   ansible.builtin.copy:
     remote_src: true
@@ -59,7 +73,9 @@
     - src: "{{ nginx_server_key_cache }}"
       dest: "{{ nginx_ssl_key_file }}"
   notify: Reload nginx
-  when: nginx_use_ssl
+  when:
+    - nginx_use_ssl
+    - current_cert_stat.stat.checksum != cached_cert_stat.stat.checksum
 
 - name:
     Generate Diffie-Hellman (DH) parameters. Number of {{
