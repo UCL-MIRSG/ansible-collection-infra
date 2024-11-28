@@ -60,7 +60,7 @@ xnat_server_specific_plugin_packages: [] # yamllint disable-line rule:brackets
 xnat_config_logo: /images/logo.png # use the default XNAT logo
 
 # Pipeline engine
-xnat_pipeline_engine_enabled: false
+xnat_pipeline_engine_enabled: true
 
 # Note that AutoRun is currently required for session archive notifications
 xnat_autorun_enabled: false
