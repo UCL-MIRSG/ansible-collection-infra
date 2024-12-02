@@ -45,21 +45,20 @@
     mode: "0700"
   when: nginx_use_ssl
 
-- name: Check current SSL certificate hash
-  ansible.builtin.stat:
+- name: Get current SSL certificate info
+  community.crypto.x509_certificate_info:
     path: "{{ nginx_ssl_cert_file }}"
-    get_checksum: true
-  register: current_cert_stat
+  register: current_cert_info
+  ignore_errors: true # Handle case where file doesn't exist
   when: nginx_use_ssl
 
-- name: Check cached SSL certificate hash
-  ansible.builtin.stat:
+- name: Get cached SSL certificate info
+  community.crypto.x509_certificate_info:
     path: "{{ nginx_server_cert_cache }}"
-    get_checksum: true
-  register: cached_cert_stat
+  register: cached_cert_info
   when: nginx_use_ssl
 
-- name: Copy server certificates to nginx
+- name: Copy server certificates from cache (if it has a later expiry) to nginx
   ansible.builtin.copy:
     remote_src: true
     src: "{{ item.src }}"
@@ -67,6 +66,7 @@
     owner: "{{ nginx_owner }}"
     group: "{{ nginx_group }}"
     mode: "0600"
+    backup: true # Preserve overwritten certificates and keys for rollback
   with_items:
     - src: "{{ nginx_server_cert_cache }}"
       dest: "{{ nginx_ssl_cert_file }}"
@@ -75,7 +75,29 @@
   notify: Reload nginx
   when:
     - nginx_use_ssl
-    - current_cert_stat.stat.checksum != cached_cert_stat.stat.checksum
+    - current_cert_info.failed or (cached_cert_info.cert.not_after | to_datetime
+      > current_cert_info.cert.not_after | to_datetime)
+
+- name:
+    Copy server certificates from nginx (if it has a later expiry) back to cache
+  ansible.builtin.copy:
+    remote_src: true
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ nginx_owner }}"
+    group: "{{ nginx_group }}"
+    mode: "0600"
+    backup: true # Preserve overwritten certificates and keys for rollback
+  with_items:
+    - src: "{{ nginx_ssl_cert_file }}"
+      dest: "{{ nginx_server_cert_cache }}"
+    - src: "{{ nginx_ssl_key_file }}"
+      dest: "{{ nginx_server_key_cache }}"
+  notify: Reload nginx
+  when:
+    - nginx_use_ssl
+    - (cached_cert_info.cert.not_after | to_datetime <
+      current_cert_info.cert.not_after | to_datetime)
 
 - name:
     Generate Diffie-Hellman (DH) parameters. Number of {{
