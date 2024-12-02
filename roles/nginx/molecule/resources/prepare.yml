@@ -44,3 +44,29 @@
       ansible.builtin.systemd:
         name: gunicorn
         state: restarted
+
+- name: Add test certificates
+  hosts: all
+  become: true
+  tasks:
+    - name: Create the directory for Nginx certificates
+      ansible.builtin.file:
+        path: /etc/nginx/certs
+        state: directory
+        mode: "0700"
+        owner: nginx
+        group: nginx
+
+    - name: Generate test certificate
+      ansible.builtin.command:
+        cmd:
+          openssl req -new -x509 -key /etc/nginx/certs/test.key -out
+          /etc/nginx/certs/test.crt -days 365 -subj '/CN=example.com'
+      args:
+        creates: /etc/nginx/certs/test.crt
+
+    - name: Generate test private key
+      ansible.builtin.command:
+        cmd: openssl genrsa -out /etc/nginx/certs/test.key 2048
+      args:
+        creates: /etc/nginx/certs/test.key
