@@ -53,9 +53,15 @@
       ansible.builtin.file:
         path: /etc/nginx/certs
         state: directory
-        mode: "0700"
-        owner: nginx
-        group: nginx
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Generate test private key
+      ansible.builtin.command:
+        cmd: openssl genrsa -out /etc/nginx/certs/test.key 2048
+      args:
+        creates: /etc/nginx/certs/test.key
 
     - name: Generate test certificate
       ansible.builtin.command:
@@ -64,9 +70,3 @@
           /etc/nginx/certs/test.crt -days 365 -subj '/CN=example.com'
       args:
         creates: /etc/nginx/certs/test.crt
-
-    - name: Generate test private key
-      ansible.builtin.command:
-        cmd: openssl genrsa -out /etc/nginx/certs/test.key 2048
-      args:
-        creates: /etc/nginx/certs/test.key
