@@ -95,6 +95,7 @@ ssl_certificate:
   csr_common_name: "db"
   certificate_filename: "/var/lib/pgsql/server.crt"
   provider: "selfsigned"
+  selfsigned_not_after: "+3650d"
   cache_filename:
     "{{ lookup('env', 'HOME')
     }}/ansible_persistent_files/pg_certificates/db.postgresql_server.crt"
@@ -118,6 +119,7 @@ ssl_certificate:
   csr_common_name: "{{ web_hostname }}"
   certificate_filename: "/usr/share/tomcat/.postgresql/postgresql.crt"
   provider: "selfsigned"
+  selfsigned_not_after: "+3650d"
   cache_filename:
     "{{ lookup('env', 'HOME')
     }}/ansible_persistent_files/pg_certificates/db.postgresql_client.crt"

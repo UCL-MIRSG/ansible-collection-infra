@@ -37,6 +37,7 @@ postgresql_ssl_certificate:
   csr_common_name: "{{ db_server.host }}"
   certificate_filename: "{{ postgresql.base_directory }}/certs/server.crt"
   provider: selfsigned
+  selfsigned_not_after: "+3650d"
   cache_filename: "{{ database_server_certificate_cache_filename }}" # where to store the server certificate in cache
 
 firewalld_rich_rules:

@@ -35,6 +35,7 @@
     privatekey_path: "{{ ssl_certificate.privatekey_filename }}"
     csr_path: "{{ ssl_certificate.csr_filename }}"
     provider: "{{ ssl_certificate.provider }}"
+    selfsigned_not_after: "{{ ssl_certificate.selfsigned_not_after }}"
     mode: "0400"
     owner: "{{ ssl_certificate.owner }}"
     group: "{{ ssl_certificate.group }}"
