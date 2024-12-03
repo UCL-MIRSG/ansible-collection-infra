@@ -4,7 +4,7 @@
   tasks:
     - name: Get server status
       ansible.builtin.uri:
-        url: https://localhost:8080
+        url: http://localhost:8080
         method: GET
         headers:
           Host: molecule.instance.local

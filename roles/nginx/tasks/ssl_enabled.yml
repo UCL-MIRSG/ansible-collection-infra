@@ -7,55 +7,84 @@
     state: directory
     mode: "0700"
 
+- name: Stat current SSL certificate
+  ansible.builtin.stat:
+    path: "{{ nginx_ssl_cert_file }}"
+  register: current_cert
+
+- name: Stat cached SSL certificate
+  ansible.builtin.stat:
+    path: "{{ nginx_server_cert_cache }}"
+  register: cached_cert
+
+- name: Check whether the certs exist
+  ansible.builtin.debug:
+    msg:
+      - "Cached nginx cert exists at {{ nginx_server_cert_cache }}: {{
+        cached_cert.stat.exists }}."
+      - "nginx cert exists at {{ nginx_ssl_cert_file }}: {{
+        current_cert.stat.exists }}."
+  failed_when: (not cached_cert.stat.exists) and (not current_cert.stat.exists)
+
 - name: Get current SSL certificate info
   community.crypto.x509_certificate_info:
     path: "{{ nginx_ssl_cert_file }}"
+  when: current_cert.stat.exists
   register: current_cert_info
-  ignore_errors: true # Handle case where file doesn't exist
 
 - name: Get cached SSL certificate info
   community.crypto.x509_certificate_info:
     path: "{{ nginx_server_cert_cache }}"
+  when: cached_cert.stat.exists
   register: cached_cert_info
 
-- name: Copy server certificates from cache (if it has a later expiry) to nginx
-  ansible.builtin.copy:
-    remote_src: true
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    owner: "{{ nginx_owner }}"
-    group: "{{ nginx_group }}"
-    mode: "0600"
-    backup: true # Preserve overwritten certificates and keys for rollback
-  with_items:
-    - src: "{{ nginx_server_cert_cache }}"
-      dest: "{{ nginx_ssl_cert_file }}"
-    - src: "{{ nginx_server_key_cache }}"
-      dest: "{{ nginx_ssl_key_file }}"
-  notify: Reload nginx
-  when:
-    - current_cert_info.failed or (cached_cert_info.cert.not_after | to_datetime
-      > current_cert_info.cert.not_after | to_datetime)
+- name: Copy server certificates from cache if the nginx cert doesn't exist
+  ansible.builtin.include_tasks: copy_certificates.yml
+  vars:
+    items:
+      - src: "{{ nginx_server_cert_cache }}"
+        dest: "{{ nginx_ssl_cert_file }}"
+      - src: "{{ nginx_server_key_cache }}"
+        dest: "{{ nginx_ssl_key_file }}"
+  when: not current_cert.stat.exists and cached_cert.stat.exists
 
-- name:
-    Copy server certificates from nginx (if it has a later expiry) back to cache
-  ansible.builtin.copy:
-    remote_src: true
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    owner: "{{ nginx_owner }}"
-    group: "{{ nginx_group }}"
-    mode: "0600"
-    backup: true # Preserve overwritten certificates and keys for rollback
-  with_items:
-    - src: "{{ nginx_ssl_cert_file }}"
-      dest: "{{ nginx_server_cert_cache }}"
-    - src: "{{ nginx_ssl_key_file }}"
-      dest: "{{ nginx_server_key_cache }}"
-  notify: Reload nginx
+- name: Copy server certificates to cache if the cache cert doesn't exist
+  ansible.builtin.include_tasks: copy_certificates.yml
+  vars:
+    items:
+      - src: "{{ nginx_ssl_cert_file }}"
+        dest: "{{ nginx_server_cert_cache }}"
+      - src: "{{ nginx_ssl_key_file }}"
+        dest: "{{ nginx_server_key_cache }}"
+  when: current_cert.stat.exists and not cached_cert.stat.exists
+
+- name: Copy server certificates from cache if the nginx cert expires sooner
+  ansible.builtin.include_tasks: copy_certificates.yml
+  vars:
+    items:
+      - src: "{{ nginx_server_cert_cache }}"
+        dest: "{{ nginx_ssl_cert_file }}"
+      - src: "{{ nginx_server_key_cache }}"
+        dest: "{{ nginx_ssl_key_file }}"
   when:
-    - (cached_cert_info.cert.not_after | to_datetime <
-      current_cert_info.cert.not_after | to_datetime)
+    - current_cert.stat.exists
+    - cached_cert.stat.exists
+    - current_cert_info.not_after | to_datetime('%Y%m%d%H%M%SZ') <
+      cached_cert_info.not_after | to_datetime('%Y%m%d%H%M%SZ')
+
+- name: Copy server certificates to cache if the cache cert expires sooner
+  ansible.builtin.include_tasks: copy_certificates.yml
+  vars:
+    items:
+      - src: "{{ nginx_ssl_cert_file }}"
+        dest: "{{ nginx_server_cert_cache }}"
+      - src: "{{ nginx_ssl_key_file }}"
+        dest: "{{ nginx_server_key_cache }}"
+  when:
+    - not current_cert.stat.exists
+    - cached_cert.stat.exists
+    - current_cert_info.not_after | to_datetime('%Y%m%d%H%M%SZ') >
+      cached_cert_info.not_after | to_datetime('%Y%m%d%H%M%SZ')
 
 - name:
     Generate Diffie-Hellman (DH) parameters. Number of {{
