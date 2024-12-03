@@ -1,0 +1,11 @@
+---
+- name: Copy server certificate to new location
+  ansible.builtin.copy:
+    remote_src: true
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ nginx_owner }}"
+    group: "{{ nginx_group }}"
+    mode: "0600"
+    backup: true # Preserve overwritten certificates and keys for rollback
+  with_items: "{{ items }}"
