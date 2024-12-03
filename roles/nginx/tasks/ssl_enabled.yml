@@ -46,7 +46,9 @@
         dest: "{{ nginx_ssl_cert_file }}"
       - src: "{{ nginx_server_key_cache }}"
         dest: "{{ nginx_ssl_key_file }}"
-  when: not current_cert.stat.exists and cached_cert.stat.exists
+  when:
+    - not current_cert.stat.exists
+    - cached_cert.stat.exists
 
 - name: Copy server certificates to cache if the cache cert doesn't exist
   ansible.builtin.include_tasks: copy_certificates.yml
@@ -56,7 +58,9 @@
         dest: "{{ nginx_server_cert_cache }}"
       - src: "{{ nginx_ssl_key_file }}"
         dest: "{{ nginx_server_key_cache }}"
-  when: current_cert.stat.exists and not cached_cert.stat.exists
+  when:
+    - current_cert.stat.exists
+    - not cached_cert.stat.exists
 
 - name: Copy server certificates from cache if the nginx cert expires sooner
   ansible.builtin.include_tasks: copy_certificates.yml
@@ -81,7 +85,7 @@
       - src: "{{ nginx_ssl_key_file }}"
         dest: "{{ nginx_server_key_cache }}"
   when:
-    - not current_cert.stat.exists
+    - current_cert.stat.exists
     - cached_cert.stat.exists
     - current_cert_info.not_after | to_datetime('%Y%m%d%H%M%SZ') >
       cached_cert_info.not_after | to_datetime('%Y%m%d%H%M%SZ')

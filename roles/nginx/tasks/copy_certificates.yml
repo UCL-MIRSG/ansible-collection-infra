@@ -1,5 +1,5 @@
 ---
-- name: Copy server certificate to new location
+- name: Copy certificate to new location
   ansible.builtin.copy:
     remote_src: true
     src: "{{ item.src }}"

@@ -30,6 +30,6 @@ platforms:
       - 443
       - 8000
     published_ports:
-      - 127.0.0.1:8080:80
+      - 127.0.0.1:8080:443
     etc_hosts:
       molecule.instance.local: 192.168.56.2
