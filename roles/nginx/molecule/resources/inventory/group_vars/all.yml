@@ -1,6 +1,39 @@
 ---
+nginx_owner: root
+nginx_group: root
+
 nginx_server_name: molecule.instance.local
 nginx_proxy_port: 8000
 nginx_diffie_helman_size_bits: 2048
 nginx_root: /home/
-nginx_use_ssl: false
+
+nginx_use_ssl: true
+nginx_certs_dir: /etc/nginx/ssl
+nginx_ssl_cert_file: /etc/nginx/ssl/server.cert
+nginx_ssl_key_file: /etc/nginx/ssl/server.key
+nginx_server_cert_cache: /etc/ssl/certs/server.cert
+nginx_server_key_cache: /etc//ssl/certs/server.key
+
+nginx_old_ssl_certificate:
+  owner: "{{ nginx_owner }}"
+  group: "{{ nginx_group }}"
+  certificate_directory: /etc/ssl/certs
+  privatekey_filename: "{{ nginx_server_key_cache }}"
+  use_pk8: false
+  csr_filename: /etc/ssl/certs/server.csr"
+  csr_common_name: "{{ nginx_server_name }}"
+  certificate_filename: "{{ nginx_server_cert_cache }}"
+  provider: selfsigned
+  selfsigned_not_after: +365d
+
+nginx_new_ssl_certificate:
+  owner: "{{ nginx_owner }}"
+  group: "{{ nginx_group }}"
+  certificate_directory: "{{ nginx_certs_dir }}"
+  privatekey_filename: "{{ nginx_ssl_key_file }}"
+  use_pk8: false
+  csr_filename: "{{ nginx_certs_dir }}/server.csr"
+  csr_common_name: "{{ nginx_server_name }}"
+  certificate_filename: "{{ nginx_ssl_cert_file }}"
+  provider: selfsigned
+  selfsigned_not_after: +3650d
