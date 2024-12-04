@@ -92,10 +92,10 @@ ssl_certificate:
   privatekey_filename: "/var/lib/pgsql/certs/server.key"
   use_pk8: false
   csr_filename: "/var/lib/pgsql/server.csr"
-  csr_common_name: "db"
-  certificate_filename: "/var/lib/pgsql/server.crt"
-  provider: "selfsigned"
-  selfsigned_not_after: "+3650d"
+  csr_common_name: db
+  certificate_filename: /var/lib/pgsql/server.crt
+  provider: selfsigned
+  selfsigned_not_after: +3650d
   cache_filename:
     "{{ lookup('env', 'HOME')
     }}/ansible_persistent_files/pg_certificates/db.postgresql_server.crt"
@@ -117,9 +117,9 @@ ssl_certificate:
   pk8_filename: "/usr/share/tomcat/.postgresql/postgresql.pk8"
   csr_filename: "/usr/share/tomcat/.postgresql/postgresql.csr"
   csr_common_name: "{{ web_hostname }}"
-  certificate_filename: "/usr/share/tomcat/.postgresql/postgresql.crt"
-  provider: "selfsigned"
-  selfsigned_not_after: "+3650d"
+  certificate_filename: /usr/share/tomcat/.postgresql/postgresql.crt
+  provider: selfsigned
+  selfsigned_not_after: +3650d
   cache_filename:
     "{{ lookup('env', 'HOME')
     }}/ansible_persistent_files/pg_certificates/db.postgresql_client.crt"
