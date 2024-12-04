@@ -49,12 +49,15 @@
   hosts: all
   gather_facts: true
   tasks:
-    - name: Create SSL certificate that expires in 1 year and store in server cache
+    - name:
+        Create SSL certificate that expires in 1 year and store in server cache
       ansible.builtin.include_role:
         name: mirsg.infrastructure.ssl_certificates
       vars:
         ssl_certificate: "{{ nginx_old_ssl_certificate }}" # noqa: var-naming[no-role-prefix]
-    - name: Create SSL certificate that expires in 10 years and store in nginx certificate directory
+    - name:
+        Create SSL certificate that expires in 10 years and store in nginx
+        certificate directory
       ansible.builtin.include_role:
         name: mirsg.infrastructure.ssl_certificates
       vars:

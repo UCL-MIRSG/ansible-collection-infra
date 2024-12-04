@@ -9,4 +9,4 @@ monitoring_server_ssl_certificate:
   csr_common_name: "{{ hostvars['mserv']['hostname'] }}"
   certificate_filename: /etc/ssl/certs/{{ hostvars['mserv']['hostname'] }}.cert
   provider: selfsigned
-  selfsigned_not_after: "+3650d"
+  selfsigned_not_after: +3650d

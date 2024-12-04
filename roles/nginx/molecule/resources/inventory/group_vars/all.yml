@@ -24,7 +24,7 @@ nginx_old_ssl_certificate:
   csr_common_name: "{{ nginx_server_name }}"
   certificate_filename: "{{ nginx_server_cert_cache }}"
   provider: selfsigned
-  selfsigned_not_after: "+365d"
+  selfsigned_not_after: +365d
 
 nginx_new_ssl_certificate:
   owner: "{{ nginx_owner }}"
@@ -36,4 +36,4 @@ nginx_new_ssl_certificate:
   csr_common_name: "{{ nginx_server_name }}"
   certificate_filename: "{{ nginx_ssl_cert_file }}"
   provider: selfsigned
-  selfsigned_not_after: "+3650d"
+  selfsigned_not_after: +3650d
