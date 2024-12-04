@@ -32,8 +32,8 @@ variables:
 | ------------------------------- | ----------------------------------------------------------------------------------------- |
 | `nginx_use_ssl`                 | Whether to use SSL. Defaults to `true`                                                    |
 | `nginx_certs_dir`               | Where to store the certificates. Defaults to `/etc/nginx/ssl`                             |
-| `nginx_server_cert_cache`       | Path to SSL certificate on the Ansible Controller. Required if using SSL; no default      |
-| `nginx_server_key_cache`        | Path to SSL certificate on the Ansible Controller. Required if using SSL; no default      |
+| `nginx_server_cert_cache`       | Path to SSL certificates on the Ansible host. Required if using SSL; no default           |
+| `nginx_server_key_cache`        | Path to SSL certificate on the Ansible host. Required if using SSL; no default            |
 | `nginx_ssl_cert_file`           | Path to copy the SSL certificate to. Defaults to `/etc/nginx/ssl/server.cert`             |
 | `nginx_ssl_key_file`            | Path to copy the SSL key to. Defaults to `/etc/nginx/ssl/server.key`                      |
 | `nginx_diffie_helman_size_bits` | Bit size for OpenSSL Diffie-Hellman Parameters. Defaults to `4096`                        |

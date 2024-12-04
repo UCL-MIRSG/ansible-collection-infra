@@ -14,6 +14,7 @@ postgresql_client_ssl_certificate:
   csr_common_name: "{{ web_server.host }}"
   certificate_filename: /opt/omero/server/.postgresql/postgresql.crt
   provider: selfsigned
+  selfsigned_not_after: +3650d
   cache_filename: "{{ database_client_certificate_cache_filename }}" # where to store the client certificate in cache
 
 # firewalld

@@ -11,6 +11,7 @@ install_python:
     - libselinux-python
     - policycoreutils-python
   pip_packages:
+    - cryptography
     - gunicorn
     - Flask
 

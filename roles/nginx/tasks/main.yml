@@ -36,38 +36,8 @@
       - nginx-mod-stream
     state: installed
 
-- name: Ensure nginx certs directory exists
-  ansible.builtin.file:
-    path: "{{ nginx_certs_dir }}"
-    owner: "{{ nginx_owner }}"
-    group: "{{ nginx_group }}"
-    state: directory
-    mode: "0700"
-  when: nginx_use_ssl
-
-- name: Copy server certificates to nginx
-  ansible.builtin.copy:
-    remote_src: true
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    owner: "{{ nginx_owner }}"
-    group: "{{ nginx_group }}"
-    mode: "0600"
-  with_items:
-    - src: "{{ nginx_server_cert_cache }}"
-      dest: "{{ nginx_ssl_cert_file }}"
-    - src: "{{ nginx_server_key_cache }}"
-      dest: "{{ nginx_ssl_key_file }}"
-  notify: Reload nginx
-  when: nginx_use_ssl
-
-- name:
-    Generate Diffie-Hellman (DH) parameters. Number of {{
-    nginx_diffie_helman_size_bits }}.
-  community.crypto.openssl_dhparam:
-    path: "{{ nginx_dh_params_file }}"
-    size: "{{ nginx_diffie_helman_size_bits }}"
-  notify: Reload nginx
+- name: Copy certificates when SSL is enabled
+  ansible.builtin.include_tasks: ssl_enabled.yml
   when: nginx_use_ssl
 
 - name: Copy nginx config file
