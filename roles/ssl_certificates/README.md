@@ -86,12 +86,12 @@ First define variables for the server:
 ```yaml
 # Variables for creating a SSL certificate for a postgresql server
 ssl_certificate:
-  owner: "root"
-  group: "root"
-  certificate_directory: "/var/lib/pgsql/certs"
-  privatekey_filename: "/var/lib/pgsql/certs/server.key"
+  owner: root
+  group: root
+  certificate_directory: /var/lib/pgsql/certs
+  privatekey_filename: /var/lib/pgsql/certs/server.key
   use_pk8: false
-  csr_filename: "/var/lib/pgsql/server.csr"
+  csr_filename: /var/lib/pgsql/server.csr
   csr_common_name: db
   certificate_filename: /var/lib/pgsql/server.crt
   provider: selfsigned
@@ -109,13 +109,13 @@ client is a tomcat server:
 ```yaml
 # Variables for creating a SSL certificate for a postgresql client
 ssl_certificate:
-  owner: "root"
-  group: "root"
-  certificate_directory: "/usr/share/tomcat/.postgresql"
-  privatekey_filename: "/usr/share/tomcat/.postgresql/postgresql.key"
+  owner: root
+  group: root
+  certificate_directory: /usr/share/tomcat/.postgresql
+  privatekey_filename: /usr/share/tomcat/.postgresql/postgresql.key
   use_pk8: true
-  pk8_filename: "/usr/share/tomcat/.postgresql/postgresql.pk8"
-  csr_filename: "/usr/share/tomcat/.postgresql/postgresql.csr"
+  pk8_filename: /usr/share/tomcat/.postgresql/postgresql.pk8
+  csr_filename: /usr/share/tomcat/.postgresql/postgresql.csr
   csr_common_name: "{{ web_hostname }}"
   certificate_filename: /usr/share/tomcat/.postgresql/postgresql.crt
   provider: selfsigned
