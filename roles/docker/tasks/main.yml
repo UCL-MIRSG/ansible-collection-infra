@@ -60,6 +60,19 @@
     mode: "0644"
   notify: Reload docker
 
+- name: Generate CA, server, and client certificates
+  when: docker_generate_certificates
+  block:
+    - name: Generate CA certificate
+      ansible.builtin.import_tasks: ca-cert.yml
+
+    - name: Generate server TLS certificate
+      ansible.builtin.import_tasks: server-cert.yml
+
+    - name: Generate TLS certificates for each client
+      ansible.builtin.import_tasks: client-certs.yml
+      when: docker_client_hostnames
+
 - name: Ensure docker config directory exists - {{ docker_config_dir }}
   ansible.builtin.file:
     path: "{{ docker_config_dir }}"
@@ -75,21 +88,8 @@
     owner: "{{ docker_owner }}"
     group: "{{ docker_group }}"
     mode: "0640"
-
-- name: Generate CA, server, and client certificates
-  when: docker_generate_certificates
   notify:
     - Restart docker
-  block:
-    - name: Generate CA certificate
-      ansible.builtin.import_tasks: ca-cert.yml
-
-    - name: Generate server TLS certificate
-      ansible.builtin.import_tasks: server-cert.yml
-
-    - name: Generate TLS certificates for each client
-      ansible.builtin.import_tasks: client-certs.yml
-      when: docker_client_hostnames
 
 - name:
     Ensure docker service configuration is reloaded before restarting the
