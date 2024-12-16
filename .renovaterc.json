@@ -38,8 +38,8 @@
   "customManagers": [
     {
       "customType": "regex",
-      "description": "Update Tomcat version specified in playbooks/group_vars/web.yml",
-      "fileMatch": ["(^|/)*web.yml$"],
+      "description": "Update Tomcat version specified in playbooks/group_vars/xnat.yml",
+      "fileMatch": ["(^|/)*xnat.yml$"],
       "matchStrings": ["tomcat_version:\\s?(?<currentValue>.*?)\\n"],
       "depNameTemplate": "org.apache.tomcat:tomcat",
       "datasourceTemplate": "maven"
