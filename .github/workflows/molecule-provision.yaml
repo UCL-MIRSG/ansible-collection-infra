@@ -7,7 +7,7 @@ on:
       - molecule_configs/*
       - playbooks/**
       - roles/**
-      - .github/workflows/molecule-provision.yml
+      - .github/workflows/molecule-provision.yaml
       - "!**/README.md"
 
 concurrency:
@@ -30,7 +30,7 @@ jobs:
       ANSIBLE_FORCE_COLOR: 1
 
     steps:
-      - uses: UCL-MIRSG/.github/actions/molecule-test@b863c874470757db8548388ab0135d573d70b48f # v0.127.0
+      - uses: UCL-MIRSG/.github/actions/molecule-test@28758d17f7fe68723aded1c5dc6a3f57ccdf9cb7 # v0
         with:
           ansible_major_version: ${{ vars.ANSIBLE_MAJOR_VERSION }}
           scenario: ${{ matrix.scenario }}
