@@ -46,15 +46,14 @@ example, for upgrading the postgresql version on the `ucl_test` server:
 ansible-playbook mirsg.infrastructure.upgrade_postgresql -u <user> --ask-become-pass -l ucl_test -i environments/cs-production/xnat/hosts.yml --vault-password-file ~/.ucl_xnat-vault_password
 ```
 
-The
-[upgrade_postgresql.yml](https://github.com/UCL-MIRSG/ansible-collection-infra/blob/f2574a6d6d7e5682e8507373643722916c5461bc/playbooks/upgrade_postgresql.yml)
-playbook prompts for the version to upgrade from and to upgrade to.
+The [upgrade_postgresql.yml](./playbooks/upgrade_postgresql.yml) playbook
+prompts for the version to upgrade from and to upgrade to.
 
 The following variable needs to be set:
 `postgresql_upgrade_data_dir: “/var/lib/pgsql/{{ postgreql_upgrade_new_version }}/data”`
 
 This is done in the group vars for the server you're updating i.e.
-[ucl_test](https://github.com/UCL-MIRSG/UCLMedicalImagingEnv/blob/ef69a7116dcacbc30a146a5d06c928d686805dd5/environments/cs-production/xnat/group_vars/ucl_test/vars)
+[ucl_test](https://github.com/UCL-MIRSG/UCLMedicalImagingEnv/blob/main/environments/cs-production/xnat/group_vars/ucl_test/vars)
 
 ## Testing this collection
 
