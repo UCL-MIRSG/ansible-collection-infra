@@ -80,13 +80,13 @@ on:
 
 jobs:
   molecule-my_playbook:
-    uses: ./.github/workflows/molecule.yaml
+    uses: UCL-MIRSG/.github/actions/molecule-test@v0
     with:
       tests-path: ansible_collections/mirsg/infrastructure/playbooks
 ```
 
 This uses the
-[`.github/workflows/molecule.yaml` reusable workflow](.github/workflows/molecule.yaml)
+[`UCL-MIRSG/.github/actions/molecule-test` composite action](https://github.com/UCL-MIRSG/.github/blob/main/actions/molecule-test/action.yml)
 to run molecule on the relevant role.
 
 ## Playbooks

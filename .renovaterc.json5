@@ -27,17 +27,17 @@
       versioning: "loose",
     },
     {
-      "description": "RedHat8 support ome.ice"
+      "description": "RedHat8 support ome.ice",
       "matchPackageNames": ["ome.ice"],
       "allowedVersions": "<=4.3.0",
     },,
     {
-      "description": "RedHat8 support ome.omero_user"
+      "description": "RedHat8 support ome.omero_user",
       "matchPackageNames": ["ome.omero_user"],
       "allowedVersions": "<=0.3.1",
     },,
     {
-      "description": "RedHat8 support ome.selinux_utils"
+      "description": "RedHat8 support ome.selinux_utils",
       "matchPackageNames": ["ome.selinux_utils"],
       "allowedVersions": "<=2.0.2",
     },
