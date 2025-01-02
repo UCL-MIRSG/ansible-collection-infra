@@ -67,7 +67,7 @@ paths to these playbooks.
 ### Add a GitHub Workflow
 
 You should add a GitHub workflow for your new playbook to
-`.github/workflows/molecule-my-playbook.yml`. The workflow should follow this
+`.github/workflows/molecule-my-playbook.yaml`. The workflow should follow this
 format:
 
 ```yaml
@@ -76,17 +76,17 @@ on:
   pull_request:
     paths:
       - "playbooks/my_playbook.yml"
-      - ".github/workflows/molecule-role-used-in-playbook.yml"
+      - ".github/workflows/molecule-role-used-in-playbook.yaml"
 
 jobs:
   molecule-my_playbook:
-    uses: ./.github/workflows/molecule.yml
+    uses: ./.github/workflows/molecule.yaml
     with:
       tests-path: ansible_collections/mirsg/infrastructure/playbooks
 ```
 
 This uses the
-[`.github/workflows/molecule.yml` reusable workflow](.github/workflows/molecule.yml)
+[`.github/workflows/molecule.yaml` reusable workflow](.github/workflows/molecule.yaml)
 to run molecule on the relevant role.
 
 ## Playbooks

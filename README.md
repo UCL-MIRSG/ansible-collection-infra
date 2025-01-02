@@ -206,7 +206,7 @@ molecule --base-config ../molecule_configs/centos7_base_config.yml test --scenar
 
 When a PR that modifies a role or playbook is opened, the changes are
 [tested](.github/workflows/) by deploying that role using GitHub Actions. See
-the [`molecule-firewalld` workflow](.github/workflows/molecule-firewalld.yml)
+the [`molecule-firewalld` workflow](.github/workflows/molecule-firewalld.yaml)
 for an example.
 
 ## Code style and formatting
