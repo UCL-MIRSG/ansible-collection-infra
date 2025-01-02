@@ -7,7 +7,7 @@ on:
       - molecule_configs/*
       - playbooks/**
       - roles/**
-      - .github/workflows/molecule-install-xnat.yml
+      - .github/workflows/molecule-install-xnat.yaml
       - "!**/README.md"
   release:
     types:

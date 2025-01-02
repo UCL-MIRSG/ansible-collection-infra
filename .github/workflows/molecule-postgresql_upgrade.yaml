@@ -6,7 +6,7 @@ on:
     paths:
       - molecule_configs/*
       - roles/postgresql_upgrade/**
-      - .github/workflows/molecule-postgresql_upgrade.yml
+      - .github/workflows/molecule-postgresql_upgrade.yaml
       - "!**/README.md"
 
 concurrency:

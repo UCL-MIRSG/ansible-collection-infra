@@ -7,7 +7,7 @@ on:
       - molecule_configs/*
       - playbooks/**
       - roles/**
-      - .github/workflows/molecule-firewalld.yml
+      - .github/workflows/molecule-firewalld.yaml
       - "!**/README.md"
 
 concurrency:

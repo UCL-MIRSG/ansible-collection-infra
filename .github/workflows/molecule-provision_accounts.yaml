@@ -7,7 +7,7 @@ on:
       - molecule_configs/*
       - roles/provision_accounts/**
       - playbooks/setup_user_accounts.yml
-      - .github/workflows/molecule-provision_accounts.yml
+      - .github/workflows/molecule-provision_accounts.yaml
       - "!**/README.md"
 
 concurrency:

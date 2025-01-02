@@ -7,7 +7,7 @@ on:
       - molecule_configs/*
       - playbooks/**
       - roles/**
-      - .github/workflows/molecule-monitoring.yml
+      - .github/workflows/molecule-monitoring.yaml
       - "!**/README.md"
 
 concurrency:
