@@ -72,7 +72,7 @@ We have a GitHub workflow for running molecule on each role, and doing so only
 when that role changes.
 
 You should add a GitHub workflow for your new role to
-`.github/workflows/molecule-my-role.yml`. The workflow should follow this
+`.github/workflows/molecule-my-role.yaml`. The workflow should follow this
 format:
 
 ```yaml
@@ -81,16 +81,16 @@ on:
   pull_request:
     paths:
       - "roles/my_role/**"
-      - ".github/workflows/molecule.yml"
-      - ".github/workflows/molecule-my-role.yml"
+      - ".github/workflows/molecule.yaml"
+      - ".github/workflows/molecule-my-role.yaml"
 
 jobs:
   molecule-my_role:
-    uses: ./.github/workflows/molecule.yml
+    uses: UCL-MIRSG/.github/actions/molecule-test@v0
     with:
       tests-path: ansible_collections/mirsg/infrastructure/roles/my_role
 ```
 
 This uses the
-[`.github/workflows/molecule.yml` reusable workflow](.github/workflows/molecule.yml)
+[`UCL-MIRSG/.github/actions/molecule-test` composite action](https://github.com/UCL-MIRSG/.github/blob/main/actions/molecule-test/action.yml)
 to run molecule on the relevant role.
