@@ -28,6 +28,7 @@ jobs:
           private-key: ${{ secrets.LINK_APP_PEM }}
 
       - name: Test access
+        if: always()
         run: |-
             curl -H "Authorization: Bearer ${{ steps.generate-token.outputs.token }}" \
             https://api.github.com/repos/UCL-MIRSG/UCLMedicalImagingEnv/contents/environments/cs-production/xnat/group_vars/ucl_test
