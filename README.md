@@ -53,7 +53,7 @@ The following variable needs to be set:
 `postgresql_upgrade_data_dir: “/var/lib/pgsql/{{ postgreql_upgrade_new_version }}/data”`
 
 This is done in the group vars for the server you're updating i.e.
-[ucl_test](https://raw.githubusercontent.com/UCL-MIRSG/UCLMedicalImagingEnv/refs/heads/main/environments/cs-production/xnat/group_vars/ucl_test/vars)
+[ucl_test](https://github.com/UCL-MIRSG/UCLMedicalImagingEnv/blob/main/environments/cs-production/xnat/group_vars/ucl_test/vars)
 
 ## Testing this collection
 
