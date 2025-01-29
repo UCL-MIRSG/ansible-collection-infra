@@ -15,7 +15,6 @@
         "xnatx/ldap-auth-plugin",
         "xnatdev/container-service",
         "xnatx/xnatx-batch-launch-plugin",
-        "VUIIS/dax",
         "icrimaginginformatics/ohif-viewer-xnat-plugin",
         "xnatx/ml-plugin",
         "xnatx/datasets-plugin",
@@ -42,14 +41,6 @@
       allowedVersions: "<=2.0.2",
     },
   ],
-  customDatasources: {
-    "VUIIS-dax": {
-      defaultRegistryUrlTemplate: "https://api.github.com/repos/VUIIS/dax/contents/misc/xnat-plugins",
-      transformTemplates: [
-        '{"releases": $.{"version": $join(["v", $match(name, /(\\d+\\.)?(\\d+\\.)?(\\*|\\d+)/ ).match ])}}',
-      ],
-    },
-  },
   customManagers: [
     {
       customType: "regex",
@@ -98,14 +89,6 @@
       matchStrings: ["batch-launch-(?<currentValue>.*?).jar"],
       depNameTemplate: "xnatx/xnatx-batch-launch-plugin",
       datasourceTemplate: "bitbucket-tags",
-    },
-    {
-      customType: "regex",
-      description: "Update XNAT dax plugin specified in roles/xnat/defaults/main.yml",
-      fileMatch: ["roles/xnat/defaults/main.yml$"],
-      matchStrings: ["dax-plugin-genProcData-(?<currentValue>.*?).jar"],
-      depNameTemplate: "VUIIS/dax",
-      datasourceTemplate: "custom.VUIIS-dax",
     },
     {
       customType: "regex",
