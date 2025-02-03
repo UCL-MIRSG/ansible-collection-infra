@@ -46,7 +46,7 @@
     "VUIIS-dax": {
       defaultRegistryUrlTemplate: "https://api.github.com/repos/VUIIS/dax/contents/misc/xnat-plugins",
       transformTemplates: [
-        '{"releases": $.{"version": $join(["v", $match(name, /(\\d+\\.)?(\\d+\\.)?(\\*|\\d+)/ ).match ])}}',
+        '{"releases": $.{"version": $match(name, /(\\d+\\.)?(\\d+\\.)?(\\*|\\d+)/ ).match }}',
       ],
     },
   },
