@@ -24,6 +24,17 @@ config set -- {{ key | quote }} {{
 }}
 {% endfor %}
 
+{% is omero_server_smtp_enabled %}
+omero.mail.config=true
+omero.mail.from={{ omero_server_smtp_from }}
+omero.mail.host={{ omero_server_smtp_hostname }}
+omero.mail.port={{ omero_server_smtp_port }}
+omero.mail.smtp.auth={{ omero_server_smtp_auth }}
+omero.mail.username={{ omero_server_smtp_username }}
+omero.mail.password={{ omero_server_smtp_password }}
+omero.mail.smtp.starttls.enable={{ omero_server_smtp_start_tls }}
+{% endif %}
+
 {% if omero_server_selfsigned_certificates %}
 certificates -v
 {% endif %}
