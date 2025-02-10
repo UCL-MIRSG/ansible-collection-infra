@@ -5,3 +5,6 @@ warn_list:
   - galaxy[tags]
   - no-handler
   - var-naming[no-role-prefix]
+
+exclude_paths:
+  - .ansible  # where Molecule / Ansible installs dependencies in CI
