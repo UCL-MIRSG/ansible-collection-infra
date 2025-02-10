@@ -100,6 +100,28 @@ into virtualenv. Alternatively you can install packages into
 `omero_server_database_backupdir`: Dump the OMERO database to this directory
 before upgrading, default empty (disabled)
 
+### OMERO.mail email configuration
+
+Default values are the same as the
+[OMERO.mail defaults](https://docs.openmicroscopy.org/omero/5.6.4/sysadmins/mail.html).
+
+`omero_server_smtp_enabled`: Enable SMTP server. Default `false`
+
+`omero_server_smtp_from`: Send email from this address. Defaults to `omero@localhost`.
+
+`omero_server_smtp_hostname`: Host to use for sending email. Defaults to `localhost`
+
+`omero_server_smtp_port`: Send email on this port. Defaults to `25`
+
+`omero_server_smtp_auth`: Require authentication for sending email. Defaults to `false`
+
+`omero_server_smtp_username`: Authenticate with this user. Defaults to empty string.
+
+`omero_server_smtp_password`: Authenticate with this password. Default to empty.
+
+`omero_server_smtp_start_tls`: Start TLS connection before logging into the email
+server. Defaults to `false`.
+
 ### Configuring OMERO.server
 
 This role regenerates the OMERO configuration file using the configuration files
