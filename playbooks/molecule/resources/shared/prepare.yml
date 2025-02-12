@@ -1,6 +1,6 @@
 ---
 - name: Prepare - set baseurls for YUM repos and install sudo
-  hosts: all
+  hosts: all:!omero_mail
   gather_facts: true
   tasks:
     - name: Update YUM repo baseurls
@@ -34,7 +34,7 @@
         key: https://apt.postgresql.org/pub/repos/yum/keys/PGDG-RPM-GPG-KEY-RHEL
 
 - name: Prepare
-  hosts: all
+  hosts: all:!omero_mail
   gather_facts: true
   tasks:
     - name: Install and configure firewalld

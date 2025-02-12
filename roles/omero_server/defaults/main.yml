@@ -175,3 +175,13 @@ omero_server_omego_db_backup_options: >
   --dbhost {{ omero_server_dbhost | quote }} --dbuser {{ omero_server_dbuser |
   quote }} --dbname {{ omero_server_dbname | quote }} --dbpass {{
   omero_server_dbpassword | quote }}
+
+# OMERO.Mail
+omero_server_smtp_enabled: false
+omero_server_smtp_from: omero@localhost
+omero_server_smtp_hostname: localhost
+omero_server_smtp_port: 25
+omero_server_smtp_auth: false
+omero_server_smtp_username: ""
+omero_server_smtp_password: "{{ vault_smtp_password | default('') }}"
+omero_server_smtp_start_tls: false

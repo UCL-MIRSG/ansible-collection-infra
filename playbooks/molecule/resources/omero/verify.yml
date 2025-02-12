@@ -4,7 +4,7 @@
   tasks:
     - name: Get server status
       ansible.builtin.uri:
-        url: http://127.0.0.1:8080
+        url: http://localhost:8080
         method: GET
         validate_certs: false
         return_content: true
@@ -16,3 +16,27 @@
           - response.status == 200
           - "'nginx' in response.server"
           - response.content is search('OMERO.web')
+
+- name: Verify public_user exists and we can email them
+  hosts: omero_server_web
+  remote_user: omero-server
+  pre_tasks:
+    - name: Set email address for public_user (id=3)
+      ansible.builtin.command:
+        /opt/omero/server/OMERO.server/bin/omero obj update Experimenter:3
+        email=public@omero.mail.local
+      changed_when: false
+
+    - name: Email users
+      ansible.builtin.command:
+        /opt/omero/server/OMERO.server/bin/omero admin email --everyone Subject
+        body
+      changed_when: false
+      register: send_email
+
+  tasks:
+    - name: Check email was sent successfully to 1 user
+      ansible.builtin.assert:
+        that:
+          - send_email.stdout_lines[0] == "Successfully sent 1 of 1 emails"
+          - send_email.stdout_lines[1] == "2 users had no email address"
