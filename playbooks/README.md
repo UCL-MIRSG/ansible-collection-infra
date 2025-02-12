@@ -8,13 +8,10 @@ of servers.
 This collection is tested using Ansible Molecule.
 
 Each playbook has its own Molecule configuration, which can be found in the
-`ansible_collections/mirsg/infrastructure/playbooks/molecule/` folder. Molecule
-base configurations are used to reduce to amount of duplication in the setup for
-testing each playbook. There are two base configurations that correspond to two
-[Molecule scenarios](https://ansible.readthedocs.io/projects/molecule/getting-started/#molecule-scenarios)
-one for testing on CentOS 7 and another for testing on RockyLinux 9. The base
-configurations are in the
-`ansible_collections/mirsg/infrastructure/molecule_configs` folder.
+`ansible_collections/mirsg/infrastructure/playbooks/molecule/` folder.
+
+See the top-level README for info on
+[testing this collection](../README.md#testing-this-collection).
 
 ## Adding a new playbook
 

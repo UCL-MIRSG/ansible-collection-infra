@@ -91,6 +91,7 @@ omero_web_config_set:
   ansible.builtin.combine(omero_web_additional_config | default({})) }}"
 
 # mirsg.infrastructure.nginx
+nginx_server_name: "{{ web_server.host }}"
 nginx_use_ssl: "{{ ssl.use_ssl }}"
 nginx_server_cert_cache: "{{ ssl.server_cert }}"
 nginx_server_key_cache: "{{ ssl.server_key }}"
