@@ -15,12 +15,14 @@ omero_group_create:
   - name: public
     type: read-only
 
-omero_user_create:
+omero_service_user:
   - login: service_user
     firstname: SERVICE
     lastname: ADMIN
     password: "{{ vault_service_admin_password }}"
     groups: --group-name system
+
+omero_additional_users:
   - login: public_user
     firstname: public
     lastname: user

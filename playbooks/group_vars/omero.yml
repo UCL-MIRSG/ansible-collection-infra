@@ -96,6 +96,8 @@ nginx_server_cert_cache: "{{ ssl.server_cert }}"
 nginx_server_key_cache: "{{ ssl.server_key }}"
 
 # ome.omero_user
+omero_user_create:
+  "{{ omero_service_user + (omero_additional_users | default([])) }}"
 omero_user_system: "{{ omero_server_system_user }}"
 omero_user_admin_user: root
 omero_user_admin_pass: "{{ omero_server_rootpassword }}"
