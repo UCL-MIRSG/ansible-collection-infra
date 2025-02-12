@@ -201,12 +201,12 @@ proceeds as with testing the roles:
 molecule test --scenario centos7_monitoring
 ```
 
-Alternative you can use `molecule converge` to avoid destroying the container, as
-[described above](#inspecting-the-container).
+Alternative you can use `molecule converge` to avoid destroying the container,
+as [described above](#inspecting-the-container).
 
-> [!TIP]
-> If you run `molecule converge` on XNAT or OMERO scenarios, you can access the
-> XNAT web UI at `http://localhost:8080` and the OMERO web UI at `http://localhost:8080/webclient`.
+> [!TIP] If you run `molecule converge` on XNAT or OMERO scenarios, you can
+> access the XNAT web UI at `http://localhost:8080` and the OMERO web UI at
+> `http://localhost:8080/webclient`.
 
 ### Integration tests
 
