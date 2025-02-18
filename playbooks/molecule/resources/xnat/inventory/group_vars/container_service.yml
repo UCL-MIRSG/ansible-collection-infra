@@ -6,3 +6,4 @@ docker_client_certificate_cache_directory:
 docker_server_hostname: "{{ hostvars['xnat_cserv']['hostname'] }}"
 docker_server_ip: "{{ hostvars['xnat_cserv']['ansible_ip'] }}"
 docker_server_port: 2376
+docker_swarm_enabled: true

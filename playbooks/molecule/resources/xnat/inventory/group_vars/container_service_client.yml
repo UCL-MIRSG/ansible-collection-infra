@@ -13,3 +13,5 @@ xnat_container_service_certificate_cache_directory:
 
 xnat_container_service_path_translation_xnat_prefix: "{{ xnat_root_dir }}"
 xnat_container_service_path_translation_docker_prefix: /storage/xnat/data/xnat
+
+xnat_container_service_swarm_mode: "{{ docker_swarm_enabled }}"
