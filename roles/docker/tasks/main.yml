@@ -106,5 +106,5 @@
   community.docker.docker_swarm:
     state: present
     advertise_addr: "{{ docker_server_ip }}:{{ docker_server_port }}"
-    listen_addr: "{{ docker_server_ip }}:{{ docker_server_port }}"
+    listen_addr: "{{ docker_server_ip }}"
   when: docker_swarm_enabled

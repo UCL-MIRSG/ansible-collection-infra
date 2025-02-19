@@ -10,3 +10,4 @@ install_python:
     - python-setuptools
   pip_packages:
     - cryptography
+    - requests
