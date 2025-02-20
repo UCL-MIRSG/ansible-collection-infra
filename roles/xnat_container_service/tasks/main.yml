@@ -18,7 +18,10 @@
       cert-path:
         "{{ xnat_container_service_certificate_directory if
         xnat_container_service_use_ssl else '' }}"
-      swarm-mode: false
+      backend:
+        "{{ 'swarm' if xnat_container_service_swarm_mode else 'docker' }}"
+      swarm-mode: "{{ xnat_container_service_swarm_mode }}"
+      max-concurrent-finalizing-jobs: 1
       path-translation-xnat-prefix:
         "{{ xnat_container_service_path_translation_xnat_prefix }}"
       path-translation-docker-prefix:

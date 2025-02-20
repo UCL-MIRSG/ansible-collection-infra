@@ -15,6 +15,7 @@ on CentOS 7 or Rocky Linux 8.
 | `docker_rpm_gpg_key_url`   | The url of the Docker repository GPG key. Defaults to `https://download.docker.com/linux/centos/gpg` |
 | `docker_repo_baseurl`      | URL to the directory containing the repodata. Defaults to `https://download.docker.com/linux/centos` |
 | `docker_yum_package`       | The name of the Docker package. Defaults to `docker`                                                 |
+| `docker_swarm_enabled`     | Initialise a [Docker Swarm](https://docs.docker.com/engine/swarm/). Defaults to `false`.             |
 
 If you would like to
 [configure](https://docs.docker.com/engine/security/protect-access/#use-tls-https-to-protect-the-docker-daemon-socket)

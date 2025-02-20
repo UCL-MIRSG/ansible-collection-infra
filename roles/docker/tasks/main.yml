@@ -101,3 +101,8 @@
     name: "{{ docker_service_name }}"
     state: started
     enabled: true
+
+- name: Initialize Docker Swarm
+  community.docker.docker_swarm:
+    state: present
+  when: docker_swarm_enabled
