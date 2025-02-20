@@ -10,3 +10,4 @@ install_python:
     - python3-setuptools
   pip_packages:
     - cryptography
+    - docker

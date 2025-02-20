@@ -41,3 +41,6 @@ docker_client_certificate_directory:
   "{{ docker_certificate_directory }}/client_certs"
 docker_client_certificate_cache_directory:
   "{{ lookup('env', 'HOME') }}/ansible_persistent_files/docker_certificates"
+
+# Swarm mode
+docker_swarm_enabled: false
