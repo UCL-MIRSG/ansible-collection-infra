@@ -1,0 +1,19 @@
+---
+- name: Get XNAT Users
+  ansible.builtin.uri:
+    calling_task_name: Get XNAT Users
+    user: "{{ inputs.user }}"
+    password: "{{ inputs.become_password }}"
+    request_path: https://{{ inputs.limit }}/xapi/users/current
+    method: GET
+    status_code: 200
+    should_return_content: true
+    register: xnat_users
+
+- name: Save XNAT users to a file
+  copy:
+    content: "{{ xnat_users.json | to_nice_json }}"
+    dest: /tmp/xnat_users.json
+    owner: root
+    group: root
+    mode: "600"

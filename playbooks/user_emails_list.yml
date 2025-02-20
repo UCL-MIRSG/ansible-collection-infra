@@ -1,0 +1,6 @@
+---
+- name: Fetch XNAT Users
+  hosts: localhost
+  gather_facts: false
+  roles:
+    - get_xnat_users
