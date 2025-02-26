@@ -3,30 +3,6 @@
   extends: ["github>UCL-MIRSG/.github//renovate/default-config.json5"],
   packageRules: [
     {
-      description: "Check Maven Central for updates to Tomcat 9",
-      matchPackageNames: ["org.apache.tomcat:tomcat"],
-      allowedVersions: "<10",
-    },
-    {
-      description: "Update XNAT and associated plugins at the same time",
-      matchPackageNames: [
-        "xnatdev/xnat-web",
-        "xnatdev/xsync",
-        "xnatx/ldap-auth-plugin",
-        "icrimaginginformatics/ohif-viewer-xnat-plugin",
-        "xnatx/ml-plugin",
-        "xnatx/datasets-plugin",
-        "xnatdev/xnat-image-viewer-plugin",
-        "xnatx/xnatx-dxm-settings-plugin",
-        "NrgXnat/xnat-pipeline-engine",
-        "xnatdev/container-service",
-        "xnatx/xnatx-batch-launch-plugin",
-        "VUIIS/dax",
-      ],
-      groupName: "xnat",
-      versioning: "loose",
-    },
-    {
       description: "RedHat8 support ome.ice",
       matchPackageNames: ["ome.ice"],
       allowedVersions: "<=4.3.0",
@@ -42,14 +18,6 @@
       allowedVersions: "<=2.0.2",
     },
   ],
-  customDatasources: {
-    "VUIIS-dax": {
-      defaultRegistryUrlTemplate: "https://api.github.com/repos/VUIIS/dax/contents/misc/xnat-plugins",
-      transformTemplates: [
-        '{"releases": $.{"version": $match(name, /(\\d+\\.)?(\\d+\\.)?(\\*|\\d+)/ ).match }}',
-      ],
-    },
-  },
   customManagers: [
     {
       customType: "regex",
