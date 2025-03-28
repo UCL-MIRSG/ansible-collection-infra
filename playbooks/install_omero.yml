@@ -2,6 +2,8 @@
 - name: Prepare OMERO.server VM for installation
   hosts: omero
   become: true
+  tags:
+    - prepare-omero
   pre_tasks:
     - name: Create omero server system user
       become: true
@@ -32,6 +34,8 @@
 - name: Install and configure PostgreSQL database
   hosts: db
   become: true
+  tags:
+    - db
   roles:
     - role: mirsg.infrastructure.provision
     - role: mirsg.infrastructure.install_python
@@ -41,6 +45,8 @@
 - name: Install OMERO.server + OMERO.web
   hosts: omero
   become: true
+  tags:
+    - install-omero
   roles:
     - role: mirsg.infrastructure.omero_server
     - role: ome.omero_web
