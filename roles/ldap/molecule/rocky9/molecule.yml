@@ -1,0 +1,23 @@
+---
+# test this scenario from the roles/ldap directory with the command
+# molecule --base-config ../../molecule_configs/rocky9_base_config.yml test --scenario rocky9
+provisioner:
+  name: ansible
+  log: true
+  config_options:
+    defaults:
+      callbacks_enabled: profile_tasks, timer, yaml
+      stdout_callback: yaml
+      vault_password_file: ${MOLECULE_SCENARIO_DIRECTORY}/../resources/.vault_password
+    tags:
+      run: ${MOLECULE_RUN_TAGS:-all}
+  inventory:
+    links:
+      group_vars: ../resources/inventory/group_vars/
+  playbooks:
+    prepare: ../resources/prepare.yml
+    converge: ../resources/converge.yml
+  env:
+    ANSIBLE_VERBOSITY: "1"
+    ANSIBLE_ROLES_PATH: ${MOLECULE_SCENARIO_DIRECTORY}/../../../../roles/:~/.ansible/roles
+    ANSIBLE_COLLECTIONS_PATH: ${MOLECULE_SCENARIO_DIRECTORY}/../../../../../../../:~/.ansible/collections

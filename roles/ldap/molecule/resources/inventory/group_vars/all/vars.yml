@@ -1,0 +1,8 @@
+---
+# mirsg.infrastructure.provision_accounts
+os_users:
+  - username: test-user
+    # yamllint disable-line rule:line-length
+    encrypted_password: $6$TSoIGqmpZJw24vqP$lrhHcIeuv3oi8kpBu3SVyqPeTLuXi5TJf5u7hUOY0vRb4MXWTp1Z/gsjAwC28EQrVnKOJwpw00tN8ExM6AoIC.
+
+os_users_groups: wheel

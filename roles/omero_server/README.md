@@ -156,5 +156,5 @@ add support for a conf.d style directory directly into OMERO.
         omero_server_dbname: db_name
         omero_server_dbpassword: db_password
         # Version required for the psql client
-        postgresql_version: "13"
+        postgresql_version: "14"
 ```
