@@ -1,0 +1,14 @@
+---
+- name: Test ldap role
+  hosts: all
+  become: true
+  gather_facts: true
+
+  roles:
+    - role: mirsg.infrastructure.ldap
+      vars:
+        ldap_ca_cert_path:
+          "{{ lookup('env', 'HOME') }}/ansible_persistent_files/ldap/ca.pem"
+        ldap_java_keystore_path: /usr/lib/jvm/jre/lib/security/cacerts/
+        ldap_java_keystore_pass: "{{ vault_java_keystore_password }}"
+        ldap_java_keystore_alias: ldap-ca
