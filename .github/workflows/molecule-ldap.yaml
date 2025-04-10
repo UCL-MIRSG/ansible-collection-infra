@@ -15,7 +15,7 @@ concurrency:
     ${{ github.workflow }}-${{ github.event.pull_request.number }}
 
 jobs:
-  molecule-provision-accounts:
+  molecule-ldap:
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: true
