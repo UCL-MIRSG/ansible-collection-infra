@@ -1,0 +1,26 @@
+---
+# tasks file for ldap
+- name: Ensure directory exists for cert files
+  ansible.builtin.file:
+    path: "{{ ldap_cert_dir }}"
+    owner: "{{ ldap_cert_owner }}"
+    group: "{{ ldap_cert_owner_group }}"
+    state: directory
+    mode: "0755"
+
+- name: Copy CA certificate for LDAP server
+  ansible.builtin.copy:
+    src: "{{ ldap_ca_cert_path }}"
+    dest: "{{ ldap_cert_dir }}/ldap-ca.cert"
+    owner: "{{ ldap_cert_owner }}"
+    group: "{{ ldap_cert_owner_group }}"
+    mode: "0600"
+
+- name: Add CA certificate for LDAP server to keystore
+  community.general.java_cert:
+    cert_path: "{{ ldap_cert_dir }}/ldap-ca.cert"
+    keystore_path: "{{ ldap_java_keystore_path }}"
+    keystore_pass: "{{ ldap_java_keystore_pass }}"
+    cert_alias: "{{ ldap_java_keystore_alias }}"
+    keystore_create: true
+    state: present
