@@ -1,0 +1,126 @@
+---
+dependency:
+  name: galaxy
+  options:
+    force: true
+    role-file: ${MOLECULE_SCENARIO_DIRECTORY}/../../../meta/requirements.yml
+    requirements-file: ${MOLECULE_SCENARIO_DIRECTORY}/../../../meta/requirements.yml
+
+driver:
+  name: docker
+
+platforms:
+  - name: omero_db
+    hostname: omero.db.local
+    image: rockylinux/rockylinux:8-ubi-init
+    required: true
+    command: ""
+    cgroupns_mode: host
+    privileged: true
+    pre_build_image: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+      - ./OMERO:/storage/OMERO
+      - ${MOLECULE_SCENARIO_DIRECTORY}/../resources/shared/resolv.conf:/etc/resolv.conf
+    keep_volumes: false
+    groups:
+      - all
+      - db
+    docker_networks:
+      - name: omero
+        ipam_config:
+          - subnet: 192.168.56.0/24
+            gateway: 192.168.56.1
+    networks:
+      - name: omero
+        ipv4_address: 192.168.56.2
+    exposed_ports:
+      - 5432
+    etc_hosts:
+      omero.server.local: 192.168.56.3
+      omero.mail.local: 192.168.56.4
+
+  - name: omero_server_web
+    hostname: omero.server.local
+    image: rockylinux/rockylinux:8-ubi-init
+    required: true
+    command:
+    cgroupns_mode: host
+    privileged: true
+    pre_build_image: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+      - ./OMERO:/storage/OMERO
+      - ${MOLECULE_SCENARIO_DIRECTORY}/../resources/shared/resolv.conf:/etc/resolv.conf
+    keep_volumes: false
+    groups:
+      - all
+      - omero
+    networks:
+      - name: omero
+        ipv4_address: 192.168.56.3
+    exposed_ports:
+      - 80
+      - 443
+      - 4063
+      - 4064
+      - 4080
+    published_ports:
+      - 127.0.0.1:8080:80
+    etc_hosts:
+      omero.db.local: 192.168.56.2
+      omero.mail.local: 192.168.56.4
+
+  - name: omero_mail
+    hostname: omero.mail.local
+    image: rnwood/smtp4dev
+    required: true
+    command:
+    cgroupns_mode: host
+    privileged: true
+    pre_build_image: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+      - ${MOLECULE_SCENARIO_DIRECTORY}/../resources/shared/resolv.conf:/etc/resolv.conf
+      - ${MOLECULE_SCENARIO_DIRECTORY}/smtp-app-settings.json:/smtp4dev/appsettings.json
+    keep_volumes: false
+    networks:
+      - name: omero
+        ipv4_address: 192.168.56.4
+    exposed_ports:
+      - 25
+    published_ports:
+      - 127.0.0.1:3000:80
+      - 127.0.0.1:2525:25
+
+provisioner:
+  name: ansible
+  log: true
+  config_options:
+    defaults:
+      callbacks_enabled: profile_tasks, timer, yaml
+      stdout_callback: yaml
+      vault_password_file: ${MOLECULE_SCENARIO_DIRECTORY}/../resources/omero/.vault_password
+  inventory:
+    links:
+      hosts: ../resources/omero/inventory/hosts.yml
+      group_vars: ../resources/omero/inventory/group_vars/
+      host_vars: ../resources/omero/inventory/host_vars/
+  playbooks:
+    prepare: ../resources/shared/prepare.yml
+    converge: ../resources/omero/converge.yml
+    verify: ../resources/omero/verify.yml
+  env:
+    ANSIBLE_VERBOSITY: "1"
+    ANSIBLE_ROLES_PATH: ${MOLECULE_SCENARIO_DIRECTORY}/../../../roles/:~/.ansible/roles
+    ANSIBLE_COLLECTIONS_PATH: ${MOLECULE_SCENARIO_DIRECTORY}/../../../../../../:~/.ansible/collections
+
+verifier:
+  name: ansible
+  env:
+    ANSIBLE_VERBOSITY: "1"
+
+lint: |
+  set -e
+  yamllint .
+  ansible-lint .
