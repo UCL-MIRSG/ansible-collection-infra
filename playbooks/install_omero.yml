@@ -31,6 +31,15 @@
     - role: mirsg.infrastructure.provision
     - role: mirsg.infrastructure.install_python
     - role: mirsg.infrastructure.install_java
+      when:
+        (ansible_os_family | lower == 'redhat') and
+        (ansible_distribution_major_version == '8')
+    - role: mirsg.infrastructure.install_java
+      vars:
+        java_package: java-11-openjdk
+      when:
+        (ansible_os_family | lower == 'redhat') and
+        (ansible_distribution_major_version == '9')
     - role: mirsg.infrastructure.ldap
       when: omero_server_use_ldap
     - role: mirsg.infrastructure.ssl_certificates
