@@ -1,0 +1,4 @@
+---
+ldap_cert_dir: /root/certs
+ldap_cert_owner: root
+ldap_cert_owner_group: root
