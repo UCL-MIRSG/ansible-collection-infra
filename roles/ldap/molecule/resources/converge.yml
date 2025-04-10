@@ -3,36 +3,6 @@
   hosts: all
   become: true
   gather_facts: true
-  pre_tasks:
-    - name: Create private key
-      community.crypto.openssl_privatekey:
-        path: /tmp/ca-certificate.key
-
-    - name: Create certificate signing request (CSR) for CA certificate
-      community.crypto.openssl_csr_pipe:
-        privatekey_path: /tmp/ca-certificate.key
-        common_name: Test CA
-        use_common_name_for_san: false
-        basic_constraints:
-          - CA:TRUE
-        basic_constraints_critical: true
-        key_usage:
-          - keyCertSign
-        key_usage_critical: true
-      register: ca_csr
-
-    - name: Create self-signed CA certificate from CSR
-      community.crypto.x509_certificate:
-        path: /tmp/ca-certificate.pem
-        csr_content: "{{ ca_csr.csr }}"
-        privatekey_path: /tmp/ca-certificate.key
-        provider: selfsigned
-
-    - name: Copy certificate to Ansible cache
-      ansible.builtin.fetch:
-        src: /tmp/ca-certificate.pem
-        dest: "{{ lookup('env', 'HOME') }}/ansible_persistent_files/ldap/ca.pem"
-        flat: true
 
   roles:
     - role: mirsg.infrastructure.ldap
