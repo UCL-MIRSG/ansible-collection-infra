@@ -15,6 +15,11 @@
         system: true
         uid: "{{ omero_server_system_uid | default(omit) }}"
 
+    - name: Ensure managedrepo group exists
+      ansible.builtin.group:
+        name: "{{ omero_server_system_managedrepo_group }}"
+        state: present
+
     - name: Create a directory for upgrade backups
       ansible.builtin.file:
         path: "{{ omero_server_database_backupdir }}"
