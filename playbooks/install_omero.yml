@@ -31,6 +31,8 @@
     - role: mirsg.infrastructure.provision
     - role: mirsg.infrastructure.install_python
     - role: mirsg.infrastructure.install_java
+    - role: mirsg.infrastructure.ldap
+      when: omero_server_use_ldap
     - role: mirsg.infrastructure.ssl_certificates
       vars:
         ssl_certificate: "{{ postgresql_client_ssl_certificate }}" # noqa: var-naming[no-role-prefix]
