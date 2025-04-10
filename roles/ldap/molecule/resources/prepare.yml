@@ -1,0 +1,23 @@
+---
+- name: Install dependencies
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Update YUM repo baseurls
+      ansible.builtin.include_role:
+        name: mirsg.infrastructure.provision
+        tasks_from: RedHat7.yml
+      when: ansible_facts['distribution_major_version'] is version('7')
+
+    - name: Install Java
+      ansible.builtin.include_role:
+        name: mirsg.infrastructure.install_java
+
+    - name: Install Python
+      ansible.builtin.include_role:
+        name: mirsg.infrastructure.install_python
+
+    - name: Install sudo
+      ansible.builtin.package:
+        name: sudo
+        state: present
