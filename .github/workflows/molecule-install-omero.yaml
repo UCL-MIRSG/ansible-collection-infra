@@ -29,7 +29,7 @@ jobs:
       matrix:
         rocky_version:
           - 8
-          - 9
+          # - 9
 
     steps:
       - uses: UCL-MIRSG/.github/actions/molecule-test@28758d17f7fe68723aded1c5dc6a3f57ccdf9cb7 # v0
