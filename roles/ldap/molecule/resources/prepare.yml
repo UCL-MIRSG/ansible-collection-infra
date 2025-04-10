@@ -9,6 +9,14 @@
         tasks_from: RedHat7.yml
       when: ansible_facts['distribution_major_version'] is version('7')
 
+    - name: Install openssl and openssl-devel
+      ansible.builtin.package:
+        name:
+          - openssl
+          - openssl-devel
+        state: present
+      when: ansible_facts['distribution_major_version'] is version('7')
+
     - name: Install Java
       ansible.builtin.include_role:
         name: mirsg.infrastructure.install_java
