@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
       - name: Install OMERO EL8 requirements
-        run: |
+        run: |-
           ansible-galaxy install -r ./meta/omero-el8-requirements.yml
 
       - uses: UCL-MIRSG/.github/actions/linting@058474bb0eeb6f67f8f33672d9dcbdfcb44b6584 # v0
