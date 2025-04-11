@@ -1,5 +1,5 @@
 ---
-omero_server_ldap_enabled: false
+omero_server_use_ldap: false
 
 omero_server_additional_config:
   omero.ldap.config: false
