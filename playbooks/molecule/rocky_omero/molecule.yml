@@ -3,8 +3,8 @@ dependency:
   name: galaxy
   options:
     force: true
-    role-file: ${MOLECULE_SCENARIO_DIRECTORY}/../../../meta/requirements.yml
-    requirements-file: ${MOLECULE_SCENARIO_DIRECTORY}/../../../meta/requirements.yml
+    role-file: ${MOLECULE_SCENARIO_DIRECTORY}/../../../meta/omero-el${ROCKY_VERSION:-8}-requirements.yml
+    requirements-file: ${MOLECULE_SCENARIO_DIRECTORY}/../../../meta/omero-el${ROCKY_VERSION:-8}-requirements.yml
 
 driver:
   name: docker
@@ -12,7 +12,7 @@ driver:
 platforms:
   - name: omero_db
     hostname: omero.db.local
-    image: rockylinux/rockylinux:8-ubi-init
+    image: rockylinux/rockylinux:${ROCKY_VERSION:-8}-ubi-init
     required: true
     command: ""
     cgroupns_mode: host
@@ -42,7 +42,7 @@ platforms:
 
   - name: omero_server_web
     hostname: omero.server.local
-    image: rockylinux/rockylinux:8-ubi-init
+    image: rockylinux/rockylinux:${ROCKY_VERSION:-8}-ubi-init
     required: true
     command:
     cgroupns_mode: host
