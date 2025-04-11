@@ -5,3 +5,7 @@ collections:
   - community.postgresql
   - community.docker
   - community.crypto
+
+roles:
+  - src: ome.omero_web
+    version: 5.1.1
