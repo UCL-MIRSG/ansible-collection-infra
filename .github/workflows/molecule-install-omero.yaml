@@ -20,7 +20,7 @@ concurrency:
 
 jobs:
   molecule-install-omero:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     env:
       MOLECULE_RUN_TAGS: all
       PY_COLORS: 1
