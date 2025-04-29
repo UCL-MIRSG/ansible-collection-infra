@@ -25,11 +25,18 @@ jobs:
       MOLECULE_RUN_TAGS: all
       PY_COLORS: 1
       ANSIBLE_FORCE_COLOR: 1
+    strategy:
+      matrix:
+        rocky_version:
+          - 8
+          - 9
 
     steps:
       - uses: UCL-MIRSG/.github/actions/molecule-test@28758d17f7fe68723aded1c5dc6a3f57ccdf9cb7 # v0
+        env:
+          ROCKY_VERSION: ${{ matrix.rocky_version }}
         with:
           ansible_major_version: 8
-          scenario: rocky8_omero
+          scenario: rocky_omero
           checkout_path: ansible_collections/mirsg/infrastructure
           tests_path: ansible_collections/mirsg/infrastructure/playbooks
