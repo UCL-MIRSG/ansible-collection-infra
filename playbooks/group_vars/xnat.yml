@@ -21,7 +21,7 @@ xnat_source:
   context_file_location: /usr/share/tomcat/webapps/ROOT/META-INF/context.xml
 
 # mirsg.infrastructure.tomcat
-tomcat_version: 9.0.98
+tomcat_version: 9.0.104
 tomcat_owner: tomcat
 tomcat_group: tomcat
 
