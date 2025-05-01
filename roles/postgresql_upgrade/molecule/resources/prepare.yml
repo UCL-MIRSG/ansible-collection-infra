@@ -27,3 +27,5 @@
   roles:
     - role: mirsg.infrastructure.provision
     - role: mirsg.infrastructure.postgresql
+      vars:
+        postgresql_version: "{{ postgreql_upgrade_current_version }}"
