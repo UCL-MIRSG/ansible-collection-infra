@@ -1,5 +1,5 @@
 ---
-xnat_version: 1.9.1.1
+xnat_version: 1.9.1.2
 xnat_pipeline_version: 1.8.10
 xnat_archive_dir: "{{ xnat_root_dir }}/archive"
 xnat_prearchive_dir: "{{ xnat_root_dir }}/prearchive"
@@ -40,7 +40,7 @@ xnat_ldap_keystore_alias: ""
 # Plugins
 xnat_plugin_urls:
   - https://api.bitbucket.org/2.0/repositories/xnatdev/xsync/downloads/xsync-plugin-all-1.8.1.jar
-  - https://api.bitbucket.org/2.0/repositories/xnatx/ldap-auth-plugin/downloads/ldap-auth-plugin-1.1.0.jar
+  - https://api.bitbucket.org/2.0/repositories/xnatx/ldap-auth-plugin/downloads/ldap-auth-plugin-1.2.1.jar
   - https://api.bitbucket.org/2.0/repositories/icrimaginginformatics/ohif-viewer-xnat-plugin/downloads/ohif-viewer-3.7.0-XNAT-1.8.10.jar
   - https://api.bitbucket.org/2.0/repositories/xnatx/ml-schema-plugin/downloads/ml-schema-plugin-1.0.0.jar
   - https://api.bitbucket.org/2.0/repositories/xnatx/datasets-schema-plugin/downloads/datasets-schema-plugin-1.0.0.jar
