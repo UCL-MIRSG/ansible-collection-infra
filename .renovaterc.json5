@@ -1,133 +1,187 @@
 {
-  $schema: "https://docs.renovatebot.com/renovate-schema.json",
-  extends: ["github>UCL-MIRSG/.github//renovate/default-config.json5"],
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: [
+    'github>UCL-MIRSG/.github//renovate/default-config.json5',
+  ],
   packageRules: [
     {
-      description: "RedHat8 support ome.ice",
-      matchPackageNames: ["ome.ice"],
-      allowedVersions: "<=4.3.0",
+      description: 'RedHat8 support ome.ice',
+      matchPackageNames: [
+        'ome.ice',
+      ],
+      allowedVersions: '<=4.3.0',
     },
     {
-      description: "RedHat8 support ome.omero_user",
-      matchPackageNames: ["ome.omero_user"],
-      allowedVersions: "<=0.3.1",
+      description: 'RedHat8 support ome.omero_user',
+      matchPackageNames: [
+        'ome.omero_user',
+      ],
+      allowedVersions: '<=0.3.1',
     },
     {
-      description: "RedHat8 support ome.selinux_utils",
-      matchPackageNames: ["ome.selinux_utils"],
-      allowedVersions: "<=2.0.2",
+      description: 'RedHat8 support ome.selinux_utils',
+      matchPackageNames: [
+        'ome.selinux_utils',
+      ],
+      allowedVersions: '<=2.0.2',
     },
   ],
   customManagers: [
     {
-      customType: "regex",
-      description: "Update Tomcat version specified in playbooks/group_vars/xnat.yml",
-      fileMatch: ["(^|/)*xnat.yml$"],
-      matchStrings: ["tomcat_version:\\s?(?<currentValue>.*?)\\n"],
-      depNameTemplate: "org.apache.tomcat:tomcat",
-      datasourceTemplate: "maven",
-    },
-    {
-      customType: "regex",
-      description: "Update XNAT version specified in roles/xnat/defaults/main.yml",
-      fileMatch: ["(^|/)*defaults/main.yml$"],
-      matchStrings: ["xnat_version:\\s?(?<currentValue>.*?)\\n"],
-      depNameTemplate: "xnatdev/xnat-web",
-      datasourceTemplate: "bitbucket-tags",
-    },
-    {
-      customType: "regex",
-      description: "Update XNAT-sync plugin version specified in roles/xnat/defaults/main.yml",
-      fileMatch: ["roles/xnat/defaults/main.yml$"],
-      matchStrings: ["xsync-plugin-all-(?<currentValue>.*?).jar"],
-      depNameTemplate: "xnatdev/xsync",
-      datasourceTemplate: "bitbucket-tags",
-    },
-    {
-      customType: "regex",
-      description: "Update XNAT ldap-auth plugin version specified in roles/xnat/defaults/main.yml",
-      fileMatch: ["roles/xnat/defaults/main.yml$"],
-      matchStrings: ["ldap-auth-plugin-(?<currentValue>.*?).jar"],
-      depNameTemplate: "xnatx/ldap-auth-plugin",
-      datasourceTemplate: "bitbucket-tags",
-    },
-    {
-      customType: "regex",
-      description: "Update OHIF Viewer plugin version specified in roles/xnat/defaults/main.yml",
-      fileMatch: ["roles/xnat/defaults/main.yml$"],
-      matchStrings: ["ohif-viewer-(?<currentValue>.*?).jar"],
-      depNameTemplate: "icrimaginginformatics/ohif-viewer-xnat-plugin",
-      datasourceTemplate: "bitbucket-tags",
-    },
-    {
-      customType: "regex",
-      description: "Update XNAT ML plugin version specified in roles/xnat/defaults/main.yml",
-      fileMatch: ["roles/xnat/defaults/main.yml$"],
-      matchStrings: ["ml-plugin-(?<currentValue>.*?).jar"],
-      depNameTemplate: "xnatx/ml-plugin",
-      datasourceTemplate: "bitbucket-tags",
-    },
-    {
-      customType: "regex",
-      description: "Update XNAT datasets plugin version specified in roles/xnat/defaults/main.yml",
-      fileMatch: ["roles/xnat/defaults/main.yml$"],
-      matchStrings: ["datasets-plugin-(?<currentValue>.*?).jar"],
-      depNameTemplate: "xnatx/datasets-plugin",
-      datasourceTemplate: "bitbucket-tags",
-    },
-    {
-      customType: "regex",
-      description: "Update XNAT image viewer plugin version specified in roles/xnat/defaults/main.yml",
-      fileMatch: ["roles/xnat/defaults/main.yml$"],
-      matchStrings: ["ximgview-plugin(?<currentValue>.*?).jar"],
-      depNameTemplate: "xnatdev/xnat-image-viewer-plugin",
-      datasourceTemplate: "bitbucket-tags",
-    },
-    {
-      customType: "regex",
-      description: "Update XNAT dxm plugin version specified in roles/xnat/defaults/main.yml",
-      fileMatch: ["roles/xnat/defaults/main.yml$"],
-      matchStrings: ["dxm-settings-plugin-(?<currentValue>.*?).jar"],
-      depNameTemplate: "xnatx/xnatx-dxm-settings-plugin",
-      datasourceTemplate: "bitbucket-tags",
-    },
-    {
-      customType: "regex",
-      description: "Update XNAT pipeline version specified in roles/xnat/defaults/main.yml",
-      fileMatch: ["(^|/)*defaults/main.yml$"],
-      matchStrings: ["xnat_pipeline_version:\\s?(?<currentValue>.*?)\\n"],
-      depNameTemplate: "NrgXnat/xnat-pipeline-engine",
-      datasourceTemplate: "github-releases",
-    },
-    {
-      customType: "regex",
-      description: "Update XNAT Container Service plugin version used for testing with molecule",
-      fileMatch: [
-        "playbooks/molecule/resources/xnat/inventory/group_vars/all/server.yml$",
+      customType: 'regex',
+      description: 'Update Tomcat version specified in playbooks/group_vars/xnat.yml',
+      managerFilePatterns: [
+        '/(^|/)*xnat.yml$/',
       ],
-      matchStrings: ["container-service-(?<currentValue>.*?)-fat.jar"],
-      depNameTemplate: "xnatdev/container-service",
-      datasourceTemplate: "bitbucket-tags",
+      matchStrings: [
+        'tomcat_version:\\s?(?<currentValue>.*?)\\n',
+      ],
+      depNameTemplate: 'org.apache.tomcat:tomcat',
+      datasourceTemplate: 'maven',
     },
     {
-      customType: "regex",
-      description: "Update XNAT batch launch plugin version used for testing with molecule",
-      fileMatch: [
-        "playbooks/molecule/resources/xnat/inventory/group_vars/all/server.yml$",
+      customType: 'regex',
+      description: 'Update XNAT version specified in roles/xnat/defaults/main.yml',
+      managerFilePatterns: [
+        '/(^|/)*defaults/main.yml$/',
       ],
-      matchStrings: ["batch-launch-(?<currentValue>.*?).jar"],
-      depNameTemplate: "xnatx/xnatx-batch-launch-plugin",
-      datasourceTemplate: "bitbucket-tags",
+      matchStrings: [
+        'xnat_version:\\s?(?<currentValue>.*?)\\n',
+      ],
+      depNameTemplate: 'xnatdev/xnat-web',
+      datasourceTemplate: 'bitbucket-tags',
     },
     {
-      customType: "regex",
-      description: "Update XNAT dax plugin used for testing with molecule",
-      fileMatch: [
-        "playbooks/molecule/resources/xnat/inventory/group_vars/all/server.yml$",
+      customType: 'regex',
+      description: 'Update XNAT-sync plugin version specified in roles/xnat/defaults/main.yml',
+      managerFilePatterns: [
+        '/roles/xnat/defaults/main.yml$/',
       ],
-      matchStrings: ["dax-plugin-genProcData-(?<currentValue>.*?).jar"],
-      depNameTemplate: "VUIIS/dax",
-      datasourceTemplate: "custom.VUIIS-dax",
+      matchStrings: [
+        'xsync-plugin-all-(?<currentValue>.*?).jar',
+      ],
+      depNameTemplate: 'xnatdev/xsync',
+      datasourceTemplate: 'bitbucket-tags',
+    },
+    {
+      customType: 'regex',
+      description: 'Update XNAT ldap-auth plugin version specified in roles/xnat/defaults/main.yml',
+      managerFilePatterns: [
+        '/roles/xnat/defaults/main.yml$/',
+      ],
+      matchStrings: [
+        'ldap-auth-plugin-(?<currentValue>.*?).jar',
+      ],
+      depNameTemplate: 'xnatx/ldap-auth-plugin',
+      datasourceTemplate: 'bitbucket-tags',
+    },
+    {
+      customType: 'regex',
+      description: 'Update OHIF Viewer plugin version specified in roles/xnat/defaults/main.yml',
+      managerFilePatterns: [
+        '/roles/xnat/defaults/main.yml$/',
+      ],
+      matchStrings: [
+        'ohif-viewer-(?<currentValue>.*?).jar',
+      ],
+      depNameTemplate: 'icrimaginginformatics/ohif-viewer-xnat-plugin',
+      datasourceTemplate: 'bitbucket-tags',
+    },
+    {
+      customType: 'regex',
+      description: 'Update XNAT ML plugin version specified in roles/xnat/defaults/main.yml',
+      managerFilePatterns: [
+        '/roles/xnat/defaults/main.yml$/',
+      ],
+      matchStrings: [
+        'ml-plugin-(?<currentValue>.*?).jar',
+      ],
+      depNameTemplate: 'xnatx/ml-plugin',
+      datasourceTemplate: 'bitbucket-tags',
+    },
+    {
+      customType: 'regex',
+      description: 'Update XNAT datasets plugin version specified in roles/xnat/defaults/main.yml',
+      managerFilePatterns: [
+        '/roles/xnat/defaults/main.yml$/',
+      ],
+      matchStrings: [
+        'datasets-plugin-(?<currentValue>.*?).jar',
+      ],
+      depNameTemplate: 'xnatx/datasets-plugin',
+      datasourceTemplate: 'bitbucket-tags',
+    },
+    {
+      customType: 'regex',
+      description: 'Update XNAT image viewer plugin version specified in roles/xnat/defaults/main.yml',
+      managerFilePatterns: [
+        '/roles/xnat/defaults/main.yml$/',
+      ],
+      matchStrings: [
+        'ximgview-plugin(?<currentValue>.*?).jar',
+      ],
+      depNameTemplate: 'xnatdev/xnat-image-viewer-plugin',
+      datasourceTemplate: 'bitbucket-tags',
+    },
+    {
+      customType: 'regex',
+      description: 'Update XNAT dxm plugin version specified in roles/xnat/defaults/main.yml',
+      managerFilePatterns: [
+        '/roles/xnat/defaults/main.yml$/',
+      ],
+      matchStrings: [
+        'dxm-settings-plugin-(?<currentValue>.*?).jar',
+      ],
+      depNameTemplate: 'xnatx/xnatx-dxm-settings-plugin',
+      datasourceTemplate: 'bitbucket-tags',
+    },
+    {
+      customType: 'regex',
+      description: 'Update XNAT pipeline version specified in roles/xnat/defaults/main.yml',
+      managerFilePatterns: [
+        '/(^|/)*defaults/main.yml$/',
+      ],
+      matchStrings: [
+        'xnat_pipeline_version:\\s?(?<currentValue>.*?)\\n',
+      ],
+      depNameTemplate: 'NrgXnat/xnat-pipeline-engine',
+      datasourceTemplate: 'github-releases',
+    },
+    {
+      customType: 'regex',
+      description: 'Update XNAT Container Service plugin version used for testing with molecule',
+      managerFilePatterns: [
+        '/playbooks/molecule/resources/xnat/inventory/group_vars/all/server.yml$/',
+      ],
+      matchStrings: [
+        'container-service-(?<currentValue>.*?)-fat.jar',
+      ],
+      depNameTemplate: 'xnatdev/container-service',
+      datasourceTemplate: 'bitbucket-tags',
+    },
+    {
+      customType: 'regex',
+      description: 'Update XNAT batch launch plugin version used for testing with molecule',
+      managerFilePatterns: [
+        '/playbooks/molecule/resources/xnat/inventory/group_vars/all/server.yml$/',
+      ],
+      matchStrings: [
+        'batch-launch-(?<currentValue>.*?).jar',
+      ],
+      depNameTemplate: 'xnatx/xnatx-batch-launch-plugin',
+      datasourceTemplate: 'bitbucket-tags',
+    },
+    {
+      customType: 'regex',
+      description: 'Update XNAT dax plugin used for testing with molecule',
+      managerFilePatterns: [
+        '/playbooks/molecule/resources/xnat/inventory/group_vars/all/server.yml$/',
+      ],
+      matchStrings: [
+        'dax-plugin-genProcData-(?<currentValue>.*?).jar',
+      ],
+      depNameTemplate: 'VUIIS/dax',
+      datasourceTemplate: 'custom.VUIIS-dax',
     },
   ],
 }
