@@ -19,7 +19,7 @@ jobs:
         run: |-
           ansible-galaxy install -r ./meta/omero-el8-requirements.yml
 
-      - uses: UCL-MIRSG/.github/actions/linting@5b904b4117229424b834b602c2169f8c179364da # v0
+      - uses: UCL-MIRSG/.github/actions/linting@208c0ec38330956d7b20e6ef9b547321e2eecefe # v0
         with:
           ansible-roles-config: ./meta/requirements.yml
           pre-commit-config: ./.pre-commit-config.yaml

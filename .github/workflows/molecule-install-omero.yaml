@@ -32,7 +32,7 @@ jobs:
           - 9
 
     steps:
-      - uses: UCL-MIRSG/.github/actions/molecule-test@5b904b4117229424b834b602c2169f8c179364da # v0
+      - uses: UCL-MIRSG/.github/actions/molecule-test@208c0ec38330956d7b20e6ef9b547321e2eecefe # v0
         env:
           ROCKY_VERSION: ${{ matrix.rocky_version }}
         with:

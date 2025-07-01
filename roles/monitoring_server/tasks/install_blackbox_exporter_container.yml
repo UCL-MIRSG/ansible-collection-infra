@@ -21,7 +21,7 @@
   community.docker.docker_container:
     name: blackbox-exporter
     hostname: blackbox-exporter
-    image: prom/blackbox-exporter@sha256:92e05d5fe0df01d3980518dc42f07b778a8997048b57392ebc7f7391ebd7bb06
+    image: prom/blackbox-exporter@sha256:a50c4c0eda297baa1678cd4dc4712a67fdea713b832d43ce7fcc5f9bea05094d
     state: started
     user: "{{ monitoring_server_uid }}:{{ monitoring_server_gid }}"
     command: --config.file=/config/blackbox-exporter.yml
