@@ -127,7 +127,7 @@
       ],
       matchStrings: ["dax-plugin-genProcData-(?<currentValue>.*?).jar"],
       depNameTemplate: "VUIIS/dax",
-      datasourceTemplate: "custom.VUIIS-dax",
+      datasourceTemplate: "github-releases",
     },
   ],
 }
