@@ -21,8 +21,11 @@
   customManagers: [
     {
       customType: "regex",
-      description: "Update Tomcat version specified in playbooks/group_vars/xnat.yml",
-      managerFilePatterns: ["/(^|/)*xnat.yml$/"],
+      description: "Update Tomcat version",
+      managerFilePatterns: [
+        "/playbooks/group_vars/xnat.yml$/",
+        "/roles/tomcat/defaults/main.yml$/",
+      ],
       matchStrings: ["tomcat_version:\\s?(?<currentValue>.*?)\\n"],
       depNameTemplate: "org.apache.tomcat:tomcat",
       datasourceTemplate: "maven",
