@@ -102,6 +102,11 @@
     state: started
     enabled: true
 
+- name: Install docker-py
+  ansible.builtin.pip:
+    name: docker==7.1.0
+    state: present
+
 - name: Initialize Docker Swarm
   community.docker.docker_swarm:
     state: present
