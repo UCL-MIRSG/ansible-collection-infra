@@ -3,6 +3,17 @@
   ansible.builtin.include_tasks: copy_certs_to_client.yml
   when: xnat_container_service_use_ssl
 
+- name: Set service admin user roles
+  ansible.builtin.uri:
+    url:
+      "{{ web_server.url }}/xapi/users/{{ xnat_service_admin.username
+      }}/roles/ContainerManager"
+    user: "{{ xnat_service_admin.username }}"
+    password: "{{ xnat_service_admin.password }}"
+    method: PUT
+    validate_certs: "{{ ssl.validate_certs }}"
+    status_code: 200
+
 - name: Configure XNAT to talk to container service
   ansible.builtin.uri:
     url: "{{ xnat_container_service_url }}"
