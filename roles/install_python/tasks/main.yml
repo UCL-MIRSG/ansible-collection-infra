@@ -10,11 +10,6 @@
     state: present
   loop: "{{ install_python.system_packages }}"
 
-- name: Remove python3-requests
-  ansible.builtin.package:
-    name: python3-requests
-    state: absent
-
 - name: Update pip
   ansible.builtin.pip:
     name:

@@ -104,7 +104,7 @@
 
 - name: Install docker-py
   ansible.builtin.pip:
-    name: docker==7.1.0
+    name: docker
     state: present
 
 - name: Initialize Docker Swarm
