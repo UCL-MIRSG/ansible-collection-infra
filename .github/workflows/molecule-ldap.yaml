@@ -29,6 +29,16 @@ jobs:
       ANSIBLE_FORCE_COLOR: 1
 
     steps:
+      - name:
+          Edit apparmor profile for unix-chkpwd (see
+          https://github.com/docker/build-push-action/issues/1302#issuecomment-3084652148)
+        if: matrix.scenario == 'rocky9'
+        run: |
+          sudo sed -i \
+            's/capability audit_write,$/&\n  # fix: read shadow permissions (linux-pam#686)\n  capability dac_read_search,/' \
+            /etc/apparmor.d/unix-chkpwd
+          sudo apparmor_parser -r /etc/apparmor.d/unix-chkpwd
+
       - uses: UCL-MIRSG/.github/actions/molecule-test@e16932bcb9189707188ea268d4605e042c2b5d9a # v0
         with:
           ansible_major_version: ${{ vars.ANSIBLE_MAJOR_VERSION }}

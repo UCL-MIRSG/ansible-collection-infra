@@ -29,7 +29,9 @@ jobs:
       PY_COLORS: 1
       ANSIBLE_FORCE_COLOR: 1
     steps:
-      - name: Edit apparmor profile for unix-chkpwd
+      - name:
+          Edit apparmor profile for unix-chkpwd (see
+          https://github.com/docker/build-push-action/issues/1302#issuecomment-3084652148)
         if: matrix.scenario == 'rocky9'
         run: |
           sudo sed -i \
