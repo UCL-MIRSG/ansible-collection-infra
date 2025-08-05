@@ -28,15 +28,14 @@ jobs:
       MOLECULE_RUN_TAGS: all
       PY_COLORS: 1
       ANSIBLE_FORCE_COLOR: 1
-
     steps:
-      - name:
-          Disable AppArmor profile for unix-chkpwd to prevent incorrect
-          permissions on /etc/shadow
+      - name: Edit apparmor profile for unix-chkpwd
         if: matrix.scenario == 'rocky9'
         run: |
-          ln -s /etc/apparmor.d/unix-chkpwd /etc/apparmor.d/disable
-          apparmor_parser -R /etc/apparmor.d/unix-chkpwd
+          sudo sed -i \
+            's/capability audit_write,$/&\n  # fix: read shadow permissions (linux-pam#686)\n  capability dac_read_search,/' \
+            /etc/apparmor.d/unix-chkpwd
+          sudo apparmor_parser -r /etc/apparmor.d/unix-chkpwd
 
       - uses: UCL-MIRSG/.github/actions/molecule-test@e16932bcb9189707188ea268d4605e042c2b5d9a # v0
         with:
