@@ -30,6 +30,14 @@ jobs:
       ANSIBLE_FORCE_COLOR: 1
 
     steps:
+      - name:
+          Disable AppArmor profile for unix-chkpwd to prevent incorrect
+          permissions on /etc/shadow
+        if: matrix.scenario == 'rocky9'
+        run: |
+          ln -s /etc/apparmor.d/unix-chkpwd /etc/apparmor.d/disable
+          apparmor_parser -R /etc/apparmor.d/unix-chkpwd
+
       - uses: UCL-MIRSG/.github/actions/molecule-test@e16932bcb9189707188ea268d4605e042c2b5d9a # v0
         with:
           ansible_major_version: ${{ vars.ANSIBLE_MAJOR_VERSION }}
