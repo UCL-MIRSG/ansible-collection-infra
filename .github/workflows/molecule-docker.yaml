@@ -28,6 +28,7 @@ jobs:
       MOLECULE_RUN_TAGS: all
       PY_COLORS: 1
       ANSIBLE_FORCE_COLOR: 1
+
     steps:
       - name:
           Edit apparmor profile for unix-chkpwd (see
