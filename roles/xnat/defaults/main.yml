@@ -37,6 +37,29 @@ xnat_ldap_filter: ""
 xnat_ldap_ca_cert: ""
 xnat_ldap_keystore_alias: ""
 
+# OIDC configuration
+xnat_oidc_enabled: false
+xnat_oidc_provider_id: ""
+xnat_oidc_display_name: ""
+xnat_oidc_site_url: ""
+xnat_oidc_pre_established_redir_uri: ""
+xnat_oidc_client_id: ""
+xnat_oidc_client_secret: ""
+xnat_oidc_access_token_uri: ""
+xnat_oidc_user_auth_uri: ""
+xnat_oidc_scopes: ""
+xnat_oidc_login_link: ""
+xnat_oidc_should_filter_email_domains: false
+xnat_oidc_allowed_email_domains: [] # yamllint disable-line rule:brackets
+xnat_oidc_force_user_create: false
+xnat_oidc_user_auto_enabled: false
+xnat_oidc_user_auto_verified: false
+xnat_oidc_pkce_enabled: false
+xnat_oidc_email_property: ""
+xnat_oidc_given_name_property: ""
+xnat_oidc_family_name_property: ""
+xnat_oidc_username_pattern: ""
+
 # Plugins
 xnat_plugin_urls:
   - https://api.bitbucket.org/2.0/repositories/xnatdev/xsync/downloads/xsync-plugin-all-1.8.1.jar
