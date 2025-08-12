@@ -41,7 +41,7 @@ xnat_ldap_keystore_alias: ""
 xnat_oidc_enabled: false
 xnat_oidc_provider_id: ""
 xnat_oidc_display_name: ""
-xnat_oidc_site_url: ""
+xnat_oidc_site_url: "{{ web_server.url }}"
 xnat_oidc_pre_established_redir_uri: ""
 xnat_oidc_client_id: ""
 xnat_oidc_client_secret: ""
