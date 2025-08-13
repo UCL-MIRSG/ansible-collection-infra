@@ -54,7 +54,7 @@ xnat_oidc_login_link: >-
   border-radius: 50px; text-indent: 10px; font-weight: bold; border: none;
   display: inline-block; text-align: center; vertical-align: middle;
   -webkit-user-select:none; -moz-user-select: none; -ms-user-select: none;
-  user-select: none; background-color: #fff; padding: 0.375rem 0.75rem;
+  user-select: none; background-color: #fff; padding: 0.375 rem 0.75rem;
   font-size: 1rem; line-height: 1.5; border-radius: 0.25rem; box-shadow: 0px 8px
   15px rgba(0, 0, 0, 0.1); transition: color .15s ease-in-out,background-color
   .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;"
