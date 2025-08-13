@@ -39,26 +39,45 @@ xnat_ldap_keystore_alias: ""
 
 # OIDC configuration
 xnat_oidc_enabled: false
-xnat_oidc_provider_id: ""
-xnat_oidc_display_name: ""
+xnat_oidc_provider_id: oidc
+xnat_oidc_display_name: OIDC SSO
 xnat_oidc_site_url: "{{ web_server.url }}"
-xnat_oidc_pre_established_redir_uri: ""
+xnat_oidc_pre_established_redir_uri: /openid-login
 xnat_oidc_client_id: ""
 xnat_oidc_client_secret: ""
 xnat_oidc_access_token_uri: ""
 xnat_oidc_user_auth_uri: ""
-xnat_oidc_scopes: ""
-xnat_oidc_login_link: ""
+xnat_oidc_scopes: openid,profile,email
+xnat_oidc_image_url: /images/memos-auth0-logo.png
+xnat_oidc_login_link: >-
+  <a
+    style="color: #777; width:100%; margin:0 0 20px 0; font-size: 15px;
+  border-radius: 50px; \
+    text-indent: 10px; font-weight: bold; border: none; display: inline-block;
+  text-align: center; \
+    vertical-align: middle; -webkit-user-select:none; -moz-user-select: none;
+  -ms-user-select: none; \
+    user-select: none; background-color: #fff; padding: 0.375 rem 0.75 rem;
+  font-size: 1rem; line-height: 1.5; \
+    border-radius: 0.25 rem; box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+  transition: color .15s ease-in-out,background-color .15s \
+    ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;"
+    href="{{ xnat_oidc_pre_established_redir_uri }}?providerId={{
+  xnat_oidc_provider_id }}" >
+    <img src="{{ xnat_oidc_image_url }}" style="display: inline; cursor:
+  pointer; position: relative; vertical-align:middle; width:30px"/>
+    <p style="display:inline;">Sign in with {{ xnat_oidc_display_name }}</p>
+  </a>
 xnat_oidc_should_filter_email_domains: false
 xnat_oidc_allowed_email_domains: [] # yamllint disable-line rule:brackets
-xnat_oidc_force_user_create: false
+xnat_oidc_force_user_create: true
 xnat_oidc_user_auto_enabled: false
 xnat_oidc_user_auto_verified: false
 xnat_oidc_pkce_enabled: false
-xnat_oidc_email_property: ""
-xnat_oidc_given_name_property: ""
-xnat_oidc_family_name_property: ""
-xnat_oidc_username_pattern: ""
+xnat_oidc_email_property: email
+xnat_oidc_given_name_property: given_name
+xnat_oidc_family_name_property: family_name
+xnat_oidc_username_pattern: upn
 
 # Plugins
 xnat_plugin_urls:
