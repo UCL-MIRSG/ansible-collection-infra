@@ -117,5 +117,8 @@
   "sitewideSeriesImportFilterMode": "blacklist",
   "siteId": "{{ xnat_config.site_name }}",
   "uiAllowNewUserComments": true,
-  "siteHome": "/screens/QuickSearch.vm"
+  "siteHome": "/screens/QuickSearch.vm",
+  "securityNewUserRegistrationDisabled": "{{ xnat_common_config.securityNewUserRegistrationDisabled | default(true) }}",
+  "securityExternalUserParDisabled": "{{ xnat_common_config.securityExternalUserParDisabled | default(false) }}",
+  "securityLocalDbParRegistrationDisabled": "{{ xnat_common_config.securityLocalDbParRegistrationDisabled | default(false) }}"
 }
