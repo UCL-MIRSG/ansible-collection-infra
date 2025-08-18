@@ -1,0 +1,20 @@
+---
+- name: Ensure auth folder exists
+  ansible.builtin.file:
+    path: "{{ xnat_config_dir }}/auth"
+    owner: "{{ xnat.owner }}"
+    group: "{{ xnat.group }}"
+    state: directory
+    mode: "0755"
+
+- name: Configure OIDC for XNAT
+  ansible.builtin.template:
+    src: oidc-provider.properties.j2
+    dest:
+      "{{ xnat_config_dir }}/auth/{{ xnat_oidc_provider_id
+      }}_oidc-provider.properties"
+    owner: "{{ xnat.owner }}"
+    group: "{{ xnat.group }}"
+    mode: "0644"
+    force: true
+  notify: Restart tomcat
