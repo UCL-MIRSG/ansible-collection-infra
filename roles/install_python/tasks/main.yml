@@ -3,6 +3,9 @@
 - name: Prepare to install Python for the current OS family
   ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
 
+- name: Uninstall python-requests (or python3-requests)
+  ansible.builtin.include_tasks: uninstall_system_packages.yml
+
 - name: Install Python and associated system packages
   ansible.builtin.package:
     name: "{{ item.name | default(item) }}"
