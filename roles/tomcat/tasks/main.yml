@@ -1,6 +1,6 @@
 ---
 - name: Ensure Ansible seport dependencies are installed
-  ansible.builtin.dnf:
+  ansible.builtin.package:
     name:
       - libselinux-python
       - policycoreutils-python
@@ -10,7 +10,7 @@
     ansible_facts['distribution_major_version'] is version('7')
 
 - name: Ensure Ansible seport dependencies are installed
-  ansible.builtin.dnf:
+  ansible.builtin.package:
     name:
       - python3-libselinux
       - policycoreutils-python-utils
@@ -20,12 +20,12 @@
     ansible_facts['distribution_major_version'] is version("8", ">=")
 
 - name: Ensure epel is installed
-  ansible.builtin.dnf:
+  ansible.builtin.package:
     name: epel-release
     state: installed
 
 - name: Ensure Tomcat Native library is installed
-  ansible.builtin.dnf:
+  ansible.builtin.package:
     name: tomcat-native
     state: installed
 

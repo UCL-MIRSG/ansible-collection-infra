@@ -1,6 +1,6 @@
 ---
 # OS specific tasks for the RedHat family
 - name: Install EPEL for RedHat OSes
-  ansible.builtin.dnf:
+  ansible.builtin.package:
     name: epel-release
     state: installed
