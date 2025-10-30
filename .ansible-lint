@@ -1,10 +1,9 @@
 ---
 warn_list:
-  - fqcn[action-core]
   - galaxy[no-changelog]
   - galaxy[tags]
   - no-handler
   - var-naming[no-role-prefix]
 
 exclude_paths:
-  - .ansible  # where Molecule / Ansible installs dependencies in CI
+  - .ansible # where Molecule / Ansible installs dependencies in CI
