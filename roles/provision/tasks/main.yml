@@ -15,7 +15,7 @@
   when: ansible_facts['distribution_major_version'] is not version('7')
 
 - name: Upgrade all packages # noqa: package-latest
-  ansible.builtin.yum:
+  ansible.builtin.package:
     name: "*"
     state: latest
 
@@ -24,6 +24,6 @@
 
 - name: Ensure epel is installed
   become: true
-  ansible.builtin.yum:
+  ansible.builtin.package:
     name: epel-release
     state: installed

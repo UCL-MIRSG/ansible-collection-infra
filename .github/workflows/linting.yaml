@@ -7,7 +7,6 @@ on:
       - main
       - renovate/**
   pull_request:
-
 jobs:
   linting:
     runs-on: ubuntu-latest

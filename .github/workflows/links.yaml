@@ -7,7 +7,6 @@ on:
       - main
       - renovate/**
   pull_request:
-
 jobs:
   links:
     runs-on: ubuntu-latest

@@ -60,7 +60,7 @@
         state: absent
 
     - name: Install locales # noqa: package-latest
-      ansible.builtin.yum:
+      ansible.builtin.package:
         name: glibc-common
         state: latest
 

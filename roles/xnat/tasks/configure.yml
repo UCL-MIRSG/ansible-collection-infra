@@ -132,7 +132,7 @@
     status_code: 200
   when: service_admin_check.status != 401
 
-  # Give the created service_admin access to all data
+# Give the created service_admin access to all data
 - name: Set service admin role to all data admin
   ansible.builtin.uri:
     url:

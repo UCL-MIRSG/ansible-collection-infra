@@ -1,6 +1,6 @@
 ---
 - name: Ensure unzip is installed
-  ansible.builtin.yum:
+  ansible.builtin.package:
     name: unzip
     state: installed
 

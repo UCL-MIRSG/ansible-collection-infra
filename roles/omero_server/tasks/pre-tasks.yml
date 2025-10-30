@@ -18,13 +18,13 @@
     ice_install_python: false
 
 - name: Ensure postgres RPM is installed
-  ansible.builtin.yum:
+  ansible.builtin.package:
     name: "{{ postgresql_install.rpm }}"
     state: present
     disable_gpg_check: "{{ postgresql_install.disable_gpg_check }}"
 
 - name: Ensure postgresql is installed
-  ansible.builtin.yum:
+  ansible.builtin.package:
     name: "{{ postgresql_install.yum_client_package }}"
     state: installed
 
