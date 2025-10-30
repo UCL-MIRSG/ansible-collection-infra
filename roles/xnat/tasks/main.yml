@@ -8,7 +8,7 @@
     ansible_facts['distribution_major_version'] is version('8', '>=')
 
 - name: Ensure dependencies are installed
-  ansible.builtin.yum:
+  ansible.builtin.package:
     name:
       - postgresql
       - wget
