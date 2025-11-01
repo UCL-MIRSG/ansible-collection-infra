@@ -12,13 +12,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
 
       - name: Install OMERO EL8 requirements
         run: |-
           ansible-galaxy install -r ./meta/omero-el8-requirements.yml
 
-      - uses: UCL-MIRSG/.github/actions/linting@e16932bcb9189707188ea268d4605e042c2b5d9a # v0
+      - uses: UCL-MIRSG/.github/actions/linting@4bfd020ba434607bb74744ad869cd9f7c13c3a34 # v0
         with:
           ansible-roles-config: ./meta/requirements.yml
           pre-commit-config: ./.pre-commit-config.yaml
