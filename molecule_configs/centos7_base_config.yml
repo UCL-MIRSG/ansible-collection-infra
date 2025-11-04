@@ -40,7 +40,7 @@ provisioner:
   config_options:
     defaults:
       callbacks_enabled: profile_tasks, timer, yaml
-      stdout_callback: yaml
+      result_format: yaml
     tags:
       run: ${MOLECULE_RUN_TAGS:-all}
   inventory:
