@@ -28,6 +28,7 @@
     path: "{{ ssl_certificate.csr_filename }}"
     privatekey_path: "{{ ssl_certificate.privatekey_filename }}"
     common_name: "{{ ssl_certificate.csr_common_name }}"
+    subject_alt_name: "{{ ssl_certificate.csr_subject_alt_name | default([]) }}"
 
 - name: Generate a self-signed OpenSSL certificate
   community.crypto.x509_certificate:

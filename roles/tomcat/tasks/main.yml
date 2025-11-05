@@ -63,7 +63,7 @@
   register: tomcat_check_version
   when: tomcat_check.stat.exists
   changed_when: false
-  failed_when: tomcat_check_version.stderr
+  failed_when: tomcat_check_version.stderr != ""
 
 - name: Upgrade/install Tomcat if needed
   ansible.builtin.include_tasks: tasks/upgrade.yml
