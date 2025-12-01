@@ -16,7 +16,7 @@ collection can be used to configure infrastructure for deploying XNAT and OMERO.
 ## External requirements
 
 Before using this collection and its playbooks, you must install the
-[necessary Ansible collections and roles](meta/requirements.yml).
+necessary Ansible collections and roles, choosing the requirements file appropriate for your environment (e.g., [EL7](meta/el7-requirements.yml) or [EL9](meta/el9-requirements.yml)).
 
 ## Using this collection
 
