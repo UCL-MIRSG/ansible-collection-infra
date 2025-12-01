@@ -7,6 +7,7 @@ on:
       - molecule_configs/*
       - playbooks/**
       - roles/**
+      - meta/requirements.yml
       - .github/workflows/molecule-firewalld.yaml
       - "!**/README.md"
 
