@@ -1,8 +1,10 @@
 ---
 collections:
-  - community.general
-  - ansible.posix
-  - community.postgresql
-  - community.docker
+  - name: community.general
+    version: 11.4.1
+  - name: ansible.posix
+  - name: community.postgresql
+  - name: community.docker
+    version: 4.8.2
   - name: community.crypto
     version: ">=3.0.5,<3.1.0"
