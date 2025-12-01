@@ -38,6 +38,6 @@ xnat_config:
   admin_password: "{{ vault_admin_password }}"
 
 xnat_server_specific_plugin_urls:
-  - https://api.bitbucket.org/2.0/repositories/xnatdev/container-service/downloads/container-service-3.7.1-fat.jar
+  - https://api.bitbucket.org/2.0/repositories/xnatdev/container-service/downloads/container-service-3.7.3-fat.jar
   - https://api.bitbucket.org/2.0/repositories/xnatx/xnatx-batch-launch-plugin/downloads/batch-launch-0.8.0-xpl.jar
   - https://github.com/VUIIS/dax/raw/main/misc/xnat-plugins/dax-plugin-genProcData-1.4.2.jar
