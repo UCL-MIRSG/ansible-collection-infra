@@ -7,7 +7,8 @@ on:
       - molecule_configs/*
       - playbooks/**
       - roles/**
-      - meta/requirements.yml
+      - meta/el7-requirements.yml
+      - meta/el9-requirements.yml
       - .github/workflows/molecule-nginx.yaml
       - "!**/README.md"
 

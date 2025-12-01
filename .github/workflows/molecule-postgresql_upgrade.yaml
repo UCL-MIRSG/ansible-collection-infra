@@ -6,7 +6,8 @@ on:
     paths:
       - molecule_configs/*
       - roles/postgresql_upgrade/**
-      - meta/requirements.yml
+      - meta/el7-requirements.yml
+      - meta/el9-requirements.yml
       - .github/workflows/molecule-postgresql_upgrade.yaml
       - "!**/README.md"
 
