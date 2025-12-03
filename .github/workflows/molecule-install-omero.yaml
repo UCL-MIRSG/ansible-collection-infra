@@ -7,6 +7,8 @@ on:
       - molecule_configs/*
       - playbooks/**
       - roles/**
+      - meta/omero-el8-requirements.yml
+      - meta/omero-el9-requirements.yml
       - .github/workflows/molecule-install-omero.yaml
       - "!**/README.md"
   release:

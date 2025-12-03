@@ -6,6 +6,8 @@ on:
     paths:
       - molecule_configs/*
       - roles/ldap/**
+      - meta/el7-requirements.yml
+      - meta/el9-requirements.yml
       - .github/workflows/molecule-ldap.yaml
       - "!**/README.md"
 

@@ -3,6 +3,10 @@ docker_version: latest
 docker_owner: root
 docker_group: root
 
+# Use vfs storage driver to avoid overlayfs issues in nested container environments
+# (e.g. molecule testing)
+docker_dind: false
+
 # mirsg.docker service
 docker_service_directory: /etc/systemd/system/docker.service.d
 docker_service_name: docker

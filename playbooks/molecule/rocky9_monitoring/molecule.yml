@@ -3,8 +3,8 @@ dependency:
   name: galaxy
   options:
     force: true
-    role-file: ${MOLECULE_SCENARIO_DIRECTORY}/../../../meta/requirements.yml
-    requirements-file: ${MOLECULE_SCENARIO_DIRECTORY}/../../../meta/requirements.yml
+    role-file: ${MOLECULE_SCENARIO_DIRECTORY}/../../../meta/el9-requirements.yml
+    requirements-file: ${MOLECULE_SCENARIO_DIRECTORY}/../../../meta/el9-requirements.yml
 
 driver:
   name: docker

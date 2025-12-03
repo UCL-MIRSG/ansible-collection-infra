@@ -3,6 +3,7 @@
 docker_client_certificate_cache_directory:
   "{{ lookup('env', 'HOME')
   }}/ansible_persistent_files/monitoring_server_certificates"
+docker_dind: true
 docker_server_hostname: "{{ hostvars['mserv']['hostname'] }}"
 docker_server_ip: "{{ hostvars['mserv']['ansible_ip'] }}"
 docker_server_port: 2376

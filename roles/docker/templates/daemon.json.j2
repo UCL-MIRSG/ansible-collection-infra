@@ -1,4 +1,7 @@
 {
+  {% if docker_dind %}
+    "storage-driver": "vfs",
+  {% endif %}
   {% if docker_generate_certificates %}
    "hosts": ["tcp://{{ docker_server_ip }}:{{ docker_server_port }}", "unix:///var/run/docker.sock"],
    "tlsverify": {{ docker_tls_verify | lower }},

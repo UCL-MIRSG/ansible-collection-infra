@@ -5,6 +5,8 @@
   gather_facts: true
   roles:
     - role: mirsg.infrastructure.docker
+      vars:
+        docker_dind: true
 
 - name: Configure Docker client
   hosts: client
