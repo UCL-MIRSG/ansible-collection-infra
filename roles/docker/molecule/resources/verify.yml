@@ -18,7 +18,7 @@
         volumes: true
         images: true
         containers: true
-        disk_usage: true
+        disk_usage: false
       register: docker_host_info
 
     - name: Confirm we can connect to the remote server

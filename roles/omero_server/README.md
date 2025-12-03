@@ -21,7 +21,7 @@ required.
 This role is also dependent on a number of other OME roles. Due to the lack of
 support for EL `8` OS variants in newer versions of those roles, the versions of
 these dependencies are pinned here (see the collection
-[requirements.yml](../../meta/requirements.yml) file):
+[requirements.yml](../../meta/omero-el8-requirements.yml) file):
 
 | Role                   | Version |
 | ---------------------- | ------- |
