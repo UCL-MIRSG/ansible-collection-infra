@@ -222,7 +222,7 @@ for an example.
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 
 This repo has `pre-commit` hooks enabled, for instructions see
-<https://github.com/UCL-MIRSG/.github/tree/main/precommit>.
+<https://github.com/UCL-MIRSG/.github/tree/main/prek>.
 
 ## License
 
