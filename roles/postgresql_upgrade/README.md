@@ -40,11 +40,11 @@ To use this role, add it to the list of roles in a play:
         name: tomcat
         state: stopped
 
-- name: Upgrade Postgresql from version 12 to 14
+- name: Upgrade Postgresql from version 14 to 15
   hosts: db
   vars:
-    postgreql_upgrade_current_version: 12
-    postgreql_upgrade_new_version: 14
+    postgreql_upgrade_current_version: 14
+    postgreql_upgrade_new_version: 15
     postgresql_upgrade_data_dir:
       "/var/lib/pgsql/{{ postgreql_upgrade_new_version }}/data"
     postgresql_upgrade_scripts_dir:
