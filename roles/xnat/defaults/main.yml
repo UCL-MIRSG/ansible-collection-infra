@@ -97,3 +97,7 @@ xnat_pipeline_engine_enabled: true
 
 # Note that AutoRun is currently required for session archive notifications
 xnat_autorun_enabled: false
+
+# Automation Service  - https://radiologics.atlassian.net/browse/XNAT-3822
+# Defaults to true as that's the current configuration
+xnat_automation_enabled: true
