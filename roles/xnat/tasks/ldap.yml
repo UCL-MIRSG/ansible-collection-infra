@@ -35,6 +35,7 @@
     mode: "0644"
     force: true
   notify: Restart tomcat
+  tags: configure_xnat_ldap
 
 - name: Add CA certificate for LDAP server to keystore
   community.general.java_cert:
