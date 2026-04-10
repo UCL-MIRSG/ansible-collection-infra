@@ -36,6 +36,12 @@ xnat_ldap_base: ""
 xnat_ldap_filter: ""
 xnat_ldap_ca_cert: ""
 xnat_ldap_keystore_alias: ""
+# LDAP attribute mappings - default to Active Directory attributes
+xnat_ldap_attributes_uid: sAMAccountName
+xnat_ldap_attributes_email: mail
+xnat_ldap_attributes_firstname: givenName
+xnat_ldap_attributes_lastname: sn
+xnat_ldap_attributes_dump_context_on_error: "false"
 
 # OIDC configuration
 xnat_oidc_enabled: false
