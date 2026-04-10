@@ -42,6 +42,7 @@
 - name: Configure LDAP for XNAT
   ansible.builtin.include_tasks: ldap.yml
   when: xnat_ldap_enabled
+  tags: configure_xnat_ldap
 
 - name: Configure OIDC for XNAT
   ansible.builtin.include_tasks: oidc.yml
