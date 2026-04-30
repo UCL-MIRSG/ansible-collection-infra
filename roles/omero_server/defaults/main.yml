@@ -63,13 +63,14 @@ omero_server_selfsigned_certificates: true
 
 omero_server_ice_version: 3.6
 
-python_version: "3.9"
+python_version: 3.9
 omero_server_python_version: "{{ python_version | replace('.', '') }}"
 
 omero_server_python_requirements_ice_package:
-  "https://github.com/glencoesoftware/zeroc-ice-py-linux-x86_64/releases/download/20240202/zeroc_ice-3.6.5-cp{{
+  https://github.com/glencoesoftware/zeroc-ice-py-linux-x86_64/releases/download/20240202/zeroc_ice-3.6.5-cp{{
   omero_server_python_version }}-cp{{ omero_server_python_version
-  }}-manylinux_2_28_x86_64.whl"
+  }}-manylinux_2_28_x86_64.whl
+
 # TODO: sort this out
 # ? pip install omero-server-dependencies=={{omero_server_release}}
 # ? get_url https://downloads.openmicroscopy.org/omero/
