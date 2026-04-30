@@ -63,11 +63,13 @@ omero_server_selfsigned_certificates: true
 
 omero_server_ice_version: 3.6
 
-omero_server_python_requirements_ice_package:
-  RedHat:
-    8: https://github.com/glencoesoftware/zeroc-ice-py-rhel8-x86_64/releases/download/20230929/zeroc_ice-3.6.5-cp36-cp36m-linux_x86_64.whl
-    9: https://github.com/glencoesoftware/zeroc-ice-py-rhel9-x86_64/releases/download/20230830/zeroc_ice-3.6.5-cp39-cp39-linux_x86_64.whl
+python_version: "3.9"
+omero_server_python_version: "{{ python_version | replace('.', '') }}"
 
+omero_server_python_requirements_ice_package:
+  "https://github.com/glencoesoftware/zeroc-ice-py-linux-x86_64/releases/download/20240202/zeroc_ice-3.6.5-cp{{
+  omero_server_python_version }}-cp{{ omero_server_python_version
+  }}-manylinux_2_28_x86_64.whl"
 # TODO: sort this out
 # ? pip install omero-server-dependencies=={{omero_server_release}}
 # ? get_url https://downloads.openmicroscopy.org/omero/
@@ -81,9 +83,7 @@ _omero_dropbox_version: ">=5.6.1"
 omero_server_python_requirements:
   - omego==0.7.0
   # TODO: make the use of our non-standard wheel optional
-  - "{{
-    omero_server_python_requirements_ice_package[ansible_os_family][ansible_distribution_major_version
-    | int] | default('zeroc-ice') }}"
+  - "{{ omero_server_python_requirements_ice_package | default('zeroc-ice') }}"
   - omero-py{{ _omero_py_version | default('') }}
   - omero-dropbox{{ _omero_dropbox_version | default('') }}
   # TODO: keep or ditch ipython? It's a big dependency and mostly useful for
