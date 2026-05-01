@@ -59,7 +59,7 @@
 # operations instead
 - name: Get latest version
   ansible.builtin.set_fact:
-    _omero_server_new_version: >
+    _omero_server_new_version:
       "{{ (omero_server_release in ('latest', 'present')) |
       ternary(_omero_server_downloads_latest.url.strip('/').split('/')[-1],
       omero_server_release) }}"
