@@ -78,8 +78,10 @@
 local   all             all                                     peer
 
 # IPv4 local connections:
+{% for client in postgresql_connection.allowed_clients %}
 {% if postgresql_use_ssl %}
-hostssl    {{ postgresql_database.database_name }}            {{ postgresql_database.user_name }}            {{ postgresql_connection.client_ip }}    {{ postgresql_connection.subnet_mask }}    md5    clientcert=verify-ca
+hostssl    {{ postgresql_database.database_name }}    {{ postgresql_database.user_name }}    {{ client.ip }}    {{ client.subnet_mask }}    md5    clientcert=verify-ca
 {% else %}
-host    {{ postgresql_database.database_name }}            {{ postgresql_database.user_name }}            {{ postgresql_connection.client_ip }}    {{ postgresql_connection.subnet_mask }}    md5
+host       {{ postgresql_database.database_name }}    {{ postgresql_database.user_name }}    {{ client.ip }}    {{ client.subnet_mask }}    md5
 {% endif %}
+{% endfor %}

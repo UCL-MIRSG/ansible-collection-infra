@@ -9,12 +9,15 @@ postgresql_database:
 postgresql_connection:
   host: "{{ db_server.host }}"
   port: "{{ db_server.port }}"
-  client_ip: "{{ web_server.ip }}"
+  allowed_clients:
+    - ip: "{{ web_server.ip }}"
+      subnet_mask: "{{ web_server.subnet_mask | default('255.255.255.255') }}"
+    - ip: "10.134.11.0"
+      subnet_mask: "255.255.255.0"
   client_certificate_filename: /var/lib/pgsql/certs/root.crt # required if using SSL, where to copy the client certificate to on the server
   listen_addresses:
     "{{ db_server.listen_addresses | default('localhost, ' + db_server.host) |
     quote }}"
-  subnet_mask: "{{ web_server.subnet_mask | default('255.255.255.255') }}"
 
 # mirsg.infrastructure.postgresql - storage
 postgresql_storage:
@@ -40,8 +43,22 @@ postgresql_ssl_certificate:
   selfsigned_not_after: +3650d
   cache_filename: "{{ database_server_certificate_cache_filename }}" # where to store the server certificate in cache
 
-firewalld_rich_rules:
-  - zone: internal
-    rule:
-      family=ipv4 source address={{ web_server.subnet | default(web_server.ip +
-      '/32') }} port protocol=tcp port={{ db_server.port }} accept
+firewalld_rich_rules: >-
+  {{
+    (firewalld_rich_rules | default([]))
+    +
+    [
+      {
+        'zone': 'internal',
+        'rule':
+            family=ipv4 source address={{ web_server.subnet | default(web_server.ip +
+            '/32') }} port protocol=tcp port={{ db_server.port }} accept
+      },
+      {
+        'zone': 'internal',
+        'rule':
+            family=ipv4 source address=REMOVED
+            port protocol=tcp port={{ db_server.port }} accept
+      }
+    ]
+  }}
