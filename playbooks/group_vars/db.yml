@@ -43,6 +43,12 @@ postgresql_ssl_certificate:
   selfsigned_not_after: +3650d
   cache_filename: "{{ database_server_certificate_cache_filename }}" # where to store the server certificate in cache
 
+REMOVED
+  - REMOVED
+  - REMOVED
+  - REMOVED
+  - REMOVED
+
 firewalld_rich_rules:
   - zone: internal
     rule: "family=ipv4 source address={{ web_server.subnet | default(web_server.ip ~ '/32') }} port protocol=tcp port={{ db_server.port }} accept"
