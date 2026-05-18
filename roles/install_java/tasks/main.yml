@@ -17,29 +17,12 @@
   register: java_package_info
 
 - name: Check if Java alternative exists
-
   ansible.builtin.stat:
-
     path: "{{ java_alternative_path }}"
-
   register: java_jre
 
 - name: Set the default java version - {{ java_alternative_path }}
-
-  community.general.alternatives:
-
-    name: java
-
-    path: "{{ java_alternative_path }}"
-
-  when: java_jre.stat.exists
-
-- name: Set the default java version - {{ java_alternative_path }}
-
-  community.general.alternatives:
-
-    name: java
-
-    path: "{{ java_alternative_path }}"
-
+  ansible.builtin.command:
+    cmd: "alternatives --set java {{ java_alternative_path }}"
+  become: true
   when: java_jre.stat.exists
