@@ -50,15 +50,11 @@ firewalld_rich_rules: >-
     [
       {
         'zone': 'internal',
-        'rule':
-            family=ipv4 source address={{ web_server.subnet | default(web_server.ip +
-            '/32') }} port protocol=tcp port={{ db_server.port }} accept
+        'rule': 'family=ipv4 source address=' ~ (web_server.subnet | default(web_server.ip ~ '/32')) ~ ' port protocol=tcp port=' ~ db_server.port ~ ' accept'
       },
       {
         'zone': 'internal',
-        'rule':
-            family=ipv4 source address=REMOVED
-            port protocol=tcp port={{ db_server.port }} accept
+        'rule': 'family=ipv4 source address=REMOVED port protocol=tcp port=' ~ db_server.port ~ ' accept'
       }
     ]
   }}
