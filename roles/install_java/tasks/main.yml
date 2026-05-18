@@ -23,6 +23,6 @@
 
 - name: Set the default java version - {{ java_alternative_path }}
   ansible.builtin.command:
-    cmd: "alternatives --set java {{ java_alternative_path }}"
+    cmd: "/usr/sbin/alternatives --set java {{ java_alternative_path }}"
   become: true
   when: java_jre.stat.exists
