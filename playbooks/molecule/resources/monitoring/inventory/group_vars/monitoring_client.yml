@@ -13,7 +13,7 @@ monitoring_client_ssl_cert_file: /root/monitoring_certs/cert.pem
 monitoring_client_server_ca_cert_file: /root/monitoring_certs/ca.pem
 
 # mirsg.infrastructure.firewalld
-firewalld_internal_zone_sources:
+REMOVED
   - "{{ monitoring_client_monitoring_server_ip }}"
 firewalld_rich_rules:
   - zone: internal

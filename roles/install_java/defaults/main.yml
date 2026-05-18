@@ -1,5 +1,6 @@
 ---
 java_profile_d: /etc/profile.d
-java_home: /usr/lib/jvm/jre
+java_home: /usr/lib/jvm/java-1.8.0-openjdk
 java_package: java-1.8.0-openjdk
 java_package_version: devel
+java_alternative_path: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.412.b08-1.el7_9.x86_64/jre/bin/java
