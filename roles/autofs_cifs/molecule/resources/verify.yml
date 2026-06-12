@@ -1,0 +1,14 @@
+---
+- name: Verify that the share is mounted
+  hosts: client
+  tasks:
+    - name: Check if the share is mounted
+      ansible.builtin.stat:
+        path: "{{ autofs_mount_point }}/molecule"
+      register: mount_output
+
+    - name: Fail if the directory is not a mount point
+      ansible.builtin.fail:
+        msg: "Directory {{ autofs_mount_point }} is not a mount point"
+      when: mount_output.stat.isdir != true
+
