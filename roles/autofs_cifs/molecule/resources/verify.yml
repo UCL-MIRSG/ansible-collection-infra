@@ -9,6 +9,5 @@
 
     - name: Fail if the directory is not a mount point
       ansible.builtin.fail:
-        msg: "Directory {{ autofs_mount_point }} is not a mount point"
-      when: mount_output.stat.isdir != true
-
+        msg: Directory {{ autofs_mount_point }} is not a mount point
+      when: not mount_output.stat.isdir
