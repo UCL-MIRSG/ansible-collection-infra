@@ -9,14 +9,20 @@
         tasks_from: RedHat7.yml
       when: ansible_facts['distribution_major_version'] is version('7')
 
-    - name:
-        Set skip_if_unavailable to avoid failures from retired PGDG EL7 repos
-      community.general.ini_file:
-        path: /etc/yum.conf
-        section: main
-        option: skip_if_unavailable
-        value: "1"
-        mode: "0644"
+    - name: Install PGDG repo RPM
+      ansible.builtin.package:
+        name: >-
+          https://download.postgresql.org/pub/repos/yum/reporpms/EL-{{
+          ansible_facts['distribution_major_version'] }}-{{
+          ansible_facts['architecture'] }}/pgdg-redhat-repo-latest.noarch.rpm
+        state: present
+      when: ansible_facts['distribution_major_version'] is version('7')
+
+    - name: Allow yum to skip unavailable PGDG EL7 repos
+      ansible.builtin.replace:
+        path: /etc/yum.repos.d/pgdg-redhat-all.repo
+        regexp: ^(\x5bpgdg\S+\x5d)$
+        replace: \1\nskip_if_unavailable=1
       when: ansible_facts['distribution_major_version'] is version('7')
 
     - name: Import postgresql RPM GPG key
