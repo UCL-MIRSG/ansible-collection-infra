@@ -33,7 +33,8 @@ route:
   repeat_interval: 2h
 
   # A default null receiver; active receivers are configured as child routes
-  receiver: null
+  receiver: 'null'
+{% if monitoring_server_smtp_enabled or monitoring_server_slack_enabled %}
   routes:
 {% if monitoring_server_smtp_enabled %}
     - receiver: mirsg-admin-email
@@ -42,6 +43,7 @@ route:
 {% if monitoring_server_slack_enabled %}
     - receiver: mirsg-slack
       continue: true
+{% endif %}
 {% endif %}
 
 receivers:
@@ -54,8 +56,8 @@ receivers:
 {% if monitoring_server_slack_enabled %}
   - name: 'mirsg-slack'
     slack_configs:
-      - api_url: {{ monitoring_server_slack_webhook_url }}
-        channel: {{ monitoring_server_slack_channel }}
+      - api_url: "{{ monitoring_server_slack_webhook_url }}"
+        channel: "{{ monitoring_server_slack_channel }}"
         # Note: when using an incoming webhook, the target channel is set in Slack
         # when the webhook is created. This field is required by the schema but
         # does not override the webhook's channel.
