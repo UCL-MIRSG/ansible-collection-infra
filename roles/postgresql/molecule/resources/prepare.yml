@@ -9,6 +9,24 @@
         tasks_from: RedHat7.yml
       when: ansible_facts['distribution_major_version'] is version('7')
 
+    - name: Install PGDG repo RPM
+      ansible.builtin.package:
+        name: >-
+          https://download.postgresql.org/pub/repos/yum/reporpms/EL-{{
+          ansible_facts['distribution_major_version'] }}-{{
+          ansible_facts['architecture'] }}/pgdg-redhat-repo-latest.noarch.rpm
+        state: present
+      when: ansible_facts['distribution_major_version'] is version('7')
+
+    # yamllint disable rule:quoted-strings
+    - name: Allow yum to skip unavailable PGDG EL7 repos
+      ansible.builtin.replace:
+        path: /etc/yum.repos.d/pgdg-redhat-all.repo
+        regexp: '^(\[pgdg[^\]]+\])$'
+        replace: '\1\nskip_if_unavailable=1'
+      when: ansible_facts['distribution_major_version'] is version('7')
+    # yamllint enable rule:quoted-strings
+
     - name: Install sudo
       ansible.builtin.package:
         name: sudo
