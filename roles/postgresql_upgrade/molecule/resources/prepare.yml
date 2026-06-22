@@ -9,6 +9,24 @@
         tasks_from: RedHat7.yml
       when: ansible_facts['distribution_major_version'] is version('7')
 
+    - name:
+        Set skip_if_unavailable to avoid failures from retired PGDG EL7 repos
+      community.general.ini_file:
+        path: /etc/yum.conf
+        section: main
+        option: skip_if_unavailable
+        value: "1"
+        mode: "0644"
+      when: ansible_facts['distribution_major_version'] is version('7')
+
+    - name: Import postgresql RPM GPG key
+      ansible.builtin.rpm_key:
+        state: present
+        key:
+          "{{ lookup('vars', 'postgresql_rpm_gpg_key_pgdg_' +
+          ansible_architecture) }}"
+      when: ansible_facts['distribution_major_version'] is version('7')
+
     - name: Install sudo
       ansible.builtin.package:
         name: sudo
