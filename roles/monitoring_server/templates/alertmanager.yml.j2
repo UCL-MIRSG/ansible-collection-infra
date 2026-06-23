@@ -1,10 +1,12 @@
 global:
+{% if monitoring_server_smtp_enabled %}
   # The smarthost and SMTP sender used for mail notifications.
   smtp_smarthost: {{ monitoring_server_smtp_hostname }}:{{ monitoring_server_smtp_port }}
   smtp_from: {{ monitoring_server_admin_email }}
   smtp_auth_username: {{ monitoring_server_smtp_username }}
   smtp_auth_password: {{ monitoring_server_smtp_password }}
   smtp_require_tls: {{ monitoring_server_smtp_start_tls }}
+{% endif %}
 
 # The directory from which notification templates are read.
 templates:
@@ -30,10 +32,33 @@ route:
   # resend them.
   repeat_interval: 2h
 
-  # A default receiver
-  receiver: mirsg-admin-email
+  # A default null receiver; active receivers are configured as child routes
+  receiver: 'null'
+{% if monitoring_server_smtp_enabled or monitoring_server_slack_enabled %}
+  routes:
+{% if monitoring_server_smtp_enabled %}
+    - receiver: mirsg-admin-email
+      continue: true
+{% endif %}
+{% if monitoring_server_slack_enabled %}
+    - receiver: mirsg-slack
+      continue: true
+{% endif %}
+{% endif %}
 
 receivers:
+  - name: 'null'
+{% if monitoring_server_smtp_enabled %}
   - name: 'mirsg-admin-email'
     email_configs:
-    - to: {{ monitoring_server_notification_email }}
+      - to: {{ monitoring_server_notification_email }}
+{% endif %}
+{% if monitoring_server_slack_enabled %}
+  - name: 'mirsg-slack'
+    slack_configs:
+      - api_url: "{{ monitoring_server_slack_webhook_url }}"
+        channel: "{{ monitoring_server_slack_channel }}"
+        # Note: when using an incoming webhook, the target channel is set in Slack
+        # when the webhook is created. This field is required by the schema but
+        # does not override the webhook's channel.
+{% endif %}
