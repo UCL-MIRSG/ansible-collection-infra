@@ -1,7 +1,7 @@
 # autofs_cifs
 
 This role installs and configures `autofs` on the host. Import caveats: the role
-can only be used to configure CIFS/Samba mounts and can only be used RHEL 9
+can only be used to configure CIFS/Samba mounts and can only be used on RHEL 9
 family operating systems and is only tested against RockyLinux 9.
 
 ## Role Variables
