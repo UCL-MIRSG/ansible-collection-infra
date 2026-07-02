@@ -9,10 +9,14 @@ on:
   pull_request:
 jobs:
   linting:
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source
         uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6
+        with:
+          persist-credentials: false
 
       - name: Install EL7 requirements
         run: |-

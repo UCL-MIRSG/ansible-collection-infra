@@ -9,6 +9,8 @@ on:
   pull_request:
 jobs:
   links:
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
@@ -16,5 +18,5 @@ jobs:
         uses: UCL-MIRSG/.github/actions/links@0ebba40bf580f7aed98275c156ab8fb71c33ea82 # v0
         with:
           app-id: ${{ vars.LINKS_APP_ID }}
-          app-pem: ${{ secrets.LINKS_PRIVATE_KEY }}
+          app-pem: ${{ secrets.LINKS_PRIVATE_KEY }} # zizmor: ignore[secrets-outside-env]
           lychee-args: --insecure --no-progress --verbose .
