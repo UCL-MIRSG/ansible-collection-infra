@@ -39,7 +39,6 @@ platforms:
     keep_volumes: false
     groups:
       - all
-      - rocky9
     networks:
       - name: molecule_docker
         ipv4_address: 192.168.56.3
