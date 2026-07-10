@@ -1,0 +1,1 @@
+{{ autofs_mount_point }} -fstype=cifs,rw,credentials={{ autofs_creds_file }},uid={{ autofs_uid }},gid={{ autofs_gid }},file_mode=0770,dir_mode=0770,vers=3.0 ://{{ autofs_server }}/{{ autofs_share }}

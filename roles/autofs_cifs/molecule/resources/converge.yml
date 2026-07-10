@@ -1,0 +1,7 @@
+---
+- name: Run autofs-cifs role
+  hosts: client
+  become: true
+  gather_facts: true
+  roles:
+    - role: mirsg.infrastructure.autofs_cifs
