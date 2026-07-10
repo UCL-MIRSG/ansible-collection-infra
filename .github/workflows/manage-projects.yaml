@@ -11,7 +11,7 @@ jobs:
     permissions: {}
     runs-on: ubuntu-latest
     steps:
-      - uses: UCL-MIRSG/.github/actions/add-to-project@e16932bcb9189707188ea268d4605e042c2b5d9a # v0
+      - uses: UCL-MIRSG/.github/actions/add-to-project@e4daf6da08d7b05e7442512fb07ae4c7d9bc1e99 # v0.250.0
         with:
           app-id: ${{ secrets.APP_ID }} # zizmor: ignore[secrets-outside-env]
           app-pem: ${{ secrets.APP_PEM }} # zizmor: ignore[secrets-outside-env]

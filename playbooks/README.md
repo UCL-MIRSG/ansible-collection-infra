@@ -77,7 +77,7 @@ on:
 
 jobs:
   molecule-my_playbook:
-    uses: UCL-MIRSG/.github/actions/molecule-test@v0
+    uses: UCL-MIRSG/.github/actions/molecule-test@v0.250.0
     with:
       tests-path: ansible_collections/mirsg/infrastructure/playbooks
 ```

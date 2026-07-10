@@ -34,6 +34,6 @@ jobs:
         run: |-
           ansible-galaxy install -r ./meta/omero-el9-requirements.yml
 
-      - uses: UCL-MIRSG/.github/actions/linting@da2eaa5334ee42fbf605f3962598284e1bed59b2 # v0
+      - uses: UCL-MIRSG/.github/actions/linting@e4daf6da08d7b05e7442512fb07ae4c7d9bc1e99 # v0.250.0
         with:
           pre-commit-config: ./.pre-commit-config.yaml

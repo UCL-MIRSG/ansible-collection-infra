@@ -47,7 +47,7 @@ jobs:
             /etc/apparmor.d/unix-chkpwd
           sudo apparmor_parser -r /etc/apparmor.d/unix-chkpwd
 
-      - uses: UCL-MIRSG/.github/actions/molecule-test@e16932bcb9189707188ea268d4605e042c2b5d9a # v0
+      - uses: UCL-MIRSG/.github/actions/molecule-test@e4daf6da08d7b05e7442512fb07ae4c7d9bc1e99 # v0.250.0
         with:
           ansible_major_version: ${{ vars.ANSIBLE_MAJOR_VERSION }}
           scenario: ${{ matrix.scenario }}
