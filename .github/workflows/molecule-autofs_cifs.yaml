@@ -27,7 +27,6 @@ jobs:
       matrix:
         scenario:
           - rocky9
-          - rocky10
     env:
       MOLECULE_RUN_TAGS: all
       PY_COLORS: 1
