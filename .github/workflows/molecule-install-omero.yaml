@@ -45,7 +45,7 @@ jobs:
             /etc/apparmor.d/unix-chkpwd
           sudo apparmor_parser -r /etc/apparmor.d/unix-chkpwd
 
-      - uses: UCL-MIRSG/.github/actions/molecule-test@e4daf6da08d7b05e7442512fb07ae4c7d9bc1e99 # v0.250.0
+      - uses: UCL-MIRSG/.github/actions/molecule-test@f0317ea26124fe0b3b923d881ac956301a11ea56 # v0.252.0
         env:
           ROCKY_VERSION: ${{ matrix.rocky_version }}
         with:
