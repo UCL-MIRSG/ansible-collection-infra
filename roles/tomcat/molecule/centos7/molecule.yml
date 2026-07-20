@@ -5,7 +5,6 @@ platforms:
   - name: tomcat9_server
     hostname: molecule.tomcat9.local
     image: ${MOLECULE_DOCKER_IMAGE:-geerlingguy/docker-centos7-ansible:latest}
-    required: true
     command: ""
     cgroupns_mode: host
     privileged: true
@@ -30,7 +29,6 @@ platforms:
   - name: tomcat10_server
     hostname: molecule.tomcat10.local
     image: ${MOLECULE_DOCKER_IMAGE:-geerlingguy/docker-centos7-ansible:latest}
-    required: true
     command: ""
     cgroupns_mode: host
     privileged: true

@@ -5,7 +5,6 @@ platforms:
   - name: tomcat9_server
     hostname: molecule.tomcat9.local
     image: rockylinux/rockylinux:9-ubi-init
-    required: true
     command: ""
     cgroupns_mode: host
     privileged: true
@@ -31,7 +30,6 @@ platforms:
   - name: tomcat10_server
     hostname: molecule.tomcat10.local
     image: rockylinux/rockylinux:9-ubi-init
-    required: true
     command: ""
     cgroupns_mode: host
     privileged: true
