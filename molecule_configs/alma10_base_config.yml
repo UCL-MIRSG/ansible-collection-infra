@@ -12,7 +12,7 @@ driver:
 platforms:
   - name: instance
     hostname: molecule.instance.local
-    image: rockylinux/rockylinux:10-ubi-init
+    image: ghcr.io/almalinux/10-init
     required: true
     command: ""
     cgroupns_mode: host
@@ -25,7 +25,7 @@ platforms:
     groups:
       - all
       - molecule
-      - rocky9
+      - alma10
     docker_networks:
       - name: molecule
         ipam_config:
@@ -42,8 +42,6 @@ provisioner:
     defaults:
       callbacks_enabled: profile_tasks, timer
       callback_result_format: yaml
-    tags:
-      run: ${MOLECULE_RUN_TAGS:-all}
   inventory:
     links:
       group_vars: ../resources/inventory/group_vars/
@@ -58,10 +56,3 @@ provisioner:
 
 verifier:
   name: ansible
-  env:
-    ANSIBLE_VERBOSITY: "1"
-
-lint: |
-  set -e
-  yamllint .
-  ansible-lint .
