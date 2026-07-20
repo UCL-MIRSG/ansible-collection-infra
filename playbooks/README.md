@@ -42,11 +42,12 @@ or include it within another playbook:
 
 ### Add a molecule configuration
 
-Create CentOS 7 and RockyLinux 9 scenarios for your playbook in
+Create CentOS 7, RockyLinux 9, and RockyLinux 10 scenarios for your playbook in
 `ansible_collections/mirsg/infrastructure/playbooks/molecule`. See the
 `mirsg.infrastructure.install_monitoring`
-[CentOS 7](./molecule/centos7_monitoring/) and
-[RockyLinux 9](./molecule/rocky9_monitoring/) scenarios for an example
+[CentOS 7](./molecule/centos7_monitoring/),
+[RockyLinux 9](./molecule/rocky9_monitoring/), and
+[RockyLinux 10](./molecule/rocky10_xnat/) scenarios for an example
 configuration.
 
 Add the `converge.yml` playbook to a shared `resources` subfolder:
