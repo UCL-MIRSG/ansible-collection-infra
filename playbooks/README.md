@@ -47,8 +47,7 @@ Create CentOS 7, RockyLinux 9, and RockyLinux 10 scenarios for your playbook in
 `mirsg.infrastructure.install_monitoring`
 [CentOS 7](./molecule/centos7_monitoring/),
 [RockyLinux 9](./molecule/rocky9_monitoring/), and
-[AmlaLinux 10](./molecule/alma10_xnat/) scenarios for an example
-configuration.
+[AmlaLinux 10](./molecule/alma10_xnat/) scenarios for an example configuration.
 
 Add the `converge.yml` playbook to a shared `resources` subfolder:
 `molecule/resources/my_playbook/converge.yml`.
