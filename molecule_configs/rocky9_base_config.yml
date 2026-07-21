@@ -13,7 +13,6 @@ platforms:
   - name: instance
     hostname: molecule.instance.local
     image: rockylinux/rockylinux:9-ubi-init
-    required: true
     command: ""
     cgroupns_mode: host
     privileged: true
