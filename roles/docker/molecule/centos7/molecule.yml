@@ -5,7 +5,6 @@ platforms:
   - name: client
     hostname: molecule.docker-client.local
     image: geerlingguy/docker-centos7-ansible:latest
-    required: true
     command: ""
     cgroupns_mode: host
     privileged: true
@@ -30,7 +29,6 @@ platforms:
   - name: server
     hostname: molecule.docker-server.local
     image: geerlingguy/docker-centos7-ansible:latest
-    required: true
     command: ""
     cgroupns_mode: host
     privileged: true
@@ -45,7 +43,7 @@ platforms:
       - name: molecule_docker
         ipv4_address: 192.168.56.3
     exposed_ports:
-      - 2376
+      - "2376"
     etc_hosts:
       molecule.docker-client.local: 192.168.56.2
 

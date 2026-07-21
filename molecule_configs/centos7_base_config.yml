@@ -12,9 +12,7 @@ driver:
 platforms:
   - name: instance
     hostname: molecule.instance.local
-    arch: x86_64
     image: ${MOLECULE_DOCKER_IMAGE:-geerlingguy/docker-centos7-ansible:latest}
-    required: true
     command: ""
     cgroupns_mode: host
     privileged: true

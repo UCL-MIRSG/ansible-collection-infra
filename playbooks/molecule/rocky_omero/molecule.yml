@@ -13,7 +13,6 @@ platforms:
   - name: omero_db
     hostname: omero.db.local
     image: rockylinux/rockylinux:${ROCKY_VERSION:-8}-ubi-init
-    required: true
     command: ""
     cgroupns_mode: host
     privileged: true
@@ -35,7 +34,7 @@ platforms:
       - name: omero
         ipv4_address: 192.168.56.2
     exposed_ports:
-      - 5432
+      - "5432"
     etc_hosts:
       omero.server.local: 192.168.56.3
       omero.mail.local: 192.168.56.4
@@ -43,8 +42,7 @@ platforms:
   - name: omero_server_web
     hostname: omero.server.local
     image: rockylinux/rockylinux:${ROCKY_VERSION:-8}-ubi-init
-    required: true
-    command:
+    command: ""
     cgroupns_mode: host
     privileged: true
     pre_build_image: true
@@ -60,11 +58,11 @@ platforms:
       - name: omero
         ipv4_address: 192.168.56.3
     exposed_ports:
-      - 80
-      - 443
-      - 4063
-      - 4064
-      - 4080
+      - "80"
+      - "443"
+      - "4063"
+      - "4064"
+      - "4080"
     published_ports:
       - 127.0.0.1:8080:80
     etc_hosts:
@@ -74,8 +72,7 @@ platforms:
   - name: omero_mail
     hostname: omero.mail.local
     image: rnwood/smtp4dev
-    required: true
-    command:
+    command: ""
     cgroupns_mode: host
     privileged: true
     pre_build_image: true
@@ -88,7 +85,7 @@ platforms:
       - name: omero
         ipv4_address: 192.168.56.4
     exposed_ports:
-      - 25
+      - "25"
     published_ports:
       - 127.0.0.1:3000:80
       - 127.0.0.1:2525:25
