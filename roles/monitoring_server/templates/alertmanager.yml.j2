@@ -1,3 +1,24 @@
+{#
+  Reusable notifier configs. Each macro emits a single-item YAML list; call it as
+  `{{ slack_config() | trim | indent(6) }}` under a `slack_configs:`/`email_configs:`
+  key so the list item lands at 6 spaces and its nested keys at 8.
+  Go-template braces (evaluated by Alertmanager, not Jinja) are wrapped in {% raw %}.
+#}
+{%- macro slack_config() %}
+- api_url: "{{ monitoring_server_slack_webhook_url }}"
+  channel: "{{ monitoring_server_slack_channel }}"
+  # Note: when using an incoming webhook, the target channel is set in Slack
+  # when the webhook is created. This field is required by the schema but
+  # does not override the webhook's channel.
+  send_resolved: true
+  color: '{% raw %}{{ if eq .CommonLabels.severity "critical" }}danger{{ else if eq .CommonLabels.severity "warning" }}warning{{ else }}good{{ end }}{% endraw %}'
+  title: '{% raw %}{{ template "slack.title" . }}{% endraw %}'
+  text: '{% raw %}{{ template "slack.text" . }}{% endraw %}'
+{% endmacro %}
+{%- macro email_config() %}
+- to: {{ monitoring_server_notification_email }}
+  send_resolved: true
+{% endmacro -%}
 global:
 {% if monitoring_server_smtp_enabled %}
   # The smarthost and SMTP sender used for mail notifications.
@@ -12,56 +33,89 @@ global:
 templates:
   - '{{ monitoring_server_alertmanager.volume }}/template/*.tmpl'
 
-# The root route on which each incoming alert enters.
+# The root route on which each incoming alert enters. Severity-specific child
+# routes select the channels and reminder cadence; anything unmatched falls
+# through to the 'null' receiver and is dropped.
 route:
 
-  # The labels by which incoming alerts are grouped together. For example,
-  # multiple alerts coming in for cluster=A and alertname=LatencyHigh would
-  # be batched into a single group.
-  group_by: ['alertname', 'cluster', 'service']
-
-  # When a new group of alerts is created by an incoming alert, wait at
-  # least 'group_wait' to send the initial notification.
+  # Group per-alert and per-host so one host's issue is its own notification
+  # rather than being collapsed with every other host firing the same alert.
+  group_by: ['alertname', 'instance']
   group_wait: 30s
-
-  # When the first notification was sent, wait 'group_interval' to send a batch
-  # of new alerts that started firing for that group.
   group_interval: 5m
-
-  # If an alert has successfully been sent, wait 'repeat_interval' to
-  # resend them.
-  repeat_interval: 2h
-
-  # A default null receiver; active receivers are configured as child routes
+  repeat_interval: 4h
   receiver: 'null'
 {% if monitoring_server_smtp_enabled or monitoring_server_slack_enabled %}
   routes:
-{% if monitoring_server_smtp_enabled %}
-    - receiver: mirsg-admin-email
-      continue: true
+    # Urgent, user-impacting: notify fast, remind every few hours.
+    - matchers:
+        - severity="critical"
+      receiver: mirsg-critical
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 4h
+
+    # Act-soon: batch a little, remind roughly once a day.
+    - matchers:
+        - severity="warning"
+      receiver: mirsg-warning
+      group_wait: 1m
+      group_interval: 10m
+      repeat_interval: 24h
+
+    # Awareness only: notify once, effectively no reminders.
+    - matchers:
+        - severity="info"
+      receiver: mirsg-info
+      group_wait: 5m
+      group_interval: 30m
+      repeat_interval: 168h
 {% endif %}
-{% if monitoring_server_slack_enabled %}
-    - receiver: mirsg-slack
-      continue: true
-{% endif %}
-{% endif %}
+
+# Suppress lower-severity noise for a host while a higher severity is firing
+# for the same instance (e.g. a down host shouldn't also page CPU/disk warnings,
+# and the most-severe SSL-expiry window silences the earlier ones).
+inhibit_rules:
+  - source_matchers:
+      - severity="critical"
+    target_matchers:
+      - severity=~"warning|info"
+    equal: ['instance']
+  - source_matchers:
+      - severity="warning"
+    target_matchers:
+      - severity="info"
+    equal: ['instance']
 
 receivers:
   - name: 'null'
+{% if monitoring_server_smtp_enabled or monitoring_server_slack_enabled %}
+
+  # Critical -> Slack and email.
+  - name: 'mirsg-critical'
 {% if monitoring_server_smtp_enabled %}
-  - name: 'mirsg-admin-email'
     email_configs:
-      - to: {{ monitoring_server_notification_email }}
+      {{ email_config() | trim | indent(6) }}
 {% endif %}
 {% if monitoring_server_slack_enabled %}
-  - name: 'mirsg-slack'
     slack_configs:
-      - api_url: "{{ monitoring_server_slack_webhook_url }}"
-        channel: "{{ monitoring_server_slack_channel }}"
-        # Note: when using an incoming webhook, the target channel is set in Slack
-        # when the webhook is created. This field is required by the schema but
-        # does not override the webhook's channel.
-        send_resolved: true
-        title: '{% raw %}{{ template "slack.title" . }}{% endraw %}'
-        text: '{% raw %}{{ template "slack.text" . }}{% endraw %}'
+      {{ slack_config() | trim | indent(6) }}
+{% endif %}
+
+  # Warning -> Slack (falls back to email if Slack is disabled).
+  - name: 'mirsg-warning'
+{% if monitoring_server_slack_enabled %}
+    slack_configs:
+      {{ slack_config() | trim | indent(6) }}
+{% elif monitoring_server_smtp_enabled %}
+    email_configs:
+      {{ email_config() | trim | indent(6) }}
+{% endif %}
+
+  # Info -> Slack only (silent if Slack is disabled).
+  - name: 'mirsg-info'
+{% if monitoring_server_slack_enabled %}
+    slack_configs:
+      {{ slack_config() | trim | indent(6) }}
+{% endif %}
 {% endif %}
