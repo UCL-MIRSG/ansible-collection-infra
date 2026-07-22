@@ -11,9 +11,16 @@
   # when the webhook is created. This field is required by the schema but
   # does not override the webhook's channel.
   send_resolved: true
-  color: '{% raw %}{{ if eq .CommonLabels.severity "critical" }}danger{{ else if eq .CommonLabels.severity "warning" }}warning{{ else }}good{{ end }}{% endraw %}'
+  color: '{% raw %}{{ template "slack.color" . }}{% endraw %}'
   title: '{% raw %}{{ template "slack.title" . }}{% endraw %}'
   text: '{% raw %}{{ template "slack.text" . }}{% endraw %}'
+  actions:
+    - type: button
+      text: 'Query :mag:'
+      url: '{% raw %}{{ (index .Alerts 0).GeneratorURL }}{% endraw %}'
+    - type: button
+      text: 'Silence :no_bell:'
+      url: '{% raw %}{{ template "__alert_silence_link" . }}{% endraw %}'
 {% endmacro %}
 {%- macro email_config() %}
 - to: {{ monitoring_server_notification_email }}
