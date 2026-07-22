@@ -17,6 +17,12 @@
     state: started
     restart: true
 
+- name: Restart alertmanager
+  community.docker.docker_container:
+    name: "{{ monitoring_server_alertmanager.container_name }}"
+    state: started
+    restart: true
+
 - name: Restart docker
   ansible.builtin.service:
     name: "{{ docker_service_name }}"
