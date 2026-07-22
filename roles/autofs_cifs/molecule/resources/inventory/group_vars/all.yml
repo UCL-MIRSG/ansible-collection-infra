@@ -1,0 +1,11 @@
+---
+autofs_mount_point: /mnt/share
+autofs_creds_file: /etc/.creds
+autofs_user: samba
+autofs_password: secret
+autofs_domain: ""
+autofs_server: "{{ hostvars['server']['ansible_ip'] }}"
+autofs_share: Data
+autofs_owner: root
+autofs_group: root
+autofs_map_name: cifs_test

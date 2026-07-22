@@ -1,0 +1,76 @@
+---
+- name: Ensure cifs-utils is installed
+  ansible.builtin.package:
+    name: cifs-utils
+    state: present
+
+- name: Ensure autofs is installed
+  ansible.builtin.package:
+    name: autofs
+    state: present
+
+- name: Create mount point
+  ansible.builtin.file:
+    path: "{{ autofs_mount_point }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Get ID of system user
+  ansible.builtin.command: id -u "{{ autofs_owner }}"
+  register: autofs_owner_id
+  changed_when: false
+
+- name: Set autofs_uid fact
+  ansible.builtin.set_fact:
+    autofs_uid: "{{ autofs_owner_id.stdout }}"
+
+- name: Get ID of system group
+  ansible.builtin.command: id -g "{{ autofs_group }}"
+  register: autofs_group_id
+  changed_when: false
+
+- name: Set autofs_gid fact
+  ansible.builtin.set_fact:
+    autofs_gid: "{{ autofs_group_id.stdout }}"
+
+- name: Create credentials file for autofs
+  ansible.builtin.copy:
+    dest: "{{ autofs_creds_file }}"
+    content: |
+      username={{ autofs_user }}
+      password={{ autofs_password }}
+      domain={{ autofs_domain }}
+    owner: root
+    group: root
+    mode: "0600"
+
+- name: Create autofs configuration file
+  ansible.builtin.template:
+    src: autofs-conf.j2
+    dest: /etc/auto.{{ autofs_map_name }}
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Add the new map to auto.master
+  ansible.builtin.lineinfile:
+    path: /etc/auto.master
+    line: /- /etc/auto.{{ autofs_map_name }} --timeout=15
+    state: present
+    insertafter: EOF
+  notify: Restart autofs
+
+- name: Noop to restart autofs
+  tags: restart
+  ansible.builtin.debug:
+    msg: trigger autofs restart
+  notify: Restart autofs
+  changed_when: false
+
+- name: Ensure autofs service is running
+  ansible.builtin.service:
+    name: autofs
+    state: started
+    enabled: true

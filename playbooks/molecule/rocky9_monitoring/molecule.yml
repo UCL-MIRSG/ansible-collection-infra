@@ -13,7 +13,6 @@ platforms:
   - name: mclient
     hostname: molecule.mclient.local
     image: rockylinux/rockylinux:9-ubi-init
-    required: true
     command: ""
     cgroupns_mode: host
     privileged: true
@@ -41,7 +40,6 @@ platforms:
   - name: mserv
     hostname: molecule.mserv.local
     image: rockylinux/rockylinux:9-ubi-init
-    required: true
     command: ""
     cgroupns_mode: host
     privileged: true
@@ -59,8 +57,8 @@ platforms:
       - name: monitoring
         ipv4_address: 192.168.56.3
     exposed_ports:
-      - 80
-      - 443
+      - "80"
+      - "443"
     etc_hosts:
       molecule.mclient.local: 192.168.56.2
 

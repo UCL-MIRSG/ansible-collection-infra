@@ -13,7 +13,6 @@ platforms:
   - name: xnat_db
     hostname: xnat.db.local
     image: rockylinux/rockylinux:9-ubi-init
-    required: true
     command: ""
     cgroupns_mode: host
     privileged: true
@@ -36,7 +35,7 @@ platforms:
       - name: xnat
         ipv4_address: 192.168.56.2
     exposed_ports:
-      - 5432
+      - "5432"
     etc_hosts:
       xnat.web.local: 192.168.56.3
       xnat.cserv.local: 192.168.56.4
@@ -44,7 +43,6 @@ platforms:
   - name: xnat_web
     hostname: xnat.web.local
     image: rockylinux/rockylinux:9-ubi-init
-    required: true
     command: ""
     cgroupns_mode: host
     privileged: true
@@ -64,10 +62,10 @@ platforms:
       - name: xnat
         ipv4_address: 192.168.56.3
     exposed_ports:
-      - 80
-      - 443
-      - 8080
-      - 8104
+      - "80"
+      - "443"
+      - "8080"
+      - "8104"
     published_ports:
       - 127.0.0.1:8080:80
     etc_hosts:
@@ -77,7 +75,6 @@ platforms:
   - name: xnat_cserv
     hostname: xnat.cserv.local
     image: rockylinux/rockylinux:9-ubi-init
-    required: true
     command: ""
     cgroupns_mode: host
     privileged: true
@@ -96,8 +93,8 @@ platforms:
       - name: xnat
         ipv4_address: 192.168.56.4
     exposed_ports:
-      - 2376
-    extra_hosts:
+      - "2376"
+    etc_hosts:
       xnat.db.local: 192.168.56.2
       xnat.web.local: 192.168.56.3
 
