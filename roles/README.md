@@ -86,7 +86,7 @@ on:
 
 jobs:
   molecule-my_role:
-    uses: UCL-MIRSG/.github/actions/molecule-test@v0.250.0
+    uses: UCL-MIRSG/.github/actions/molecule-test@v0
     with:
       tests-path: ansible_collections/mirsg/infrastructure/roles/my_role
 ```
