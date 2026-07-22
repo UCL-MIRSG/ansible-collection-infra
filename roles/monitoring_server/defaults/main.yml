@@ -97,4 +97,4 @@ monitoring_server_prometheus:
   commandline_args:
     config.file: /prometheus/prometheus.yml
     storage.tsdb.path: /prometheus/data
-    web.external-url: /prometheus/
+    web.external-url: https://{{ monitoring_server_hostname }}/prometheus/
