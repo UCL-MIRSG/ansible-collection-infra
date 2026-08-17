@@ -47,7 +47,7 @@ monitoring_server_hostname_extractor: ansible_host
 
 monitoring_server_alertmanager:
   container_name: alertmanager
-  image: prom/alertmanager
+  image: prom/alertmanager:v0.34.0@sha256:690c7b525f4367aa91f73e2f91c632206d32e97c6384bdbf2fb7a861b420340d
   external_data_dir: "{{ monitoring_server_storage_root }}/alertmanager"
   volume: /alertmanager
   commandline_args:
@@ -57,11 +57,11 @@ monitoring_server_alertmanager:
 
 monitoring_server_cadvisor:
   container_name: cadvisor
-  image: gcr.io/cadvisor/cadvisor:latest
+  image: ghcr.io/google/cadvisor:v0.60.5@sha256:763aecf1c32c2be8a1a75f9abfc2fc461005c9dbbaa39cb356b354aac1296dbe
 
 monitoring_server_grafana:
   container_name: grafana
-  image: grafana/grafana
+  image: grafana/grafana:13.1.3@sha256:ab5cb380e3ff3172d6c8bd2e7cfd31cce977d2881b260e1f5bc089bf0b759b43
   external_data_dir: "{{ monitoring_server_storage_root }}/grafana"
   external_storage_dir: "{{ monitoring_server_storage_root }}/grafana/storage"
   volume: /var/lib/grafana
@@ -89,7 +89,7 @@ monitoring_server_nginx:
   ssl_key_file: /etc/nginx/ssl/server.key
 
 monitoring_server_prometheus:
-  image: prom/prometheus
+  image: prom/prometheus:v3.13.2@sha256:508729e0e2d18e11fd742a5a5ca70e557b940a93948c3c95fd0123a6fd538b69
   container_name: prometheus
   external_data_dir: "{{ monitoring_server_storage_root }}/prometheus"
   volume: /prometheus
