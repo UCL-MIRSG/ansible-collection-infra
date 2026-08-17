@@ -6,6 +6,7 @@ monitoring_server_uid: 595
 monitoring_server_cert_owner: root
 monitoring_server_cert_group: root
 monitoring_server_storage_root: /data/monitoring
+monitoring_server_web_group: web
 
 # mirsg.monitoring_server CA and server certificate
 monitoring_server_certificate_cache_directory:
@@ -97,4 +98,4 @@ monitoring_server_prometheus:
   commandline_args:
     config.file: /prometheus/prometheus.yml
     storage.tsdb.path: /prometheus/data
-    web.external-url: /prometheus/
+    web.external-url: https://{{ monitoring_server_hostname }}/prometheus/

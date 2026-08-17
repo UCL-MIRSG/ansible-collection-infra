@@ -12,12 +12,13 @@
 - name: Find web servers in `monitoring_client` group
   ansible.builtin.set_fact:
     # Get any hosts in the `monitoring_client` that are
-    # also in the `web` group
+    # also in the group named by `monitoring_server_web_group`
     monitoring_server_web_clients: >
       {{ query('inventory_hostnames', ansible_limit | default('')) |
-      intersect(groups['monitoring_client']) | intersect(groups['web']) |
-      map('extract', hostvars, monitoring_server_hostname_extractor) |
-      map('regex_replace', '^', 'https://') }}
+      intersect(groups['monitoring_client']) |
+      intersect(groups.get(monitoring_server_web_group, [])) | map('extract',
+      hostvars, monitoring_server_hostname_extractor) | map('regex_replace',
+      '^', 'https://') }}
   failed_when: monitoring_server_web_clients | length == 0
 
 - name: Add monitoring_server group
