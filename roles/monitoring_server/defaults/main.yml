@@ -166,6 +166,7 @@ monitoring_server_alertmanager:
     web.external-url: https://{{ monitoring_server_hostname }}/alertmanager/
     storage.path: /alertmanager/data
     config.file: /alertmanager/alertmanager.yml
+    data.retention: 336h
 
 monitoring_server_cadvisor:
   container_name: cadvisor
