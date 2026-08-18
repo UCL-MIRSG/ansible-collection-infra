@@ -43,6 +43,106 @@ monitoring_server_slack_enabled: false
 monitoring_server_slack_webhook_url: ""
 monitoring_server_slack_channel: ""
 
+# mirsg.monitoring_server AlertManager Configuration
+#
+# templates/alertmanager.yml.j2 assembles this structured data into a valid
+# alertmanager config structure and serialises it. Change policy here rather
+# than writing it by hand in the template.
+#
+# The defaults here define:
+# - Three severity/alert tiers
+# - One receiver and one route per tier, applied at two grouping levels (below).
+# - `send_resolved` is true only for critical
+# - Asymmetric notification channels:
+#   - critical - Slack *and* email
+#   - warning  - Slack, falling back to email only when Slack is disabled
+#   - info - Slack only, silent when Slack is disabled
+monitoring_server_alert_tiers:
+  - name: critical
+    # Urgent, user-impacting: notify fast, remind every few hours.
+    receiver: mirsg-critical
+    group_wait: 30s
+    group_interval: 5m
+    repeat_interval: 4h
+    send_resolved: true
+    slack: true
+    email: true
+    email_fallback: false
+  - name: warning
+    # Act-soon: batch a little, then remind every few days.
+    receiver: mirsg-warning
+    group_wait: 1m
+    group_interval: 10m
+    repeat_interval: 72h
+    send_resolved: false
+    slack: true
+    email: false
+    email_fallback: true
+  - name: info
+    receiver: mirsg-info
+    # Awareness only: notify once, effectively no reminders.
+    group_wait: 5m
+    group_interval: 30m
+    repeat_interval: 168h
+    send_resolved: false
+    slack: true
+    email: false
+    email_fallback: false
+
+# Usually group per-alert and per-host so one host's issue is its own notification
+# rather than being collapsed with every other host firing the same alert.
+monitoring_server_alertmanager_group_by:
+  - alertname
+  - instance
+
+# Filesystem alerts group per filesystem rather than per host, so a shared
+# network export monitored from two hosts produces one notification instead of
+# two.
+monitoring_server_alertmanager_filesystem_alertnames: FilesystemFull|InodeUsageHigh
+monitoring_server_alertmanager_filesystem_group_by:
+  - alertname
+  - severity
+  - device
+  - mountpoint
+
+# Suppress lower-severity noise while a higher severity is firing for the same
+# thing. Order matters: Alertmanager evaluates these in sequence.
+monitoring_server_alertmanager_inhibit_rules:
+  # An unreachable host shouldn't also send CPU, memory and disk
+  # warnings about itself, nor its endpoint and certificate alerts
+  - source_matchers:
+      - alertname="InstanceDown"
+    target_matchers:
+      - severity=~"critical|warning|info"
+    equal:
+      - host
+  # A down endpoint suppresses other alerts about that same endpoint
+  - source_matchers:
+      - alertname="EndpointDown"
+    target_matchers:
+      - severity=~"critical|warning|info"
+    equal:
+      - instance
+  # Inhibition of lower alert tiers, scoped to the same alert and the same filesystem
+  - source_matchers:
+      - severity="critical"
+    target_matchers:
+      - severity=~"warning|info"
+    equal:
+      - alertname
+      - instance
+      - device
+      - mountpoint
+  - source_matchers:
+      - severity="warning"
+    target_matchers:
+      - severity="info"
+    equal:
+      - alertname
+      - instance
+      - device
+      - mountpoint
+
 monitoring_server_hostname_extractor: ansible_host
 
 monitoring_server_alertmanager:
