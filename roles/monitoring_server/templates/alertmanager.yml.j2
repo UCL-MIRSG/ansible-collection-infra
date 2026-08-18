@@ -3,7 +3,8 @@
   to_nice_yaml
 
   The default policy configuration is in roles/monitoring_server/defaults/main.yml
-  (monitoring_server_alert_tiers, ..._inhibit_rules, ..._group_by).
+  (monitoring_server_alert_tiers, ..._alertmanager_alert_groups,
+  ..._alertmanager_inhibit_rules).
 #}
 
 {#
@@ -20,31 +21,36 @@
      'text': '{{ template "slack.text" . }}',
    } %}
 
-{% set filesystem_severity_routes = [] %}
-{% set default_severity_routes = [] %}
+{% set severity_routes = [] %}
 
 {% for tier in monitoring_server_alert_tiers %}
-{%   for target in [filesystem_severity_routes, default_severity_routes] %}
-{%     set _ = target.append({
-         'matchers': ['severity="' ~ tier.name ~ '"'],
-         'receiver': tier.receiver,
-         'group_wait': tier.group_wait,
-         'group_interval': tier.group_interval,
-         'repeat_interval': tier.repeat_interval,
-       }) %}
-{%   endfor %}
+{%   set _ = severity_routes.append({
+       'matchers': ['severity="' ~ tier.name ~ '"'],
+       'receiver': tier.receiver,
+       'group_wait': tier.group_wait,
+       'group_interval': tier.group_interval,
+       'repeat_interval': tier.repeat_interval,
+     }) %}
 {% endfor %}
 
+{#
+  One route per alert group, in the order they are defined: routes are
+  first-match-wins. A group with no `alertnames` gets no matcher and so claims
+  every alert not matched above it. `matchers` is built first because combine()
+  preserves insertion order, and it reads better above `group_by`.
+#}
 {% set routes = [] %}
 
 {% if notifications_enabled %}
-{%   set _ = routes.append({
-       'matchers': ['alertname=~"' ~ monitoring_server_alertmanager_filesystem_alertnames ~ '"'],
-       'group_by': monitoring_server_alertmanager_filesystem_group_by,
-       'receiver': 'null',
-       'routes': filesystem_severity_routes,
-     }) %}
-{%   set _ = routes.extend(default_severity_routes) %}
+{%   for group in monitoring_server_alertmanager_alert_groups %}
+{%     set matcher = {'matchers': ['alertname=~"' ~ group.alertnames | join('|') ~ '"']}
+         if group.alertnames | default([]) else {} %}
+{%     set _ = routes.append(matcher | combine({
+         'group_by': group.group_by,
+         'receiver': 'null',
+         'routes': severity_routes,
+       })) %}
+{%   endfor %}
 {% endif %}
 
 {% set receivers = [{'name': 'null'}] %}
@@ -86,12 +92,12 @@
 {% endif %}
 
 {#
-  Root route. These timings are the fallback for anything matching no child
-  route, which goes to the 'null' receiver and is dropped, so they are not
-  tunable policy and stay here rather than in defaults.
+  Root route. Every alert is claimed by one of the groups above, which set their
+  own grouping and timings, so these values only apply if that list is emptied.
+  Anything reaching them goes to the 'null' receiver and is dropped.
 #}
 {% set route = {
-     'group_by': monitoring_server_alertmanager_group_by,
+     'group_by': ['alertname', 'instance'],
      'group_wait': '30s',
      'group_interval': '5m',
      'repeat_interval': '4h',

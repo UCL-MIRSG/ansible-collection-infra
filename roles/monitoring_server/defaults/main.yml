@@ -51,7 +51,7 @@ monitoring_server_slack_channel: ""
 #
 # The defaults here define:
 # - Three severity/alert tiers
-# - One receiver and one route per tier, applied at two grouping levels (below).
+# - One receiver per tier, and one route per tier under every alert group below
 # - `send_resolved` is true only for critical
 # - Asymmetric notification channels:
 #   - critical - Slack *and* email
@@ -89,21 +89,33 @@ monitoring_server_alert_tiers:
     email: false
     email_fallback: false
 
-# Usually group per-alert and per-host so one host's issue is its own notification
-# rather than being collapsed with every other host firing the same alert.
-monitoring_server_alertmanager_group_by:
-  - alertname
-  - instance
+# How alerts are grouped into notifications. Each entry becomes one Alertmanager
+# route carrying the severity child routes defined above.
+#
+# Routes are first-match-wins, so order matters. The last entry has no
+# `alertnames` and so claims everything not matched above it. To add a grouping,
+# add an entry above that catch-all; the template needs no change.
+monitoring_server_alertmanager_alert_groups:
+  # Filesystem alerts group per filesystem rather than per host, so a shared
+  # network export monitored from two hosts produces one notification instead of
+  # two.
+  - name: filesystem
+    alertnames:
+      - FilesystemFull
+      - InodeUsageHigh
+    group_by:
+      - alertname
+      - severity
+      - device
+      - mountpoint
 
-# Filesystem alerts group per filesystem rather than per host, so a shared
-# network export monitored from two hosts produces one notification instead of
-# two.
-monitoring_server_alertmanager_filesystem_alertnames: FilesystemFull|InodeUsageHigh
-monitoring_server_alertmanager_filesystem_group_by:
-  - alertname
-  - severity
-  - device
-  - mountpoint
+  # Everything else, grouped per-alert and per-host so one host's issue is its
+  # own notification rather than being collapsed with every other host firing
+  # the same alert.
+  - name: default
+    group_by:
+      - alertname
+      - instance
 
 # Suppress lower-severity noise while a higher severity is firing for the same
 # thing. Order matters: Alertmanager evaluates these in sequence.
