@@ -51,12 +51,16 @@ monitoring_server_slack_channel: ""
 #
 # The defaults here define:
 # - Three severity/alert tiers
-# - One receiver per tier, and one route per tier under every alert group below
-# - `send_resolved` is true only for critical
+# - Alert groups for filesystem, monitoring-stack and a catch-all default
+# - One receiver per tier, and one route per tier under every alert group
+# - Inhibit rules to mute lower-severity alerts when a higher-severity alert is
+#   firing
+# - `send_resolved` is true only for critical alerts
 # - Asymmetric notification channels:
 #   - critical - Slack *and* email
 #   - warning  - Slack, falling back to email only when Slack is disabled
 #   - info - Slack only, silent when Slack is disabled
+
 monitoring_server_alert_tiers:
   - name: critical
     # Urgent, user-impacting: notify fast, remind every few hours.
@@ -92,7 +96,7 @@ monitoring_server_alert_tiers:
 # How alerts are grouped into notifications. Each entry becomes one Alertmanager
 # route carrying the severity child routes defined above.
 #
-# Routes are first-match-wins, so order matters. The last entry has no
+# Routes are first-match-wins, so the order matters. The last entry has no
 # `alertnames` and so claims everything not matched above it. To add a grouping,
 # add an entry above that catch-all; the template needs no change.
 monitoring_server_alertmanager_alert_groups:
@@ -109,6 +113,16 @@ monitoring_server_alertmanager_alert_groups:
       - device
       - mountpoint
 
+  # A monitoring-stack scrape failure fans out one alert per target, because the
+  # blackbox job has an `up` series per probed URL. Grouping on job means a dead
+  # exporter is one notification naming the job, not one per URL.
+  - name: monitoring-stack
+    alertnames:
+      - ExporterDown
+    group_by:
+      - alertname
+      - job
+
   # Everything else, grouped per-alert and per-host so one host's issue is its
   # own notification rather than being collapsed with every other host firing
   # the same alert.
@@ -117,43 +131,31 @@ monitoring_server_alertmanager_alert_groups:
       - alertname
       - instance
 
-# Suppress lower-severity noise while a higher severity is firing for the same
-# thing. Order matters: Alertmanager evaluates these in sequence.
+# Alert inhibitions occur in two ways: a higher-severity alert suppresses lower-severity alerts about the same
+# problem, and a down host or endpoint suppresses other alerts about that same
+# host or endpoint
+
+# Severity based inhibitions are generated automatically from the alert tiers
+# above, so the following inhibit rules only cover the second case.
 monitoring_server_alertmanager_inhibit_rules:
-  # An unreachable host shouldn't also send CPU, memory and disk
+  # An unreachable host shouldn't also report CPU, memory and disk
   # warnings about itself, nor its endpoint and certificate alerts
   - source_matchers:
       - alertname="InstanceDown"
     target_matchers:
-      - severity=~"critical|warning|info"
+      - severity=~".+"
     equal:
       - host
-  # A down endpoint suppresses other alerts about that same endpoint
+
+  # A down endpoint suppresses other alerts about that same endpoint, such as its
+  # certificate expiring. Deliberately matching on `instance`, not `host` as
+  # we don't want to lose information that may be useful for debugging a down endpoint.
   - source_matchers:
       - alertname="EndpointDown"
     target_matchers:
-      - severity=~"critical|warning|info"
+      - severity=~".+"
     equal:
       - instance
-  # Inhibition of lower alert tiers, scoped to the same alert and the same filesystem
-  - source_matchers:
-      - severity="critical"
-    target_matchers:
-      - severity=~"warning|info"
-    equal:
-      - alertname
-      - instance
-      - device
-      - mountpoint
-  - source_matchers:
-      - severity="warning"
-    target_matchers:
-      - severity="info"
-    equal:
-      - alertname
-      - instance
-      - device
-      - mountpoint
 
 monitoring_server_hostname_extractor: ansible_host
 

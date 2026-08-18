@@ -33,12 +33,6 @@
      }) %}
 {% endfor %}
 
-{#
-  One route per alert group, in the order they are defined: routes are
-  first-match-wins. A group with no `alertnames` gets no matcher and so claims
-  every alert not matched above it. `matchers` is built first because combine()
-  preserves insertion order, and it reads better above `group_by`.
-#}
 {% set routes = [] %}
 
 {% if notifications_enabled %}
@@ -52,6 +46,51 @@
        })) %}
 {%   endfor %}
 {% endif %}
+
+{#
+  Severity-based inhibition rules
+
+  `monitoring_server_alert_tiers` is ordered most to least-severe, so each tier
+  inhibits every tier below it. `inhibit_equal` says what identifies one
+  occurrence of a group's problem, and defaults to that group's `group_by`
+  without `severity`. The rules compares alerts *across* severities, so keying
+  on it would stop every rule matching.
+
+  Each ruleset is restricted to its own family of alertnames.
+#}
+
+{% set tier_names = monitoring_server_alert_tiers | map(attribute='name') | list %}
+
+{% set claimed_alertnames = [] %}
+{% for group in monitoring_server_alertmanager_alert_groups %}
+{%   set _ = claimed_alertnames.extend(group.alertnames | default([])) %}
+{% endfor %}
+
+{% set inhibit_rules = [] %}
+
+{% for group in monitoring_server_alertmanager_alert_groups %}
+{%   if group.alertnames | default([]) %}
+{%     set family = ['alertname=~"' ~ group.alertnames | join('|') ~ '"'] %}
+{%   elif claimed_alertnames %}
+{%     set family = ['alertname!~"' ~ claimed_alertnames | join('|') ~ '"'] %}
+{%   else %}
+{%     set family = [] %}
+{%   endif %}
+{%   set equal = group.inhibit_equal
+       | default(group.group_by | reject('equalto', 'severity') | list) %}
+{%   for index in range(tier_names | length - 1) %}
+{%     set _ = inhibit_rules.append({
+         'source_matchers': ['severity="' ~ tier_names[index] ~ '"'] + family,
+         'target_matchers': ['severity=~"' ~ tier_names[index + 1:] | join('|') ~ '"'] + family,
+         'equal': equal,
+       }) %}
+{%   endfor %}
+{% endfor %}
+
+{# Cross-cutting rules are not per-family, so they are defined directly in the
+Ansible variables. #}
+
+{% set _ = inhibit_rules.extend(monitoring_server_alertmanager_inhibit_rules) %}
 
 {% set receivers = [{'name': 'null'}] %}
 
@@ -124,7 +163,7 @@
      'global': global_config,
      'templates': [monitoring_server_alertmanager.volume ~ '/template/*.tmpl'],
      'route': route,
-     'inhibit_rules': monitoring_server_alertmanager_inhibit_rules,
+     'inhibit_rules': inhibit_rules,
      'receivers': receivers,
    } %}
 
