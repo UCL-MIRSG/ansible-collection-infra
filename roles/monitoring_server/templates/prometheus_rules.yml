@@ -60,7 +60,7 @@ groups:
 
   - name: down-detector
     rules:
-      - alert: EndpointDown
+      - alert: WebApplicationUnhealthy
         expr: probe_success == 0
         for: 5m
         labels:
@@ -74,10 +74,10 @@ groups:
       # Scoped to the node job. Unqualified, `up == 0` also matches the blackbox,
       # cadvisor and prometheus jobs, and for the blackbox job `instance` is the
       # probed URL - which normalises to the *web host*. A blackbox-exporter
-      # outage would then raise an InstanceDown per probed host and inhibit every
+      # outage would then raise an HostScrapeFailing per probed host and inhibit every
       # real alert about those hosts, burying disk warnings that may well be
-      # the cause. Monitoring-stack scrape failures are ExporterDown instead.
-      - alert: InstanceDown
+      # the cause. Monitoring-stack scrape failures are MonitoringTargetUnreachable instead.
+      - alert: HostScrapeFailing
         expr: up{job="node"} == 0
         for: 5m
         labels:
@@ -87,10 +87,11 @@ groups:
             $labels.instance) }}
         annotations:
           summary: >-
-            {{ $labels.job }} instance {{ $labels.instance }} down
+            {{ $labels.job }} instance {{ $labels.instance }} unreachable
           description: >-
-            {{ $labels.instance }} of job {{ $labels.job }} has been down for
-            more than 5 minutes.
+            {{ $labels.instance }} of job {{ $labels.job }} has not been
+            scrapable for more than 5 minutes. Either the host is down, the node
+            exporter is not running, or Prometheus cannot reach it.
 
       # Scrape failures for the monitoring stack's own jobs: `job!="node"` so a
       # newly added job is covered without editing this rule.
@@ -99,7 +100,7 @@ groups:
       # or, for the blackbox job, the probed URL - neither identifies a host whose
       # own alerts should be suppressed. Omitting `host` keeps these alerts out of
       # the down-host inhibition entirely.
-      - alert: ExporterDown
+      - alert: MonitoringTargetUnreachable
         expr: up{job!="node"} == 0
         for: 5m
         labels:

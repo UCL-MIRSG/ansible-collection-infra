@@ -118,7 +118,7 @@ monitoring_server_alertmanager_alert_groups:
   # exporter is one notification naming the job, not one per URL.
   - name: monitoring-stack
     alertnames:
-      - ExporterDown
+      - MonitoringTargetUnreachable
     group_by:
       - alertname
       - job
@@ -141,7 +141,7 @@ monitoring_server_alertmanager_inhibit_rules:
   # An unreachable host shouldn't also report CPU, memory and disk
   # warnings about itself, nor its endpoint and certificate alerts
   - source_matchers:
-      - alertname="InstanceDown"
+      - alertname="HostScrapeFailing"
     target_matchers:
       - severity=~".+"
     equal:
@@ -151,7 +151,7 @@ monitoring_server_alertmanager_inhibit_rules:
   # certificate expiring. Deliberately matching on `instance`, not `host` as
   # we don't want to lose information that may be useful for debugging a down endpoint.
   - source_matchers:
-      - alertname="EndpointDown"
+      - alertname="WebApplicationUnhealthy"
     target_matchers:
       - severity=~".+"
     equal:
