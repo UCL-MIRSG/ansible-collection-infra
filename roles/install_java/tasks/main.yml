@@ -35,40 +35,29 @@
     path: "{{ java_package_info.stat.lnk_source }}/jre"
   register: java_jre
 
+- name: Set the default java version - {{ java_package_info.stat.lnk_source }}
+  community.general.alternatives:
+    name: java
+    link: /usr/bin/java
+    path: "{{ java_package_info.stat.lnk_source }}/bin/java"
+    state: selected
+
 - name: >-
-    Configure alternatives for Java 8-style layout (separate bin/ and jre/) - {{
+    Set the default JRE directory (Java 8-style layout) - {{
     java_package_info.stat.lnk_source }}
+  community.general.alternatives:
+    name: jre
+    link: /usr/lib/jvm/jre
+    path: "{{ java_package_info.stat.lnk_source }}/jre"
+    state: selected
   when: java_jre.stat.exists
-  block:
-    - name: Set the default java version
-      community.general.alternatives:
-        name: java
-        link: /usr/bin/java
-        path: "{{ java_package_info.stat.lnk_source }}/jre/bin/java"
-        state: selected
-
-    - name: Set the default JRE directory
-      community.general.alternatives:
-        name: jre
-        link: /usr/lib/jvm/jre
-        path: "{{ java_package_info.stat.lnk_source }}/jre"
-        state: selected
 
 - name: >-
-    Configure alternatives for merged JDK/JRE layout (Java 9+) - {{
+    Set the default JRE directory (merged JDK/JRE layout, Java 9+) - {{
     java_package_info.stat.lnk_source }}
+  community.general.alternatives:
+    name: jre
+    link: /usr/lib/jvm/jre
+    path: "{{ java_package_info.stat.lnk_source }}"
+    state: selected
   when: not java_jre.stat.exists
-  block:
-    - name: Set the default java version
-      community.general.alternatives:
-        name: java
-        link: /usr/bin/java
-        path: "{{ java_package_info.stat.lnk_source }}/bin/java"
-        state: selected
-
-    - name: Set the default JRE directory
-      community.general.alternatives:
-        name: jre
-        link: /usr/lib/jvm/jre
-        path: "{{ java_package_info.stat.lnk_source }}"
-        state: selected
