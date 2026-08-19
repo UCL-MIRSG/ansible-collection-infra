@@ -15,7 +15,7 @@ firewalld_public_zone_closed_services:
 firewalld_work_zone_closed_services:
   - ssh
 
-firewalld_internal_zone_sources: [] # yamllint disable-line rule:brackets
+REMOVED [] # yamllint disable-line rule:brackets
 firewalld_work_zone_sources: [] # yamllint disable-line rule:brackets
 firewalld_public_zone_sources: [] # yamllint disable-line rule:brackets
 
