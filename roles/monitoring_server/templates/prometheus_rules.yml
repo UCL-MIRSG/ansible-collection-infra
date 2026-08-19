@@ -1,0 +1,209 @@
+---
+# Managed by Ansible. Deployed verbatim with `copy`, not `template`, so nothing
+# here is Jinja: every {{ }} below is a Go template evaluated by Prometheus when
+# the alert fires.
+#
+# Every rule sets a normalised `host` label, because `instance` is not
+# comparable across scrape jobs - it is `hostname:9100` for node alerts but a
+# URL for blackbox ones.
+groups:
+  - name: tls-expiry
+    rules:
+      # Escalating windows on the same condition: all three fire once the closest
+      # one does. The generated severity ladder controls only the most-severe
+      # notifying
+      - alert: SSLCertExpiringSoon
+        expr: probe_ssl_earliest_cert_expiry - time() < 60 * 60 * 24 * 21
+        for: 1h
+        labels:
+          severity: info
+          host: >-
+            {{ reReplaceAll ":[0-9]+$" "" (reReplaceAll "^https?://" ""
+            $labels.instance) }}
+        annotations:
+          summary:
+            TLS certificate expiring soon (instance {{ $labels.instance }})
+          description:
+            TLS certificate will expire in {{ $value | humanizeDuration }}
+            (instance {{ $labels.instance }})
+
+      - alert: SSLCertExpiringSoon
+        expr: probe_ssl_earliest_cert_expiry - time() < 60 * 60 * 24 * 7
+        for: 1h
+        labels:
+          severity: warning
+          host: >-
+            {{ reReplaceAll ":[0-9]+$" "" (reReplaceAll "^https?://" ""
+            $labels.instance) }}
+        annotations:
+          summary:
+            TLS certificate expiring soon (instance {{ $labels.instance }})
+          description:
+            TLS certificate will expire in {{ $value | humanizeDuration }}
+            (instance {{ $labels.instance }})
+
+      - alert: SSLCertExpiringSoon
+        expr: probe_ssl_earliest_cert_expiry - time() < 60 * 60 * 24 * 2
+        for: 1m
+        labels:
+          severity: critical
+          host: >-
+            {{ reReplaceAll ":[0-9]+$" "" (reReplaceAll "^https?://" ""
+            $labels.instance) }}
+        annotations:
+          summary:
+            TLS certificate expiring imminently (instance {{ $labels.instance
+            }})
+          description:
+            TLS certificate will expire in {{ $value | humanizeDuration }}
+            (instance {{ $labels.instance }})
+
+  - name: down-detector
+    rules:
+      - alert: WebApplicationUnhealthy
+        expr: probe_success == 0
+        for: 5m
+        labels:
+          severity: critical
+          host: >-
+            {{ reReplaceAll ":[0-9]+$" "" (reReplaceAll "^https?://" ""
+            $labels.instance) }}
+        annotations:
+          summary: Endpoint {{ $labels.instance }} down
+
+      # Scoped to the node job. Unqualified, `up == 0` also matches the blackbox,
+      # cadvisor and prometheus jobs, and for the blackbox job `instance` is the
+      # probed URL - which normalises to the *web host*. A blackbox-exporter
+      # outage would then raise an HostScrapeFailing per probed host and inhibit every
+      # real alert about those hosts, burying disk warnings that may well be
+      # the cause. Monitoring-stack scrape failures are MonitoringTargetUnreachable instead.
+      - alert: HostScrapeFailing
+        expr: up{job="node"} == 0
+        for: 5m
+        labels:
+          severity: critical
+          host: >-
+            {{ reReplaceAll ":[0-9]+$" "" (reReplaceAll "^https?://" ""
+            $labels.instance) }}
+        annotations:
+          summary: >-
+            {{ $labels.job }} instance {{ $labels.instance }} unreachable
+          description: >-
+            {{ $labels.instance }} of job {{ $labels.job }} has not been
+            scrapable for more than 5 minutes. Either the host is down, the node
+            exporter is not running, or Prometheus cannot reach it.
+
+      # Scrape failures for the monitoring stack's own jobs: `job!="node"` so a
+      # newly added job is covered without editing this rule.
+      #
+      # Deliberately carries no `host` label. `instance` here is a container name
+      # or, for the blackbox job, the probed URL - neither identifies a host whose
+      # own alerts should be suppressed. Omitting `host` keeps these alerts out of
+      # the down-host inhibition entirely.
+      - alert: MonitoringTargetUnreachable
+        expr: up{job!="node"} == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: Monitoring job {{ $labels.job }} is not being scraped
+          description: >-
+            {{ $labels.instance }} of monitoring job {{ $labels.job }} has
+            failed to be scraped for more than 5 minutes. Alerts that depend on
+            this job are not being evaluated.
+
+  - name: metrics
+    rules:
+      # `keep_firing_for` on the resource alerts below stops a brief gap in
+      # scraped data - e.g. from a slow or failed scrape - from resolving an alert whose
+      # condition is still true, only for it to re-fire minutes later.
+      - alert: MemoryUsageHigh
+        expr:
+          100 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes *
+          100 > 90
+        for: 5m
+        keep_firing_for: 15m
+        labels:
+          severity: warning
+          host: >-
+            {{ reReplaceAll ":[0-9]+$" "" (reReplaceAll "^https?://" ""
+            $labels.instance) }}
+        annotations:
+          summary: Instance memory usage high (Instance:{{ $labels.instance }})
+          description: >-
+            Instance memory usage has been above 90% for 5 minutes, value: {{
+            printf "%.2f" $value }}%
+
+      - alert: CpuLoadHigh
+        expr:
+          100 - avg by(instance)
+          (rate(node_cpu_seconds_total{mode="idle"}[10m])) * 100 > 90
+        for: 15m
+        keep_firing_for: 15m
+        labels:
+          severity: warning
+          host: >-
+            {{ reReplaceAll ":[0-9]+$" "" (reReplaceAll "^https?://" ""
+            $labels.instance) }}
+        annotations:
+          summary: Instance cpu load high (Instance:{{ $labels.instance }})
+          description: >-
+            Instance cpu load, averaged over 10 minutes, has been above 90% for
+            15 minutes, value: {{ printf "%.2f" $value }}%
+
+      # 30m averaging prevents threshold flapping and bridges staleness during scrape drops.
+      # Uses `avail` instead of `free` to exclude root-reserved blocks (reflects true
+      # usable capacity). Do not revert to `free`.
+      # `summary` uses only shared labels because this alert groups multiple hosts.
+      - alert: FilesystemFull
+        expr: >-
+          100 -
+          avg_over_time(node_filesystem_avail_bytes{mountpoint!~"/|/boot.*|/run.*"}[30m])
+          / avg_over_time(node_filesystem_size_bytes[30m]) * 100 > 90
+        for: 15m
+        keep_firing_for: 1h
+        labels:
+          severity: warning
+          host: >-
+            {{ reReplaceAll ":[0-9]+$" "" (reReplaceAll "^https?://" ""
+            $labels.instance) }}
+        annotations:
+          summary: Filestore {{ $labels.mountpoint }} disk space low
+          description: >-
+            {{ $labels.instance }}: {{ $labels.mountpoint }} is {{ printf "%.2f"
+            $value }}% used (threshold 90%)
+
+      - alert: FilesystemFull
+        expr: >-
+          100 -
+          avg_over_time(node_filesystem_avail_bytes{mountpoint!~"/|/boot.*|/run.*"}[30m])
+          / avg_over_time(node_filesystem_size_bytes[30m]) * 100 > 97
+        for: 15m
+        keep_firing_for: 1h
+        labels:
+          severity: critical
+          host: >-
+            {{ reReplaceAll ":[0-9]+$" "" (reReplaceAll "^https?://" ""
+            $labels.instance) }}
+        annotations:
+          summary: Filestore {{ $labels.mountpoint }} almost full
+          description: >-
+            {{ $labels.instance }}: {{ $labels.mountpoint }} is {{ printf "%.2f"
+            $value }}% used (threshold 97%)
+
+      - alert: InodeUsageHigh
+        expr: >-
+          100 - avg_over_time(node_filesystem_files_free[30m]) /
+          avg_over_time(node_filesystem_files[30m]) * 100 > 90
+        for: 15m
+        keep_firing_for: 1h
+        labels:
+          severity: warning
+          host: >-
+            {{ reReplaceAll ":[0-9]+$" "" (reReplaceAll "^https?://" ""
+            $labels.instance) }}
+        annotations:
+          summary: Filestore {{ $labels.mountpoint }} inode usage high
+          description: >-
+            {{ $labels.instance }}: {{ $labels.mountpoint }} has used {{ printf
+            "%.2f" $value }}% of its file nodes (inodes) (threshold 90%)
