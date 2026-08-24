@@ -30,16 +30,7 @@
   roles:
     - role: mirsg.infrastructure.provision
     - role: mirsg.infrastructure.install_python
-    - role: mirsg.infrastructure.install_java
-      when:
-        (ansible_os_family | lower == 'redhat') and
-        (ansible_distribution_major_version == '8')
-    - role: mirsg.infrastructure.install_java
-      vars:
-        java_major_version: 11
-      when:
-        (ansible_os_family | lower == 'redhat') and
-        (ansible_distribution_major_version == '9')
+    - role: ome.java # this is also called by ome.ice via mirsg.infrastructure.omero_server
     - role: mirsg.infrastructure.ldap
       when: omero_server_use_ldap
     - role: mirsg.infrastructure.ssl_certificates
