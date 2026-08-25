@@ -26,3 +26,6 @@ roles:
 
   - src: ome.ice
     version: 4.3.0
+
+  - src: ome.java
+    version: 2.3.0
