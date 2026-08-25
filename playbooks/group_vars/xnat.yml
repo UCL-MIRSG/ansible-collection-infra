@@ -64,7 +64,7 @@ postgresql_client_ssl_certificate:
   cache_filename: "{{ database_client_certificate_cache_filename }}" # where to store the client certificate in cache
 
 java:
-  keystore_path: /usr/lib/jvm/jre/lib/security/cacerts/
+  keystore_path: /etc/pki/java/cacerts
 
 ldap_ca_cert_file_on_client: "{{ xnat.install_downloads }}/certs/ldap-ca.cert"
 

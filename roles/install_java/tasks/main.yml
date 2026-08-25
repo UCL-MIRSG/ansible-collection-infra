@@ -1,7 +1,21 @@
 ---
+- name: Add Eclipse Temurin (Adoptium) repository GPG key
+  ansible.builtin.rpm_key:
+    key: "{{ java_adoptium_repo_gpgkey }}"
+    state: present
+
+- name: Add Eclipse Temurin (Adoptium) yum repository
+  ansible.builtin.yum_repository:
+    name: adoptium
+    description: Eclipse Temurin (Adoptium)
+    baseurl: "{{ java_adoptium_repo_baseurl }}"
+    gpgcheck: true
+    gpgkey: "{{ java_adoptium_repo_gpgkey }}"
+    enabled: true
+
 - name: Ensure correct Java version is installed - {{ java_package }}
   ansible.builtin.package:
-    name: "{{ java_package }}-{{ java_package_version }}"
+    name: "{{ java_package }}"
     state: installed
 
 - name: Set JAVA_HOME through shell script
@@ -24,13 +38,26 @@
 - name: Set the default java version - {{ java_package_info.stat.lnk_source }}
   community.general.alternatives:
     name: java
-    path: "{{ java_package_info.stat.lnk_source }}/jre/bin/java"
+    link: /usr/bin/java
+    path: "{{ java_package_info.stat.lnk_source }}/bin/java"
+    state: selected
+
+- name: >-
+    Set the default JRE directory (Java 8-style layout) - {{
+    java_package_info.stat.lnk_source }}
+  community.general.alternatives:
+    name: jre
+    link: /usr/lib/jvm/jre
+    path: "{{ java_package_info.stat.lnk_source }}/jre"
     state: selected
   when: java_jre.stat.exists
 
-- name: Set the default java version - {{ java_package_info.stat.lnk_source }}
+- name: >-
+    Set the default JRE directory (merged JDK/JRE layout, Java 9+) - {{
+    java_package_info.stat.lnk_source }}
   community.general.alternatives:
-    name: java
-    path: "{{ java_package_info.stat.lnk_source }}/bin/java"
+    name: jre
+    link: /usr/lib/jvm/jre
+    path: "{{ java_package_info.stat.lnk_source }}"
     state: selected
   when: not java_jre.stat.exists
