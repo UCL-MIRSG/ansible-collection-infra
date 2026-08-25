@@ -6,7 +6,7 @@ XNAT is written in Java with the Velocity Template Language (VTL) framework
 providing front-end integration with HTML/CSS/Javascript. XNAT's interface is
 primarily a web server which allows direct access through a browser or
 programmatic access through the
-[REST API](https://wiki.xnat.org/display/XAPI/XNAT+REST+API+Directory), although
+[REST API](https://wiki.xnat.org/xnat-api/xnat-rest-api-directory), although
 other interfaces can be provided such as the DICOM SCP node which receives DICOM
 data.
 
