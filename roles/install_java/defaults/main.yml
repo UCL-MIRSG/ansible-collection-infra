@@ -1,5 +1,12 @@
 ---
 java_profile_d: /etc/profile.d
+
+java_major_version: 8
+java_package: temurin-{{ java_major_version }}-jdk
 java_home: /usr/lib/jvm/jre
-java_package: java-1.8.0-openjdk
-java_package_version: devel
+
+java_adoptium_repo_baseurl:
+  https://packages.adoptium.net/artifactory/rpm/rhel/{{
+  ansible_facts['distribution_major_version'] }}/{{
+  ansible_facts['architecture'] }}
+java_adoptium_repo_gpgkey: https://packages.adoptium.net/artifactory/api/gpg/key/public
