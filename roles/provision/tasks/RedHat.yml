@@ -10,6 +10,7 @@
   register: disable_postgresql_module
   changed_when:
     - "'Disabling modules:' in disable_postgresql_module.stdout"
+  when: ansible_facts['distribution_major_version'] is version('10', '<')
 
 - name: Import postgresql rpm key
   ansible.builtin.rpm_key:
