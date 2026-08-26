@@ -12,7 +12,7 @@ driver:
 platforms:
   - name: xnat_db
     hostname: xnat.db.local
-    image: rockylinux/rockylinux:10-ubi-init
+    image: ghcr.io/almalinux/10-init
     command: ""
     cgroupns_mode: host
     privileged: true
@@ -42,7 +42,7 @@ platforms:
 
   - name: xnat_web
     hostname: xnat.web.local
-    image: rockylinux/rockylinux:10-ubi-init
+    image: ghcr.io/almalinux/10-init
     command: ""
     cgroupns_mode: host
     privileged: true
@@ -74,7 +74,7 @@ platforms:
 
   - name: xnat_cserv
     hostname: xnat.cserv.local
-    image: rockylinux/rockylinux:9-ubi-init
+    image: ghcr.io/almalinux/10-init
     command: ""
     cgroupns_mode: host
     privileged: true
