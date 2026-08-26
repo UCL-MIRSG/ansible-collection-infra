@@ -4,6 +4,8 @@ collections:
   - ansible.posix
   - community.postgresql
   - community.crypto
+  - name: community.docker
+    version: 4.8.8
 
 roles:
   - src: ome.omero_web
