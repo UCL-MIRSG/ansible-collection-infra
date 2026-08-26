@@ -25,6 +25,7 @@ platforms:
     groups:
       - all
       - db
+      - rocky${ROCKY_VERSION:-8}
     docker_networks:
       - name: omero
         ipam_config:
@@ -54,6 +55,7 @@ platforms:
     groups:
       - all
       - omero
+      - rocky${ROCKY_VERSION:-8}
     networks:
       - name: omero
         ipv4_address: 192.168.56.3

@@ -21,7 +21,7 @@
 
 - name: Copy prometheus rules file
   ansible.builtin.copy:
-    src: templates/prometheus_rules.yml.j2
+    src: templates/prometheus_rules.yml
     dest: "{{ monitoring_server_prometheus.external_data_dir }}/rules.yml"
     owner: "{{ monitoring_server_owner }}"
     group: "{{ monitoring_server_group }}"

@@ -6,6 +6,7 @@ monitoring_server_uid: 595
 monitoring_server_cert_owner: root
 monitoring_server_cert_group: root
 monitoring_server_storage_root: /data/monitoring
+monitoring_server_web_group: web
 
 # mirsg.monitoring_server CA and server certificate
 monitoring_server_certificate_cache_directory:
@@ -42,25 +43,140 @@ monitoring_server_slack_enabled: false
 monitoring_server_slack_webhook_url: ""
 monitoring_server_slack_channel: ""
 
+# mirsg.monitoring_server AlertManager Configuration
+#
+# templates/alertmanager.yml.j2 assembles this structured data into a valid
+# alertmanager config structure and serialises it. Change policy here rather
+# than writing it by hand in the template.
+#
+# The defaults here define:
+# - Three severity/alert tiers
+# - Alert groups for filesystem, monitoring-stack and a catch-all default
+# - One receiver per tier, and one route per tier under every alert group
+# - Inhibit rules to mute lower-severity alerts when a higher-severity alert is
+#   firing
+# - `send_resolved` is true only for critical alerts
+# - Asymmetric notification channels:
+#   - critical - Slack *and* email
+#   - warning  - Slack, falling back to email only when Slack is disabled
+#   - info - Slack only, silent when Slack is disabled
+
+monitoring_server_alert_tiers:
+  - name: critical
+    # Urgent, user-impacting: notify fast, remind every few hours.
+    receiver: mirsg-critical
+    group_wait: 30s
+    group_interval: 5m
+    repeat_interval: 4h
+    send_resolved: true
+    slack: true
+    email: true
+    email_fallback: false
+  - name: warning
+    # Act-soon: batch a little, then remind every few days.
+    receiver: mirsg-warning
+    group_wait: 1m
+    group_interval: 10m
+    repeat_interval: 72h
+    send_resolved: false
+    slack: true
+    email: false
+    email_fallback: true
+  - name: info
+    receiver: mirsg-info
+    # Awareness only: notify once, effectively no reminders.
+    group_wait: 5m
+    group_interval: 30m
+    repeat_interval: 168h
+    send_resolved: false
+    slack: true
+    email: false
+    email_fallback: false
+
+# How alerts are grouped into notifications. Each entry becomes one Alertmanager
+# route carrying the severity child routes defined above.
+#
+# Routes are first-match-wins, so the order matters. The last entry has no
+# `alertnames` and so claims everything not matched above it. To add a grouping,
+# add an entry above that catch-all; the template needs no change.
+monitoring_server_alertmanager_alert_groups:
+  # Filesystem alerts group per filesystem rather than per host, so a shared
+  # network export monitored from two hosts produces one notification instead of
+  # two.
+  - name: filesystem
+    alertnames:
+      - FilesystemFull
+      - InodeUsageHigh
+    group_by:
+      - alertname
+      - severity
+      - device
+      - mountpoint
+
+  # A monitoring-stack scrape failure fans out one alert per target, because the
+  # blackbox job has an `up` series per probed URL. Grouping on job means a dead
+  # exporter is one notification naming the job, not one per URL.
+  - name: monitoring-stack
+    alertnames:
+      - MonitoringTargetUnreachable
+    group_by:
+      - alertname
+      - job
+
+  # Everything else, grouped per-alert and per-host so one host's issue is its
+  # own notification rather than being collapsed with every other host firing
+  # the same alert.
+  - name: default
+    group_by:
+      - alertname
+      - instance
+
+# Alert inhibitions occur in two ways: a higher-severity alert suppresses lower-severity alerts about the same
+# problem, and a down host or endpoint suppresses other alerts about that same
+# host or endpoint
+
+# Severity based inhibitions are generated automatically from the alert tiers
+# above, so the following inhibit rules only cover the second case.
+monitoring_server_alertmanager_inhibit_rules:
+  # An unreachable host shouldn't also report CPU, memory and disk
+  # warnings about itself, nor its endpoint and certificate alerts
+  - source_matchers:
+      - alertname="HostScrapeFailing"
+    target_matchers:
+      - severity=~".+"
+    equal:
+      - host
+
+  # A down endpoint suppresses other alerts about that same endpoint, such as its
+  # certificate expiring. Deliberately matching on `instance`, not `host` as
+  # we don't want to lose information that may be useful for debugging a down endpoint.
+  - source_matchers:
+      - alertname="WebApplicationUnhealthy"
+    target_matchers:
+      - severity=~".+"
+    equal:
+      - instance
+
 monitoring_server_hostname_extractor: ansible_host
 
 monitoring_server_alertmanager:
   container_name: alertmanager
-  image: prom/alertmanager
+  image: prom/alertmanager:v0.34.0@sha256:690c7b525f4367aa91f73e2f91c632206d32e97c6384bdbf2fb7a861b420340d
   external_data_dir: "{{ monitoring_server_storage_root }}/alertmanager"
   volume: /alertmanager
   commandline_args:
     web.external-url: https://{{ monitoring_server_hostname }}/alertmanager/
     storage.path: /alertmanager/data
     config.file: /alertmanager/alertmanager.yml
+    data.retention: 336h
 
 monitoring_server_cadvisor:
   container_name: cadvisor
-  image: gcr.io/cadvisor/cadvisor:latest
+  image: ghcr.io/google/cadvisor:v0.60.5@sha256:763aecf1c32c2be8a1a75f9abfc2fc461005c9dbbaa39cb356b354aac1296dbe
 
 monitoring_server_grafana:
   container_name: grafana
-  image: grafana/grafana
+  image: grafana/grafana:13.1.3@sha256:ab5cb380e3ff3172d6c8bd2e7cfd31cce977d2881b260e1f5bc089bf0b759b43
   external_data_dir: "{{ monitoring_server_storage_root }}/grafana"
   external_storage_dir: "{{ monitoring_server_storage_root }}/grafana/storage"
   volume: /var/lib/grafana
@@ -88,7 +204,7 @@ monitoring_server_nginx:
   ssl_key_file: /etc/nginx/ssl/server.key
 
 monitoring_server_prometheus:
-  image: prom/prometheus
+  image: prom/prometheus:v3.13.2@sha256:508729e0e2d18e11fd742a5a5ca70e557b940a93948c3c95fd0123a6fd538b69
   container_name: prometheus
   external_data_dir: "{{ monitoring_server_storage_root }}/prometheus"
   volume: /prometheus
@@ -97,4 +213,4 @@ monitoring_server_prometheus:
   commandline_args:
     config.file: /prometheus/prometheus.yml
     storage.tsdb.path: /prometheus/data
-    web.external-url: /prometheus/
+    web.external-url: https://{{ monitoring_server_hostname }}/prometheus/
