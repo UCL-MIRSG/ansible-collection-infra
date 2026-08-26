@@ -88,7 +88,7 @@ platforms:
       - all
       - container_service
       - container_service_host
-      - rocky9
+      - alma10
     networks:
       - name: xnat
         ipv4_address: 192.168.56.4
