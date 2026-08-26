@@ -46,6 +46,10 @@
         name: crond.service
         state: started
         enabled: true
+    - name: Ensure gnupg2 is installed for rpm_key
+      ansible.builtin.package:
+        name: gnupg2
+        state: present
     - name: Import postgresql RPM GPG key
       ansible.builtin.rpm_key:
         state: present
