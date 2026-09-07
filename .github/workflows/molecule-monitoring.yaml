@@ -28,6 +28,7 @@ jobs:
         scenario:
           - centos7_monitoring
           - rocky9_monitoring
+          - alma10_monitoring
     env:
       MOLECULE_RUN_TAGS: all
       PY_COLORS: 1
