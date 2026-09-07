@@ -15,6 +15,11 @@
   when:
     ansible_os_family == "RedHat" and ansible_distribution_major_version == "7"
 
+- name: Ensure gnupg2 is installed for rpm_key
+  ansible.builtin.package:
+    name: gnupg2
+    state: present
+
 - name: Import docker rpm key
   ansible.builtin.rpm_key:
     state: present
