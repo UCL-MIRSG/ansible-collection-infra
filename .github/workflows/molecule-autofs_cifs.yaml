@@ -9,6 +9,7 @@ on:
       - roles/**
       - meta/el7-requirements.yml
       - meta/el9-requirements.yml
+      - meta/el10-requirements.yml
       - .github/workflows/molecule-autofs_cifs.yaml
       - "!**/README.md"
 
@@ -27,6 +28,7 @@ jobs:
       matrix:
         scenario:
           - rocky9
+          - alma10
     env:
       MOLECULE_RUN_TAGS: all
       PY_COLORS: 1
