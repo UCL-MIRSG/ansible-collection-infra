@@ -8,6 +8,7 @@ on:
       - roles/provision_accounts/**
       - meta/el7-requirements.yml
       - meta/el9-requirements.yml
+      - meta/el10-requirements.yml
       - playbooks/setup_user_accounts.yml
       - .github/workflows/molecule-provision_accounts.yaml
       - "!**/README.md"
@@ -28,6 +29,7 @@ jobs:
         scenario:
           - centos7
           - rocky9
+          - alma10
     env:
       MOLECULE_RUN_TAGS: all
       PY_COLORS: 1
