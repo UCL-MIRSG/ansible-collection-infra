@@ -1,0 +1,4 @@
+---
+# test this scenario from the roles/provision directory with the command
+# molecule --base-config ../../molecule_configs/alma10_base_config.yml test --scenario alma10
+{}
