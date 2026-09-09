@@ -18,3 +18,12 @@
       ansible.builtin.package:
         name: java-11-openjdk-devel
         state: present
+      when: ansible_facts['distribution_major_version'] is version('10', '<')
+
+    - name:
+        Install Java 21 before the role installs Java 8 (java-11-openjdk is not
+        available on EL10)
+      ansible.builtin.package:
+        name: java-21-openjdk-devel
+        state: present
+      when: ansible_facts['distribution_major_version'] is version('10', '>=')
