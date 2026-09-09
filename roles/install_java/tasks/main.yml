@@ -1,4 +1,9 @@
 ---
+- name: Ensure gnupg2 is installed for rpm_key
+  ansible.builtin.package:
+    name: gnupg2
+    state: present
+
 - name: Add Eclipse Temurin (Adoptium) repository GPG key
   ansible.builtin.rpm_key:
     key: "{{ java_adoptium_repo_gpgkey }}"
