@@ -1,0 +1,29 @@
+---
+# Fails if the XNAT / Java / pipeline engine versions are not compatible.
+#
+# XNAT >= 1.10 needs Java 21 and pipeline engine >= 1.9.0;
+# XNAT <  1.10 needs Java 8  and pipeline engine <  1.9.0.
+#
+- name: Check the XNAT component versions are a supported combination
+  vars:
+    xnat_is_1_10: "{{ xnat_version is version('1.10', '>=') }}"
+    required_java: "{{ 21 if xnat_is_1_10 else 8 }}"
+    pipeline_is_1_9_0: "{{ xnat_pipeline_version is version('1.9.0', '>=') }}"
+  block:
+    - name: Assert the Java major version matches the XNAT version
+      ansible.builtin.assert:
+        quiet: true
+        that: java_major_version | int == required_java | int
+        fail_msg: >-
+          XNAT {{ xnat_version }} needs Java {{ required_java }}
+          (set java_major_version), but it is {{ java_major_version }}.
+
+    - name: Assert the pipeline engine version matches the XNAT version
+      ansible.builtin.assert:
+        quiet: true
+        that: pipeline_is_1_9_0 == xnat_is_1_10
+        fail_msg: >-
+          XNAT {{ xnat_version }} needs a pipeline engine
+          {{ 'at or above' if xnat_is_1_10 else 'below' }} 1.9.0, but
+          xnat_pipeline_version is {{ xnat_pipeline_version }}.
+      when: xnat_pipeline_engine_enabled
