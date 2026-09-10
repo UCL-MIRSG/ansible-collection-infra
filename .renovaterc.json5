@@ -35,8 +35,10 @@
       description: "Update XNAT version specified in roles/xnat/defaults/main.yml",
       managerFilePatterns: ["/(^|/)*defaults/main.yml$/"],
       matchStrings: ["xnat_version:\\s?(?<currentValue>.*?)\\n"],
-      depNameTemplate: "xnatdev/xnat-web",
-      datasourceTemplate: "bitbucket-tags",
+      // XNAT releases moved from Bitbucket (xnatdev/xnat-web) to the
+      // NrgXnat/xnat monorepo on GitHub; the WAR is a GitHub release asset.
+      depNameTemplate: "NrgXnat/xnat",
+      datasourceTemplate: "github-releases",
     },
     {
       customType: "regex",
