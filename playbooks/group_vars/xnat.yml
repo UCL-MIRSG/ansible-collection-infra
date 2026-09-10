@@ -13,12 +13,17 @@ xnat_source:
   pipeline_installer_file_name:
     pipeline-installer-{{ xnat_pipeline_version }}.tar
   xnat_war_url:
-    https://api.bitbucket.org/2.0/repositories/xnatdev/xnat-web/downloads/xnat-web-{{
+    https://github.com/NrgXnat/xnat/releases/download/{{ xnat_version }}/xnat-web-{{
     xnat_version }}.war
   pipelines_url:
     https://api.github.com/repos/NrgXnat/xnat-pipeline-engine/tarball/{{
     xnat_pipeline_version }}
   context_file_location: /usr/share/tomcat/webapps/ROOT/META-INF/context.xml
+
+# mirsg.infrastructure.install_java
+# XNAT < 1.10 requires Java 8
+# XNAT >= 1.10 requires Java 21
+java_major_version: "{{ 21 if xnat_version is version('1.10', '>=') else 8 }}"
 
 # mirsg.infrastructure.tomcat
 tomcat_version: 9.0.121
