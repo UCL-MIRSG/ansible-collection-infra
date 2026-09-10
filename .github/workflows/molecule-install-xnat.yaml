@@ -9,6 +9,7 @@ on:
       - roles/**
       - meta/el7-requirements.yml
       - meta/el9-requirements.yml
+      - meta/el10-requirements.yml
       - .github/workflows/molecule-install-xnat.yaml
       - "!**/README.md"
   release:
@@ -32,6 +33,7 @@ jobs:
           - centos7_xnat
           - rocky9_xnat
           - alma10_xnat
+          - alma10_xnat_1_10
     env:
       MOLECULE_RUN_TAGS: all
       PY_COLORS: 1
