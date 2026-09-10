@@ -20,6 +20,8 @@
     - name: Install Java
       ansible.builtin.include_role:
         name: mirsg.infrastructure.install_java
+      vars:
+        java_major_version: 8
 
     - name: Install Python
       ansible.builtin.include_role:
