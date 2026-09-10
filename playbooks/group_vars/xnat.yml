@@ -20,6 +20,11 @@ xnat_source:
     xnat_pipeline_version }}
   context_file_location: /usr/share/tomcat/webapps/ROOT/META-INF/context.xml
 
+# mirsg.infrastructure.install_java
+# XNAT < 1.10 requires Java 8
+# XNAT >= 1.10 requires Java 21
+java_major_version: "{{ 21 if xnat_version is version('1.10', '>=') else 8 }}"
+
 # mirsg.infrastructure.tomcat
 tomcat_version: 9.0.121
 tomcat_owner: tomcat
