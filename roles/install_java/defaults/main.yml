@@ -1,7 +1,6 @@
 ---
 java_profile_d: /etc/profile.d
 
-java_major_version: 8
 java_package: temurin-{{ java_major_version }}-jdk
 java_home: /usr/lib/jvm/jre
 
