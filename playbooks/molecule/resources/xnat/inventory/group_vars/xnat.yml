@@ -1,4 +1,8 @@
 ---
+# mirsg.infrastructure.install_java
+# XNAT < 1.10 requires Java 8
+java_major_version: 8
+
 # mirsg.infrastructure.firewalld
 firewalld_allow_public_access: true
 

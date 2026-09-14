@@ -206,14 +206,19 @@
 
 - name: Enable AutoRun pipeline
   ansible.builtin.uri:
-    url: "{{ web_server.url }}/xapi/pipelines"
+    url: "{{ web_server.url }}/xapi/prefs/props/pipelines/{{ item.name }}"
     user: "{{ xnat_service_admin.username }}"
     password: "{{ xnat_service_admin.password }}"
-    method: POST
+    method: PUT
     body_format: json
-    body:
-      autoRunEnabled: true
-      allowAutoRunProjectOverride: false
+    body: "{{ item.value }}"
     validate_certs: "{{ ssl.validate_certs }}"
     status_code: 200
+  loop:
+    - name: autoRunEnabled
+      value: "true"
+    - name: allowAutoRunProjectOverride
+      value: "false"
+  loop_control:
+    label: "{{ item.name }}"
   when: xnat_autorun_enabled
