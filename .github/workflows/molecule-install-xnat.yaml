@@ -9,6 +9,7 @@ on:
       - roles/**
       - meta/el7-requirements.yml
       - meta/el9-requirements.yml
+      - meta/el10-requirements.yml
       - .github/workflows/molecule-install-xnat.yaml
       - "!**/README.md"
   release:

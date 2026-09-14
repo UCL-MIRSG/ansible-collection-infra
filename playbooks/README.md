@@ -96,3 +96,35 @@ to run molecule on the relevant role.
 | [restart_xnat_or_omero.yml](./restart_xnat_or_omero.yml) | Playbook for restarting XNAT or OMERO (as well as the associated Postgresql service). To be used in the event of a system outage. To run a restart for OMERO make sure to set the `services_to_restart` variable when calling the playbook to `['omero-server', 'omero-web']`. |
 | [setup_user_accounts.yml](./setup_user_accounts.yml)     | Playbook for adding MIRSG administrator accounts to the application and database hosts.                                                                                                                                                                                        |
 | [upgrade_postgresql.yml](./upgrade_postgresql.yml)       | Playbook for running an upgrade of Postgresql.                                                                                                                                                                                                                                 |
+
+## XNAT version compatibility
+
+XNAT 1.10 is a major release that moves from Java 8 to Java 21 (and dcm4che 2
+to 5) and needs newer versions of some plugins. It still runs on Tomcat 9 and
+PostgreSQL 14.
+
+`install_xnat.yml` uses the `install_java`, `tomcat`, `postgresql` and `xnat`
+roles, so the versions they install must be compatible:
+
+| `xnat_version`  | `xnat_pipeline_version` | `java_major_version` | `tomcat_version` | `postgresql_version` |
+| --------------- | ----------------------- | -------------------- | ---------------- | -------------------- |
+| 1.8.0 – 1.9.x   | < 1.9.0 (e.g. 1.8.10)   | 8                    | 9.0.x            | 14                   |
+| 1.10.0 – 1.10.1 | >= 1.9.0 (e.g. 1.9.0)   | 21                   | 9.0.x            | 14                   |
+
+Where each variable is set:
+
+- `xnat_version` and `xnat_pipeline_version`
+  [default](../roles/xnat/defaults/main.yml) to `1.9.3.5` and `1.8.10` (the XNAT
+  1.9.x profile)
+- `java_major_version`
+  [has no default](../roles/install_java/defaults/main.yml).
+- `tomcat_version` is pinned to a 9.0.x release in the
+  [playbook group vars](./group_vars/xnat.yml).
+- `postgresql_version` defaults to `14` in the
+  [`postgresql` role](../roles/postgresql/defaults/main.yml)
+
+The `xnat_version`, `xnat_pipeline_version`, `java_major_version` can be
+overridden in your inventory `group_vars` for the `xnat` group.
+
+`postgresql_version` can be overridden in your inventory `group_vars` for any
+group that contains both the web server and the database hosts.
