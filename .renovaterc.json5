@@ -31,6 +31,13 @@
       ],
       allowedVersions: "<3.0.0",
     },
+    {
+      description: "community.postgresql >=5.0 drops Python 2 support (postgresql_db uses urllib.parse), so pin to <5 for RedHat7 (Python 2.7)",
+      matchManagers: ["ansible-galaxy"],
+      matchPackageNames: ["community.postgresql"],
+      matchFileNames: ["meta/el7-requirements.yml"],
+      allowedVersions: "<5.0.0",
+    },
   ],
   customManagers: [
     {
