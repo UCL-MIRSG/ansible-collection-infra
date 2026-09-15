@@ -104,7 +104,10 @@ to 5) and needs newer versions of some plugins. It still runs on Tomcat 9 and
 PostgreSQL 14.
 
 `install_xnat.yml` uses the `install_java`, `tomcat`, `postgresql` and `xnat`
-roles, so the versions they install must be compatible:
+roles, so the versions they install must be compatible. The playbook first
+checks the `xnat_version` is compatible with the `java_major_version` and
+`xnat_pipeline_version`, and fails the run if the combination is not one of
+these:
 
 | `xnat_version`  | `xnat_pipeline_version` | `java_major_version` | `tomcat_version` | `postgresql_version` |
 | --------------- | ----------------------- | -------------------- | ---------------- | -------------------- |

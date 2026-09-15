@@ -1,4 +1,14 @@
 ---
+- name: Validate XNAT component versions
+  hosts: xnat
+  gather_facts: false
+
+  tasks:
+    - name: Assert the XNAT, Java and pipeline engine versions are compatible
+      ansible.builtin.import_role:
+        name: mirsg.infrastructure.xnat
+        tasks_from: assert
+
 - name: Configure the XNAT web server and create PostgreSQL client certificate
   hosts: xnat
   become: true
