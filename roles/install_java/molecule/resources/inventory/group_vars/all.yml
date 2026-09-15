@@ -1,1 +1,3 @@
 ---
+# java_major_version has no role default
+java_major_version: 8
