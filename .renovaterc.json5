@@ -25,7 +25,10 @@
       description: "community.crypto >=3.0 needs Python >=3.7, so pin to <3 for RedHat7 (Python 2.7) and RedHat8 (Python 3.6)",
       matchManagers: ["ansible-galaxy"],
       matchPackageNames: ["community.crypto"],
-      matchFileNames: ["meta/el7-requirements.yml", "meta/omero-el8-requirements.yml"],
+      matchFileNames: [
+        "meta/el7-requirements.yml",
+        "meta/omero-el8-requirements.yml",
+      ],
       allowedVersions: "<3.0.0",
     },
   ],
