@@ -1,9 +1,13 @@
 ---
 collections:
-  - community.general
-  - ansible.posix
-  - community.postgresql
-  - community.crypto
+  - name: community.general
+    version: 13.4.0
+  - name: ansible.posix
+    version: 2.2.2
+  - name: community.postgresql
+    version: 4.2.0
+  - name: community.crypto
+    version: 3.4.0
   - name: community.docker
     version: 4.8.8
 
