@@ -37,6 +37,8 @@
       matchPackageNames: ["community.postgresql"],
       matchFileNames: ["meta/el7-requirements.yml"],
       allowedVersions: "<4.2.0",
+    },
+    {
       description: "Keep default XNAT version to 1.9.x",
       matchPackageNames: ["NrgXnat/xnat"],
       allowedVersions: "<1.10",
