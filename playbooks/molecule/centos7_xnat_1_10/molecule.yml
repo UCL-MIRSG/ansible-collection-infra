@@ -116,8 +116,3 @@ provisioner:
     ANSIBLE_VERBOSITY: 1
     ANSIBLE_ROLES_PATH: ${MOLECULE_SCENARIO_DIRECTORY}/../../../roles/:~/.ansible/roles
     ANSIBLE_COLLECTIONS_PATH: ${MOLECULE_SCENARIO_DIRECTORY}/../../../../../../:~/.ansible/collections
-
-lint: |
-  set -e
-  yamllint .
-  ansible-lint .
