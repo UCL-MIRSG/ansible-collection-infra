@@ -63,6 +63,36 @@ omero_server_selfsigned_certificates: true
 
 omero_server_ice_version: 3.6
 
+# Ice binaries, installed under omero_server_ice_install_dir and symlinked to
+# <omero_server_ice_install_dir>/ice. Keyed by the EL major version.
+omero_server_ice_install_dir: /opt
+omero_server_ice_archives:
+  "8":
+    url: https://github.com/ome/zeroc-ice-centos8/releases/download/0.0.1/ice-3.6.5-0.0.1-centos8-amd64.tar.gz
+    sha256: 4cd6061f95a5033c0e38812d20be4b7dc61a15329c44312496ccab48879d29c4
+    root: ice-3.6.5-0.0.1
+  "9":
+    url: https://github.com/glencoesoftware/zeroc-ice-rhel9-x86_64/releases/download/20231130/Ice-3.6.5-rhel9-x86_64.tar.gz
+    sha256: 9da10544e46dc95197e670dda4df18200d80991c404b2a2692d635ab59896c5d
+    root: Ice-3.6.5
+# Additional packages needed by the Ice binaries. libdb-cxx is in the CRB
+# repository on EL9, which is enabled automatically.
+omero_server_ice_packages:
+  "9":
+    - libdb-cxx
+
+omero_server_system_packages:
+  - python3
+  - python3-pip
+  - python3-setuptools
+  - patch
+  - rsync
+  - tar
+  - unzip
+  - wget
+  - zip
+omero_server_virtualenv_command: python3 -m venv
+
 python_version: 3.9
 omero_server_python_version: "{{ python_version | replace('.', '') }}"
 

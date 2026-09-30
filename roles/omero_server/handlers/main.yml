@@ -1,8 +1,12 @@
 ---
 # handlers for omero-server
-# Don't use omero-common handlers because systemd might be disabled.
-# This also avoids problems with ordering of handlers:
-# http://stackoverflow.com/a/35130254
+# Handler names are prefixed with the service to avoid clashing with the
+# omero_web handlers when both roles are used in the same play
+
+- name: Reload systemd for omero-server
+  become: true
+  ansible.builtin.systemd_service:
+    daemon_reload: true
 
 - name: Rewrite omero-server configuration # noqa: no-changed-when
   become: true
