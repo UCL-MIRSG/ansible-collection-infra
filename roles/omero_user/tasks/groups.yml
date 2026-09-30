@@ -23,7 +23,7 @@
     {{ item.type }}
   when: >
     (omero_group_list | selectattr('name', 'equalto', item.name) |
-      list | length) < 1
+    list | length) < 1
   loop: "{{ omero_group_create }}"
   loop_control:
     label: "{{ item.name }}"

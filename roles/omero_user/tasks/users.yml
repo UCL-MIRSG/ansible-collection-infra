@@ -24,7 +24,7 @@
     item.password | quote }} {{ item.groups }}
   when: >
     (omero_user_list | selectattr('login', 'equalto', item.login) |
-      list | length) < 1
+    list | length) < 1
   loop: "{{ omero_user_create }}"
   loop_control:
     label: "{{ item.login }}"
