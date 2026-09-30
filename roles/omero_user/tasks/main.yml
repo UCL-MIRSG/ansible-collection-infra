@@ -1,0 +1,20 @@
+---
+- name: Reset the OMERO root password
+  ansible.builtin.include_tasks:
+    file: reset-root-password.yml
+  when: omero_user_reset_root_password | length > 0
+
+- name: Create OMERO groups
+  ansible.builtin.include_tasks:
+    file: groups.yml
+  when: omero_group_create | length > 0
+
+- name: Create OMERO users
+  ansible.builtin.include_tasks:
+    file: users.yml
+  when: omero_user_create | length > 0
+
+- name: Reset OMERO user passwords
+  ansible.builtin.include_tasks:
+    file: reset-password.yml
+  when: omero_user_create | length > 0

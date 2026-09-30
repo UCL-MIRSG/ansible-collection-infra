@@ -1,0 +1,24 @@
+---
+omero_user_bin_omero: /opt/omero/server/OMERO.server/bin/omero
+# The OMERO.server system user, used to run the omero CLI
+omero_user_system: omero
+
+# OMERO admin credentials used to create users and groups
+omero_user_admin_user: root
+omero_user_admin_pass: omero
+
+# Users to create, a list of dictionaries with keys login, firstname, lastname,
+# password, groups (e.g. `--group-name system`) and optionally force (reset the
+# password of an existing user)
+omero_user_create: [] # yamllint disable-line rule:brackets
+# Groups to create, a list of dictionaries with keys name and type
+omero_group_create: [] # yamllint disable-line rule:brackets
+
+# Reset the OMERO root password to this value if not empty
+omero_user_reset_root_password: ""
+
+# Database connection, used to reset passwords
+omero_user_dbhost: localhost
+omero_user_dbuser: omero
+omero_user_dbname: omero
+omero_user_dbpassword: omero
