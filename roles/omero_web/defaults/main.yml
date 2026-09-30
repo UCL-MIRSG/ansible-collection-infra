@@ -17,31 +17,31 @@ omero_web_system_packages:
   - python3-pip
   - python3-setuptools
 
+# yamllint disable rule:braces rule:brackets
 # systemd configuration
 omero_web_systemd_setup: true
 omero_web_systemd_start: true
 omero_web_systemd_limit_nofile:
-omero_web_systemd_after: [] # yamllint disable-line rule:brackets
-omero_web_systemd_requires: [] # yamllint disable-line rule:brackets
+omero_web_systemd_after: []
+omero_web_systemd_requires: []
 
 # OMERO.web configuration
 omero_web_always_reset_config: true
-omero_web_config_set: {} # yamllint disable-line rule:braces
-omero_web_config_update: >-
-  {{
-      omero_web_omero_command + ' load --glob ' + omero_web_basedir +
-      '/config/*.omero'
-  }}
+omero_web_config_set: {}
+omero_web_config_update:
+  "{{ omero_web_omero_command + ' load --glob ' + omero_web_basedir +
+  '/config/*.omero' }}"
 
 # OMERO.web apps
-omero_web_python_addons: [] # yamllint disable-line rule:brackets
-omero_web_apps_packages: [] # yamllint disable-line rule:brackets
-omero_web_apps_names: [] # yamllint disable-line rule:brackets
-omero_web_apps_top_links: [] # yamllint disable-line rule:brackets
-omero_web_apps_ui_metadata_panes: [] # yamllint disable-line rule:brackets
-omero_web_apps_config_append: {} # yamllint disable-line rule:braces
-omero_web_apps_config_set: {} # yamllint disable-line rule:braces
+omero_web_python_addons: []
+omero_web_apps_packages: []
+omero_web_apps_names: []
+omero_web_apps_top_links: []
+omero_web_apps_ui_metadata_panes: []
+omero_web_apps_config_append: {}
+omero_web_apps_config_set: {}
 omero_web_apps_config_name: omero-web-apps
+# yamllint enable rule:braces rule:brackets
 
 # Python packages. The Ice wheel is keyed by the EL major version.
 omero_web_python_requirements_ice_package:
