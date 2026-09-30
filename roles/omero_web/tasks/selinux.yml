@@ -75,10 +75,11 @@
       check_mode: false
       changed_when: false
 
-    - name: Build and install the SELinux policy module # noqa: no-changed-when
+    - name: Build and install the SELinux policy module
       ansible.builtin.command:
         cmd: "{{ item }}"
         chdir: "{{ omero_web_selinux_policy_dir }}"
+      changed_when: true
       loop:
         - checkmodule -M -m -o django.mod django.te
         - semodule_package -o django.pp -m django.mod

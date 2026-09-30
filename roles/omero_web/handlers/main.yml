@@ -4,14 +4,14 @@
 # omero_server handlers when both roles are used in the same play
 
 - name: Reload systemd for omero-web
-  become: true
   ansible.builtin.systemd_service:
     daemon_reload: true
 
-- name: Rewrite omero-web configuration # noqa: no-changed-when
+- name: Rewrite omero-web configuration
   become: true
   become_user: "{{ omero_web_system_user }}"
   ansible.builtin.command: "{{ omero_web_config_update }}"
+  changed_when: true
 
 - name: Restart omero-web
   become: true
