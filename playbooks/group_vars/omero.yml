@@ -35,10 +35,10 @@ firewalld_work_zone_ports:
   - 4063
   - 4064
 
-# ome.common
+# Base directory for OMERO.server and OMERO.web
 omero_common_basedir: /opt/omero
 
-# ome.omero_server
+# mirsg.infrastructure.omero_server
 omero_server_system_user: omero-server
 omero_server_system_managedrepo_group: omero
 omero_server_database_backupdir: "{{ web_server.storage_dir }}/upgrade_backups"
@@ -60,11 +60,9 @@ omero_server_config_set:
   "{{ omero_server_default_config |
   ansible.builtin.combine(omero_server_additional_config | default({})) }}"
 
-# ome.omero_web
-# don't install nginx using ome.omero_web role
-# nginx conf and ssl certs will be handled in
-# internal nginx role
-omero_web_setup_nginx: false
+# mirsg.infrastructure.omero_web
+# nginx conf and ssl certs are handled by the mirsg.infrastructure.nginx role
+omero_web_basedir: "{{ omero_common_basedir }}/web"
 
 omero_web_apps_names:
   - omero_iviewer
@@ -96,7 +94,7 @@ nginx_use_ssl: "{{ ssl.use_ssl }}"
 nginx_server_cert_cache: "{{ ssl.server_cert }}"
 nginx_server_key_cache: "{{ ssl.server_key }}"
 
-# ome.omero_user
+# mirsg.infrastructure.omero_user
 omero_user_create:
   "{{ omero_service_user + (omero_additional_users | default([])) }}"
 omero_user_system: "{{ omero_server_system_user }}"
