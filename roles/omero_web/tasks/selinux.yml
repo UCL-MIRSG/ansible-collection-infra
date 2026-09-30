@@ -1,0 +1,89 @@
+---
+# SELinux configuration for OMERO.web (adapted from the ome.selinux_utils and
+# ome.omero_web roles)
+
+# ansible_facts['selinux'] can be misleading if the Python SELinux bindings are
+# not yet installed (https://github.com/ansible/ansible/issues/16612), so use
+# getenforce instead
+- name: Check if getenforce exists
+  ansible.builtin.stat:
+    path: /usr/sbin/getenforce
+  register: _omero_web_getenforce_st
+  check_mode: false
+
+- name: Check if SELinux is enabled
+  ansible.builtin.command: /usr/sbin/getenforce
+  register: _omero_web_getenforce
+  check_mode: false
+  changed_when: false
+  when: _omero_web_getenforce_st.stat.exists
+
+- name: Set SELinux fact
+  ansible.builtin.set_fact:
+    _omero_web_selinux_enabled: >-
+      {{ _omero_web_getenforce_st.stat.exists and _omero_web_getenforce.stdout
+      != 'Disabled' }}
+
+- name: Configure SELinux
+  when: _omero_web_selinux_enabled
+  block:
+    - name: Install SELinux utilities
+      ansible.builtin.package:
+        name:
+          - checkpolicy
+          - policycoreutils
+          - python3-libselinux
+          - python3-libsemanage
+          - python3-policycoreutils
+        state: present
+
+    - name: Set SELinux booleans
+      ansible.posix.seboolean:
+        name: "{{ item }}"
+        state: true
+        persistent: true
+      loop:
+        - httpd_read_user_content
+        - httpd_enable_homedirs
+        - httpd_can_network_relay
+
+    - name: Allow nginx to connect to the OMERO.web port
+      community.general.seport:
+        ports: "{{ omero_web_selinux_port }}"
+        proto: tcp
+        setype: http_port_t
+        state: present
+
+    - name: Create directory for the SELinux policy module
+      ansible.builtin.file:
+        path: "{{ omero_web_selinux_policy_dir }}"
+        state: directory
+        mode: "0755"
+
+    # The module is named "django" for compatibility with hosts where it was
+    # installed by the ome.omero_web role
+    - name: Copy SELinux type enforcement file
+      ansible.builtin.template:
+        src: omero-web-selinux.te.j2
+        dest: "{{ omero_web_selinux_policy_dir }}/django.te"
+        mode: "0644"
+      register: _omero_web_selinux_te
+
+    - name: List installed SELinux policy modules
+      ansible.builtin.command: semodule --list-modules
+      register: _omero_web_selinux_modules
+      check_mode: false
+      changed_when: false
+
+    - name: Build and install the SELinux policy module # noqa: no-changed-when
+      ansible.builtin.command:
+        cmd: "{{ item }}"
+        chdir: "{{ omero_web_selinux_policy_dir }}"
+      loop:
+        - checkmodule -M -m -o django.mod django.te
+        - semodule_package -o django.pp -m django.mod
+        - semodule --install django.pp
+      when: >-
+        _omero_web_selinux_te is changed or
+        (_omero_web_selinux_modules.stdout_lines | select('match',
+        '^django(\s|$)') | length == 0)

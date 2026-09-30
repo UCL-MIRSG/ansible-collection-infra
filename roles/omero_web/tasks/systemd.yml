@@ -1,0 +1,23 @@
+---
+- name: Systemd service
+  become: true
+  ansible.builtin.template:
+    dest: /etc/systemd/system/omero-web.service
+    force: true
+    src: systemd-system-omero-web-service.j2
+    mode: "0644"
+  notify:
+    - Reload systemd for omero-web
+    - Restart omero-web
+
+# Flush handlers to ensure systemd is reloaded
+- name: Flush systemd handlers
+  ansible.builtin.meta: flush_handlers
+
+- name: Enable and start web systemd
+  become: true
+  ansible.builtin.service:
+    enabled: true
+    name: omero-web.service
+    state: started
+  when: omero_web_systemd_start
