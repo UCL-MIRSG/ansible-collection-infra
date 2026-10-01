@@ -10,29 +10,24 @@ here are:
    [bug in the OME role](https://github.com/ome/ansible-role-omero-server/issues/72)
    which stops a database backup working when OMERO.server is upgraded
 
-If running EL `9` and you set `omero_server_release` to `latest` it is
-recommended that you use the `ome.omero_server` role in place of this one.
+The tasks from the `ome.omero_common`, `ome.python3_virtualenv`, `ome.ice`,
+`ome.deploy_archive` and `ome.basedeps` roles, which this role previously
+depended on, have been merged into this role. Those roles are BSD licensed,
+copyright the Open Microscopy Environment.
+
+EL `8` and EL `9` are supported.
 
 ## Dependencies
 
 A PostgreSQL server installed using `mirsg.infrastructure.postgresql` is
 required.
 
-This role is also dependent on a number of other OME roles. Due to the lack of
-support for EL `8` OS variants in newer versions of those roles, the versions of
-these dependencies are pinned here (see the collection
-[requirements.yml](../../meta/omero-el8-requirements.yml) file):
+Java must be installed, e.g. using `mirsg.infrastructure.install_java`.
 
-| Role                   | Version |
-| ---------------------- | ------- |
-| ome.omero_web          | 4.0.1   |
-| ome.omero_user         | 0.3.1   |
-| ome.selinux_utils      | 2.0.2   |
-| ome.omero_common       | 0.4.0   |
-| ome.python3_virtualenv | 0.2.0   |
-| ome.ice                | 4.3.0   |
+On EL `9` the CodeReady Builder (CRB) repository is enabled to install
+`libdb-cxx`, which is needed by the Ice binaries.
 
-Note that these roles themselves have dependencies on other OME roles.
+See also `mirsg.infrastructure.omero_web` and `mirsg.infrastructure.omero_user`.
 
 ## Role Variables
 
@@ -75,6 +70,24 @@ Permissions for OMERO data directories apart from ManagedRepository
 `omero_server_selfsigned_certificates`: Generate self-signed certificates
 instead of using anonymous ciphers, default True, use this if your system does
 not support insecure ciphers
+
+### Ice
+
+`omero_server_ice_archives`: A dictionary, keyed by EL major version, of the Ice
+3.6 binary archive to install. Each value has the archive `url`, its `sha256`
+checksum and the `root` directory inside the archive.
+
+`omero_server_ice_install_dir`: Where the Ice archive is extracted, and where
+the `ice` symlink is created. Defaults to `/opt`.
+
+`omero_server_ice_packages`: A dictionary, keyed by EL major version, of
+additional packages needed by the Ice binaries.
+
+`omero_server_system_packages`: System packages installed before OMERO.server,
+including Python 3.
+
+`omero_server_virtualenv_command`: Command used to create the OMERO.server
+virtualenv. Defaults to `python3 -m venv`.
 
 ### OMERO.server systemd configuration
 

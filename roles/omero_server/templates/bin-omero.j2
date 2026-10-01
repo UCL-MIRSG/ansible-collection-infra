@@ -9,7 +9,7 @@ if not os.getenv('OMERODIR'):
 
 paths = os.getenv('PATH', '').split(os.pathsep)
 venv_bin = '{{ omero_server_virtualenv_basedir }}/bin'
-ice_bin = '/opt/ice/bin'
+ice_bin = '{{ omero_server_ice_install_dir }}/ice/bin'
 
 if os.path.isdir(ice_bin) and ice_bin not in paths:
     paths.insert(0, ice_bin)

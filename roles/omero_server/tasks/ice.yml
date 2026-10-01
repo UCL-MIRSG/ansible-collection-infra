@@ -1,0 +1,78 @@
+---
+# Install the ZeroC Ice 3.6 binaries (adapted from the ome.ice and
+# ome.deploy_archive roles)
+
+- name: Check Ice binaries are available for this OS
+  ansible.builtin.assert:
+    that:
+      - ansible_facts['distribution_major_version'] in omero_server_ice_archives
+    msg: >-
+      No Ice archive is defined for EL {{
+      ansible_facts['distribution_major_version'] }}, see
+      omero_server_ice_archives
+
+- name: Enable the CodeReady Builder repository (EL9)
+  when: ansible_facts['distribution_major_version'] == "9"
+  block:
+    - name: Ensure dnf config-manager is installed
+      ansible.builtin.package:
+        name: dnf-command(config-manager)
+        state: present
+      when: ansible_facts['distribution'] != "RedHat"
+
+    - name: Enable the CRB repository
+      community.general.dnf_config_manager:
+        name: crb
+        state: enabled
+      when: ansible_facts['distribution'] != "RedHat"
+
+    - name: Enable the CodeReady Builder repository on RHEL
+      community.general.rhsm_repository:
+        name:
+          codeready-builder-for-rhel-9-{{ ansible_facts['architecture'] }}-rpms
+        state: enabled
+      when: ansible_facts['distribution'] == "RedHat"
+
+- name: Install Ice runtime dependencies
+  ansible.builtin.package:
+    name:
+      "{{ omero_server_ice_packages[ansible_facts['distribution_major_version']]
+      }}"
+    state: present
+  when: ansible_facts['distribution_major_version'] in omero_server_ice_packages
+
+- name: Install Ice binaries
+  vars:
+    _omero_server_ice_archive: >-
+      {{ omero_server_ice_archives[ansible_facts['distribution_major_version']]
+      }}
+    _omero_server_ice_filename: "{{ _omero_server_ice_archive.url | basename }}"
+  block:
+    - name: Download Ice archive
+      ansible.builtin.get_url:
+        url: "{{ _omero_server_ice_archive.url }}"
+        checksum: sha256:{{ _omero_server_ice_archive.sha256 }}
+        dest:
+          "{{ omero_server_ice_install_dir }}/{{ _omero_server_ice_filename }}"
+        mode: "0644"
+
+    - name: Extract Ice archive
+      ansible.builtin.unarchive:
+        src:
+          "{{ omero_server_ice_install_dir }}/{{ _omero_server_ice_filename }}"
+        dest: "{{ omero_server_ice_install_dir }}"
+        owner: root
+        group: root
+        remote_src: true
+        creates:
+          "{{ omero_server_ice_install_dir }}/{{ _omero_server_ice_archive.root
+          }}"
+
+    - name: Create Ice symlink
+      ansible.builtin.file:
+        path: "{{ omero_server_ice_install_dir }}/ice"
+        src:
+          "{{ omero_server_ice_install_dir }}/{{ _omero_server_ice_archive.root
+          }}"
+        force: true
+        state: link

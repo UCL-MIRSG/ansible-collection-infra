@@ -9,7 +9,7 @@
     src: systemd-system-omero-server-service.j2
     mode: "0644"
   notify:
-    - reload systemd # noqa: name[casing]
+    - Reload systemd for omero-server
     - Restart omero-server
 
 # Flush handlers to ensure systemd is reloaded

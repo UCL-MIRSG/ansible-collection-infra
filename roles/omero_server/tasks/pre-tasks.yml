@@ -1,21 +1,12 @@
 ---
-# omero_common must be imported to prevent
-# undeclared variable failure
-- name: Import ome.omero_common role
-  ansible.builtin.import_role:
-    name: ome.omero_common
+- name: Install system packages required by OMERO.server
+  ansible.builtin.package:
+    name: "{{ omero_server_system_packages }}"
+    state: present
 
-- name: Include ome.python3_virtualenv
-  ansible.builtin.include_role:
-    name: ome.python3_virtualenv
-
-- name: Include ome.ice role
-  ansible.builtin.include_role:
-    name: ome.ice
-  vars:
-    ice_version: "{{ omero_server_ice_version }}"
-    ice_install_devel: false
-    ice_install_python: false
+- name: Install Ice
+  ansible.builtin.include_tasks:
+    file: ice.yml
 
 - name: Ensure postgres RPM is installed
   ansible.builtin.package:

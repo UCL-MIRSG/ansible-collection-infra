@@ -1,0 +1,65 @@
+---
+# OMERO.web version, `present` installs the latest version if OMERO.web is not
+# already installed
+omero_web_release: present
+
+omero_web_system_user: omero-web
+
+omero_web_basedir: /opt/omero/web
+omero_web_symlink: OMERO.web
+omero_web_omerodir: "{{ omero_web_basedir }}/{{ omero_web_symlink }}"
+omero_web_omero_command: "{{ omero_web_omerodir + '/bin/omero' }}"
+omero_web_virtualenv_basedir: "{{ omero_web_basedir + '/venv3' }}"
+omero_web_virtualenv_command: python3 -m venv
+
+omero_web_system_packages:
+  - python3
+  - python3-pip
+  - python3-setuptools
+
+# yamllint disable rule:braces rule:brackets
+# systemd configuration
+omero_web_systemd_setup: true
+omero_web_systemd_start: true
+omero_web_systemd_limit_nofile:
+omero_web_systemd_after: []
+omero_web_systemd_requires: []
+
+# OMERO.web configuration
+omero_web_always_reset_config: true
+omero_web_config_set: {}
+omero_web_config_update:
+  "{{ omero_web_omero_command + ' load --glob ' + omero_web_basedir +
+  '/config/*.omero' }}"
+
+# OMERO.web apps
+omero_web_python_addons: []
+omero_web_apps_packages: []
+omero_web_apps_names: []
+omero_web_apps_top_links: []
+omero_web_apps_ui_metadata_panes: []
+omero_web_apps_config_append: {}
+omero_web_apps_config_set: {}
+omero_web_apps_config_name: omero-web-apps
+# yamllint enable rule:braces rule:brackets
+
+# Python packages. The Ice wheel is keyed by the EL major version.
+omero_web_python_requirements_ice_package:
+  "8": https://github.com/ome/zeroc-ice-centos8/releases/download/0.0.1/zeroc_ice-3.6.5-cp36-cp36m-linux_x86_64.whl
+  "9": https://github.com/glencoesoftware/zeroc-ice-py-rhel9-x86_64/releases/download/20230830/zeroc_ice-3.6.5-cp39-cp39-linux_x86_64.whl
+omero_web_python_requirements:
+  - "{{
+    omero_web_python_requirements_ice_package[ansible_facts['distribution_major_version']]
+    | default('zeroc-ice') }}"
+  - >-
+    omero-web{{ (omero_web_release == 'present') | ternary('', '==' +
+    omero_web_release) }}
+  - redis
+  - tzdata
+
+# SELinux. Only applied when SELinux is enabled on the host.
+omero_web_selinux_manage: true
+omero_web_selinux_port: 4080
+# Where the SELinux policy module allowing nginx to serve the static files is
+# built
+omero_web_selinux_policy_dir: /usr/local/share/selinux/omero-web

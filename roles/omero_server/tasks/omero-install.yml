@@ -121,7 +121,7 @@
     name: pip>=21
     state: present
     virtualenv: "{{ omero_server_virtualenv_basedir }}"
-    virtualenv_command: /usr/local/bin/ome-python3-virtualenv
+    virtualenv_command: "{{ omero_server_virtualenv_command }}"
 
 - name: Install requirements
   become: true
@@ -129,7 +129,7 @@
     name: "{{ omero_server_python_requirements + omero_server_python_addons }}"
     state: present
     virtualenv: "{{ omero_server_virtualenv_basedir }}"
-    virtualenv_command: /usr/local/bin/ome-python3-virtualenv
+    virtualenv_command: "{{ omero_server_virtualenv_command }}"
   notify:
     - Rewrite omero-server configuration
     - Restart omero-server

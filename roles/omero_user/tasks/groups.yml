@@ -1,0 +1,30 @@
+---
+- name: Get current group list
+  become: true
+  become_user: "{{ omero_user_system }}"
+  ansible.builtin.command: >
+    {{ omero_user_bin_omero }} group -C -s localhost -u {{ omero_user_admin_user
+    }} -w {{ omero_user_admin_pass | quote }} list -q --style json
+  register: _omero_user_groupcmd
+  check_mode: false
+  changed_when: false
+  no_log: true
+
+- name: Set group list fact
+  ansible.builtin.set_fact:
+    omero_group_list: "{{ _omero_user_groupcmd.stdout | from_json }}"
+
+- name: Create group # noqa: no-changed-when
+  become: true
+  become_user: "{{ omero_user_system }}"
+  ansible.builtin.command: >
+    {{ omero_user_bin_omero }} group -C -s localhost -u {{ omero_user_admin_user
+    }} -w {{ omero_user_admin_pass | quote }} add {{ item.name | quote }} --type
+    {{ item.type }}
+  when: >
+    (omero_group_list | selectattr('name', 'equalto', item.name) | list |
+    length) < 1
+  loop: "{{ omero_group_create }}"
+  loop_control:
+    label: "{{ item.name }}"
+  no_log: true

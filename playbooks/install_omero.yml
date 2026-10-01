@@ -30,7 +30,7 @@
   roles:
     - role: mirsg.infrastructure.provision
     - role: mirsg.infrastructure.install_python
-    - role: ome.java # this is also called by ome.ice via mirsg.infrastructure.omero_server
+    - role: mirsg.infrastructure.install_java
     - role: mirsg.infrastructure.ldap
       when: omero_server_use_ldap
     - role: mirsg.infrastructure.ssl_certificates
@@ -56,8 +56,8 @@
     - install-omero
   roles:
     - role: mirsg.infrastructure.omero_server
-    - role: ome.omero_web
-    - role: ome.omero_user
+    - role: mirsg.infrastructure.omero_web
+    - role: mirsg.infrastructure.omero_user
     - role: mirsg.infrastructure.nginx
       vars:
         nginx_conf_template: omero-web-nginx-conf.j2

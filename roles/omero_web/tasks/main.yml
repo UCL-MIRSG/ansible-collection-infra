@@ -1,0 +1,14 @@
+---
+- name: Run SELinux tasks
+  ansible.builtin.include_tasks:
+    file: selinux.yml
+  when: omero_web_selinux_manage
+
+- name: Run install tasks
+  ansible.builtin.include_tasks:
+    file: install.yml
+
+- name: Run systemd tasks
+  ansible.builtin.include_tasks:
+    file: systemd.yml
+  when: omero_web_systemd_setup

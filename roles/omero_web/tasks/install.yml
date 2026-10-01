@@ -1,0 +1,120 @@
+---
+- name: Install system packages required by OMERO.web
+  ansible.builtin.package:
+    name: "{{ omero_web_system_packages }}"
+    state: present
+
+# OMERO.web used to be installed from a zip and symlinked to OMERO.web, it is
+# now a directory containing the config and wrapper script
+- name: Check if OMERO.web symlink is present
+  ansible.builtin.stat:
+    path: "{{ omero_web_omerodir }}"
+  register: _omero_web_symlink_st
+
+- name: Remove old OMERO.web installation
+  when:
+    - _omero_web_symlink_st.stat.exists
+    - _omero_web_symlink_st.stat.islnk
+  block:
+    - name: Stop omero-web
+      ansible.builtin.service:
+        name: omero-web
+        state: stopped
+
+    - name: Remove OMERO.web symlink
+      ansible.builtin.file:
+        path: "{{ omero_web_omerodir }}"
+        state: absent
+
+- name: Create read-only OMERO.web directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ omero_web_basedir }}"
+    - "{{ omero_web_basedir }}/config"
+    - "{{ omero_web_omerodir }}"
+    - "{{ omero_web_omerodir }}/bin"
+
+- name: Create system user
+  ansible.builtin.user:
+    name: "{{ omero_web_system_user }}"
+    home: "{{ omero_web_omerodir }}/var"
+    createhome: false
+    state: present
+    system: true
+    uid: "{{ omero_web_system_uid | default(omit) }}"
+
+- name: Create writeable OMERO.web directories
+  ansible.builtin.file:
+    path: "{{ omero_web_omerodir }}{{ item }}"
+    state: directory
+    owner: "{{ omero_web_system_user }}"
+    mode: "0755"
+  loop:
+    - /etc/grid
+    - /var
+
+- name: Remove old configuration script
+  ansible.builtin.file:
+    path: "{{ omero_web_basedir }}/config/omero-web-config-update.sh"
+    state: absent
+
+- name: Configuration 00-omero-web.omero
+  ansible.builtin.template:
+    dest: "{{ omero_web_basedir }}/config/00-omero-web.omero"
+    force: true
+    src: 00-omero-web-omero.j2
+    mode: "0644"
+  notify:
+    - Rewrite omero-web configuration
+    - Restart omero-web
+
+- name: Configuration for OMERO.web apps
+  ansible.builtin.template:
+    dest:
+      "{{ omero_web_basedir }}/config/{{ omero_web_apps_config_name }}.omero"
+    force: true
+    src: omero-web-apps-omero.j2
+    mode: "0644"
+  notify:
+    - Rewrite omero-web configuration
+    - Restart omero-web
+
+- name: Setup virtualenv3
+  ansible.builtin.pip:
+    name: pip>=21
+    state: present
+    virtualenv: "{{ omero_web_virtualenv_basedir }}"
+    virtualenv_command: "{{ omero_web_virtualenv_command }}"
+
+- name: Install requirements
+  ansible.builtin.pip:
+    name: >-
+      {{ omero_web_python_requirements + omero_web_python_addons +
+      omero_web_apps_packages }}
+    state: present
+    virtualenv: "{{ omero_web_virtualenv_basedir }}"
+    virtualenv_command: "{{ omero_web_virtualenv_command }}"
+  notify:
+    - Rewrite omero-web configuration
+    - Restart omero-web
+
+- name: Create omero web wrapper
+  ansible.builtin.template:
+    dest: "{{ omero_web_omero_command }}"
+    src: bin-omero.j2
+    mode: "0555"
+  notify:
+    - Rewrite omero-web configuration
+    - Restart omero-web
+
+- name: Restore SELinux context # noqa: command-instead-of-module
+  ansible.builtin.command: >-
+    /usr/sbin/restorecon -R -v {{ ansible_check_mode | ternary('-n', '') }} {{
+    omero_web_omerodir }}
+  register: _omero_web_restorecon
+  check_mode: false
+  changed_when: _omero_web_restorecon.stdout | length > 0
+  when: _omero_web_selinux_enabled | default(false)
