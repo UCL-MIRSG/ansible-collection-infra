@@ -12,8 +12,8 @@ postgresql_use_ssl: true
 # Set this to true if selinux is enabled on the hosting OS
 selinux_enabled: false
 
-# XNAT supports PostgreSQL 11-14
-postgresql_version: 14
+# XNAT supports PostgreSQL 14-18
+postgresql_version: 18
 
 java_keystore:
   keystore_pass: "{{ vault_keystore_password }}"
