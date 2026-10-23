@@ -11,7 +11,10 @@
 
 - name: Download XNAT WAR
   ansible.builtin.get_url:
-    url: "{{ xnat_source.xnat_war_url }}"
+    url: >-
+      {{ xnat_source.xnat_10_war_url
+         if xnat_version is version('1.10', '>=')
+         else xnat_source.xnat_9_war_url }}
     dest: "{{ xnat_source.xnat_downloads_dir }}/{{ xnat_source.war_file_name }}"
     timeout: 30
     owner: "{{ xnat.owner }}"
