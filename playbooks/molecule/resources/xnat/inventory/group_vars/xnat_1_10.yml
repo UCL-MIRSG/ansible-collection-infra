@@ -1,5 +1,5 @@
 ---
-xnat_version: 1.10.1
+xnat_version: 1.10.2.1
 xnat_pipeline_version: 1.9.0
 
 # mirsg.infrastructure.install_java
