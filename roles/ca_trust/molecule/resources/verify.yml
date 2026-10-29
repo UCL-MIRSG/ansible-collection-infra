@@ -12,12 +12,12 @@
         dest: /tmp/blocklist/
         mode: "0644"
 
-    - name: Get the SHA-256 fingerprints of the test and blocklisted CAs
+    - name:
+        Get the SHA-256 fingerprints of the test and blocklisted certificates
       ansible.builtin.shell:
         cmd: |
           set -o pipefail
-          openssl x509 -in /tmp/test-ca.pem -noout -fingerprint -sha256 | cut -d= -f2
-          for f in /tmp/blocklist/*.pem; do
+          for f in /tmp/test-ca.pem /tmp/test-server.pem /tmp/blocklist/*.pem; do
             openssl x509 -in "$f" -noout -fingerprint -sha256 | cut -d= -f2
           done
       register: fingerprints
@@ -30,11 +30,12 @@
       register: java_cacerts
       changed_when: false
 
-    - name: Check the test CA is trusted
+    - name: Check the test CA and self-signed server certificate are trusted
       ansible.builtin.assert:
-        that: fingerprints.stdout_lines | first in java_cacerts.stdout
+        that: item in java_cacerts.stdout
+      loop: "{{ fingerprints.stdout_lines[:2] }}"
 
     - name: Check the blocklisted CAs are not trusted
       ansible.builtin.assert:
         that: item not in java_cacerts.stdout
-      loop: "{{ fingerprints.stdout_lines[1:] }}"
+      loop: "{{ fingerprints.stdout_lines[2:] }}"

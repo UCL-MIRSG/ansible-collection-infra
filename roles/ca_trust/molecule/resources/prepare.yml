@@ -29,3 +29,14 @@
           openssl req -x509 -newkey rsa:2048 -nodes -days 30 -subj "/CN=Molecule
           Test CA" -keyout /tmp/test-ca.key -out /tmp/test-ca.pem
         creates: /tmp/test-ca.pem
+
+    # Like the ssl_certificates role's self-signed certificates: v3 with a SAN
+    # but no basicConstraints, so update-ca-trust does not treat it as a CA
+    - name: Create a test self-signed server certificate
+      ansible.builtin.shell:
+        cmd: |
+          set -o errexit
+          openssl req -new -newkey rsa:2048 -nodes -subj "/CN=molecule.test" -keyout /tmp/test-server.key -out /tmp/test-server.csr
+          echo "subjectAltName=DNS:molecule.test" > /tmp/test-server.ext
+          openssl x509 -req -days 30 -in /tmp/test-server.csr -signkey /tmp/test-server.key -extfile /tmp/test-server.ext -out /tmp/test-server.pem
+        creates: /tmp/test-server.pem

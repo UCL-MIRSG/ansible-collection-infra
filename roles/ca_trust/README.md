@@ -12,17 +12,23 @@ JDK's `cacerts` to `/etc/pki/java/cacerts`. Never add certificates to that
 keystore directly with `keytool` or `community.general.java_cert`, because it is
 regenerated whenever the trust store is updated. Use `ca_trust_anchors` instead.
 
+Each certificate in `ca_trust_anchors` is written to
+`/etc/pki/ca-trust/source/<name>.p11-kit` and marked as a trusted authority.
+`update-ca-trust` only exports certificates in `anchors/` that have `CA:TRUE`,
+so a self-signed server certificate copied there would never reach Java's
+`cacerts`.
+
 When the trust store changes, the role sets the fact `ca_trust_changed: true`
 for the rest of the run. Callers can use this to restart services that run on
 the JVM.
 
 ## Role Variables
 
-| Variable              | Description                                                                                                       | Default Value                    |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------- | -------------------------------- |
-| `ca_trust_blocklist`  | Certificates in `files/blocklist/` to distrust.                                                                   | The eMudhra and Comodo AAA roots |
-| `ca_trust_anchors`    | Extra CA certificates to trust: a list of `name`, `src` and optional `remote_src` (true if `src` is on the host). | `[]`                             |
-| `ca_trust_source_dir` | The trust store source directory.                                                                                 | `/etc/pki/ca-trust/source`       |
+| Variable              | Description                                                                                                                 | Default Value                    |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| `ca_trust_blocklist`  | Certificates in `files/blocklist/` to distrust.                                                                             | The eMudhra and Comodo AAA roots |
+| `ca_trust_anchors`    | Extra certificates to trust: a list of `name`, `src` (a PEM file) and optional `remote_src` (true if `src` is on the host). | `[]`                             |
+| `ca_trust_source_dir` | The trust store source directory.                                                                                           | `/etc/pki/ca-trust/source`       |
 
 ## Example Playbook
 

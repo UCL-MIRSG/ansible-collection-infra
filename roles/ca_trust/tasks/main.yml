@@ -35,17 +35,45 @@
   loop: "{{ ca_trust_blocklist }}"
   register: ca_trust_blocklist_files
 
-- name: Trust additional CA certificates
-  ansible.builtin.copy:
+- name: Read additional CA certificates on the host
+  ansible.builtin.slurp:
     src: "{{ item.src }}"
-    dest: "{{ ca_trust_source_dir }}/anchors/{{ item.name }}.pem"
-    remote_src: "{{ item.remote_src | default(false) }}"
-    owner: root
-    group: root
-    mode: "0644"
   loop: "{{ ca_trust_anchors }}"
   loop_control:
     label: "{{ item.name }}"
+  when: item.remote_src | default(false)
+  register: ca_trust_anchor_remote_files
+
+- name: Check each additional CA file contains a PEM certificate
+  ansible.builtin.assert:
+    that: ca_trust_anchor_pem is search('-----BEGIN CERTIFICATE-----')
+    fail_msg: "{{ item.0.src }} does not contain a PEM certificate"
+    quiet: true
+  vars:
+    ca_trust_anchor_pem: >-
+      {{ (item.1.content | b64decode) if item.0.remote_src | default(false) else
+      lookup('ansible.builtin.file', item.0.src) }}
+  loop: "{{ ca_trust_anchors | zip(ca_trust_anchor_remote_files.results) }}"
+  loop_control:
+    label: "{{ item.0.name }}"
+
+# Written in p11-kit format rather than copied to anchors/, because
+# update-ca-trust only exports anchors marked CA:TRUE. A self-signed server
+# certificate in anchors/ would never reach Java's cacerts
+- name: Trust additional CA certificates
+  ansible.builtin.template:
+    src: anchor.p11-kit.j2
+    dest: "{{ ca_trust_source_dir }}/{{ item.0.name }}.p11-kit"
+    owner: root
+    group: root
+    mode: "0644"
+  vars:
+    ca_trust_anchor_pem: >-
+      {{ (item.1.content | b64decode) if item.0.remote_src | default(false) else
+      lookup('ansible.builtin.file', item.0.src) }}
+  loop: "{{ ca_trust_anchors | zip(ca_trust_anchor_remote_files.results) }}"
+  loop_control:
+    label: "{{ item.0.name }}"
   register: ca_trust_anchor_files
 
 # Regenerates /etc/pki/ca-trust/extracted, including the Java keystore that

@@ -7,8 +7,10 @@ ca_trust_blocklist:
   - emsign-ecc-root-ca-g3.pem
   - comodo-aaa-certificate-services.pem
 
-# Extra CA certificates to trust system-wide, e.g. an LDAP server's CA. Each item
-# needs a `name` and a `src`; set `remote_src: true` if `src` is on the host
+# Extra CA certificates to trust system-wide, e.g. an LDAP server's CA or a
+# self-signed web server certificate. Each item needs a `name` and a `src` (a PEM
+# file, which may hold several certificates); set `remote_src: true` if `src` is
+# on the host
 ca_trust_anchors: []
 
 ca_trust_source_dir: /etc/pki/ca-trust/source

@@ -10,3 +10,6 @@
           - name: molecule-test-ca
             src: /tmp/test-ca.pem
             remote_src: true
+          - name: molecule-test-server
+            src: /tmp/test-server.pem
+            remote_src: true
