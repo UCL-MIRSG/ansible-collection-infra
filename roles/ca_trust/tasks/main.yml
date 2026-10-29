@@ -23,12 +23,15 @@
     quiet: true
 
 # Prefer "blocklist" if both exist ("blocklist" sorts after "blacklist")
+- name: Choose the blocklist directory
+  ansible.builtin.set_fact:
+    ca_trust_blocklist_dir: >-
+      {{ ca_trust_blocklist_dirs.files | map(attribute='path') | sort | last }}
+
 - name: Distrust compromised CA certificates
   ansible.builtin.copy:
     src: blocklist/{{ item }}
-    dest: >-
-      {{ ca_trust_blocklist_dirs.files | map(attribute='path') | sort | last
-      }}/{{ item }}
+    dest: "{{ ca_trust_blocklist_dir }}/{{ item }}"
     owner: root
     group: root
     mode: "0644"
@@ -76,15 +79,34 @@
     label: "{{ item.0.name }}"
   register: ca_trust_anchor_files
 
+# Catches sources changed by a previous run that failed before extracting. A
+# missing extracted keystore makes find fail, which also forces an extract
+- name: Find trust store sources newer than the extracted Java keystore
+  ansible.builtin.command:
+    argv:
+      - find
+      - "{{ ca_trust_source_dir }}"
+      - -newer
+      - "{{ ca_trust_extracted_dir }}/java/cacerts"
+      - -print
+      - -quit
+  register: ca_trust_newer_sources
+  changed_when: false
+  failed_when: false
+  check_mode: false
+
 # Regenerates /etc/pki/ca-trust/extracted, including the Java keystore that
 # /etc/pki/java/cacerts links to
 - name: Update the system trust store
   ansible.builtin.command: update-ca-trust extract
-  when: ca_trust_blocklist_files is changed or ca_trust_anchor_files is changed
+  when: >-
+    ca_trust_blocklist_files is changed or ca_trust_anchor_files is changed or
+    ca_trust_newer_sources.rc != 0 or ca_trust_newer_sources.stdout != ''
   changed_when: true
+  register: ca_trust_update
 
 # Stays set for the rest of the run so later plays can restart Java services
 - name: Record that the system trust store changed
   ansible.builtin.set_fact:
     ca_trust_changed: true
-  when: ca_trust_blocklist_files is changed or ca_trust_anchor_files is changed
+  when: ca_trust_update is changed

@@ -14,3 +14,4 @@ ca_trust_blocklist:
 ca_trust_anchors: []
 
 ca_trust_source_dir: /etc/pki/ca-trust/source
+ca_trust_extracted_dir: /etc/pki/ca-trust/extracted
