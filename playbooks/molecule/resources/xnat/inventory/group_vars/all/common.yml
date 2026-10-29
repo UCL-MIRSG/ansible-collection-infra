@@ -15,9 +15,6 @@ selinux_enabled: false
 # XNAT supports PostgreSQL 11-14
 postgresql_version: 14
 
-java_keystore:
-  keystore_pass: "{{ vault_keystore_password }}"
-
 # JSON representation of the site-wide anonymisation script: this could be
 # defined in a string, or extracted from a template file e.g. using
 # lookup('template, 'foo.j2') | to_json

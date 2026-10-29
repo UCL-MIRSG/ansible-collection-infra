@@ -1,0 +1,41 @@
+---
+- name: Verify the Java keystore uses the system trust store
+  hosts: all
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Copy the blocklisted certificates to the host
+      ansible.builtin.copy:
+        src: >-
+          {{ lookup('ansible.builtin.env', 'MOLECULE_PROJECT_DIRECTORY')
+          }}/files/blocklist/
+        dest: /tmp/blocklist/
+        mode: "0644"
+
+    - name:
+        Get the SHA-256 fingerprints of the test and blocklisted certificates
+      ansible.builtin.shell:
+        cmd: |
+          set -o pipefail
+          for f in /tmp/test-ca.pem /tmp/test-server.pem /tmp/blocklist/*.pem; do
+            openssl x509 -in "$f" -noout -fingerprint -sha256 | cut -d= -f2
+          done
+      register: fingerprints
+      changed_when: false
+
+    - name: List the certificates Java trusts
+      ansible.builtin.command: >-
+        /usr/lib/jvm/jre/bin/keytool -list -v -storepass changeit -keystore
+        /usr/lib/jvm/jre/lib/security/cacerts
+      register: java_cacerts
+      changed_when: false
+
+    - name: Check the test CA and self-signed server certificate are trusted
+      ansible.builtin.assert:
+        that: item in java_cacerts.stdout
+      loop: "{{ fingerprints.stdout_lines[:2] }}"
+
+    - name: Check the blocklisted CAs are not trusted
+      ansible.builtin.assert:
+        that: item not in java_cacerts.stdout
+      loop: "{{ fingerprints.stdout_lines[2:] }}"
