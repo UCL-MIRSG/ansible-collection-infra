@@ -18,6 +18,7 @@
     - role: mirsg.infrastructure.provision
     - role: mirsg.infrastructure.install_python
     - role: mirsg.infrastructure.install_java
+    - role: mirsg.infrastructure.ca_trust
     - role: mirsg.infrastructure.tomcat
     - role: mirsg.infrastructure.nginx
     - role: mirsg.infrastructure.ssl_certificates
@@ -33,6 +34,7 @@
   roles:
     - role: mirsg.infrastructure.provision
     - role: mirsg.infrastructure.install_python
+    - role: mirsg.infrastructure.ca_trust
     - role: mirsg.infrastructure.postgresql
     - role: mirsg.infrastructure.firewalld
 
@@ -45,6 +47,14 @@
     - role: mirsg.infrastructure.xnat
     - role: mirsg.infrastructure.firewalld
 
+  tasks:
+    - name: Restart tomcat if the system trust store changed
+      ansible.builtin.debug:
+        msg: System trust store updated
+      when: ca_trust_changed | default(false)
+      changed_when: true
+      notify: Restart tomcat
+
 - name: Setup Container Service on hosts
   hosts: container_service_host
   become: true
@@ -53,6 +63,7 @@
   roles:
     - role: mirsg.infrastructure.provision
     - role: mirsg.infrastructure.install_python
+    - role: mirsg.infrastructure.ca_trust
     - role: mirsg.infrastructure.docker
     - role: mirsg.infrastructure.firewalld
 
