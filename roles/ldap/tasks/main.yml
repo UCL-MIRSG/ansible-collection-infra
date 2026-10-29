@@ -16,16 +16,11 @@
     group: "{{ ldap_cert_owner_group }}"
     mode: "0600"
 
-- name: Ensure openssl is installed for java_cert
-  ansible.builtin.package:
-    name: openssl
-    state: present
-
-- name: Add CA certificate for LDAP server to keystore
-  community.general.java_cert:
-    cert_path: "{{ ldap_cert_dir }}/ldap-ca.cert"
-    keystore_path: "{{ ldap_java_keystore_path }}"
-    keystore_pass: "{{ ldap_java_keystore_pass }}"
-    cert_alias: "{{ ldap_java_keystore_alias }}"
-    keystore_create: true
-    state: present
+- name: Add CA certificate for LDAP server to the system trust store
+  ansible.builtin.include_role:
+    name: mirsg.infrastructure.ca_trust
+  vars:
+    ca_trust_anchors:
+      - name: "{{ ldap_java_keystore_alias }}"
+        src: "{{ ldap_cert_dir }}/ldap-ca.cert"
+        remote_src: true
