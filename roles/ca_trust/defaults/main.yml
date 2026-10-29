@@ -1,9 +1,9 @@
 ---
 # Certificates in the role's files/blocklist directory to distrust system-wide.
 # The private keys of eMudhra intermediates under these roots were compromised
-# (https://openjdk.org/emudhra, JDK-8395690)
+# (https://openjdk.org/emudhra, JDK-8395690). emSign Root CA - G1 is not
+# blocked, matching Mozilla and Temurin, which still trust it
 ca_trust_blocklist:
-  - emsign-root-ca-g1.pem
   - emsign-ecc-root-ca-g3.pem
   - comodo-aaa-certificate-services.pem
 
