@@ -66,3 +66,19 @@
     path: "{{ java_package_info.stat.lnk_source }}"
     state: selected
   when: not java_jre.stat.exists
+
+- name: Ensure ca-certificates is installed for the system Java keystore
+  ansible.builtin.package:
+    name: ca-certificates
+    state: present
+
+# Use the system trust store so that mirsg.infrastructure.ca_trust applies to
+# Java, whatever the Java version
+- name: Link the JDK's cacerts to the system Java keystore
+  ansible.builtin.file:
+    src: /etc/pki/java/cacerts
+    dest: >-
+      {{ java_package_info.stat.lnk_source }}/{{ 'jre/' if java_jre.stat.exists
+      else '' }}lib/security/cacerts
+    state: link
+    force: true
