@@ -5,6 +5,8 @@ on:
   pull_request:
     paths:
       - molecule_configs/*
+      - roles/ca_trust/**
+      - roles/install_java/**
       - roles/ldap/**
       - meta/el7-requirements.yml
       - meta/el9-requirements.yml
