@@ -1,0 +1,38 @@
+# Ansible Role: mirsg.infrastructure.ca_trust
+
+A role to manage the system-wide CA trust store (`/etc/pki/ca-trust/source`) on
+EL 7, 9 and 10 hosts.
+
+It distrusts the root CAs listed in the
+[OpenJDK eMudhra advisory](https://openjdk.org/emudhra) (JDK-8395690). It can
+also trust extra CA certificates, such as an LDAP server's CA.
+
+Java reads the same trust store: `mirsg.infrastructure.install_java` links the
+JDK's `cacerts` to `/etc/pki/java/cacerts`. Never add certificates to that
+keystore directly with `keytool` or `community.general.java_cert`, because it is
+regenerated whenever the trust store is updated. Use `ca_trust_anchors` instead.
+
+When the trust store changes, the role sets the fact `ca_trust_changed: true`
+for the rest of the run. Callers can use this to restart services that run on
+the JVM.
+
+## Role Variables
+
+| Variable              | Description                                                                                                       | Default Value                    |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| `ca_trust_blocklist`  | Certificates in `files/blocklist/` to distrust.                                                                   | The eMudhra and Comodo AAA roots |
+| `ca_trust_anchors`    | Extra CA certificates to trust: a list of `name`, `src` and optional `remote_src` (true if `src` is on the host). | `[]`                             |
+| `ca_trust_source_dir` | The trust store source directory.                                                                                 | `/etc/pki/ca-trust/source`       |
+
+## Example Playbook
+
+```yaml
+- hosts: servers
+  roles:
+    - role: mirsg.infrastructure.ca_trust
+      vars:
+        ca_trust_anchors:
+          - name: ldap-ca
+            src:
+              "{{ lookup('env', 'HOME') }}/ansible_persistent_files/ldap/ca.pem"
+```

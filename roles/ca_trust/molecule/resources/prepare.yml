@@ -1,0 +1,31 @@
+---
+- name: Prepare for ca_trust role
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Update YUM repo baseurls
+      ansible.builtin.include_role:
+        name: mirsg.infrastructure.provision
+        tasks_from: RedHat7.yml
+      when: ansible_facts['distribution_major_version'] is version('7')
+
+    - name: Install sudo
+      ansible.builtin.package:
+        name: sudo
+        state: present
+
+    - name: Install openssl
+      ansible.builtin.package:
+        name: openssl
+        state: present
+
+    - name: Install Java
+      ansible.builtin.include_role:
+        name: mirsg.infrastructure.install_java
+
+    - name: Create a test CA certificate
+      ansible.builtin.command:
+        cmd: >-
+          openssl req -x509 -newkey rsa:2048 -nodes -days 30 -subj "/CN=Molecule
+          Test CA" -keyout /tmp/test-ca.key -out /tmp/test-ca.pem
+        creates: /tmp/test-ca.pem

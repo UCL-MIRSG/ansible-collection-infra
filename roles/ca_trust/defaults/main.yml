@@ -1,0 +1,14 @@
+---
+# Certificates in the role's files/blocklist directory to distrust system-wide.
+# The private keys of eMudhra intermediates under these roots were compromised
+# (https://openjdk.org/emudhra, JDK-8395690)
+ca_trust_blocklist:
+  - emsign-root-ca-g1.pem
+  - emsign-ecc-root-ca-g3.pem
+  - comodo-aaa-certificate-services.pem
+
+# Extra CA certificates to trust system-wide, e.g. an LDAP server's CA. Each item
+# needs a `name` and a `src`; set `remote_src: true` if `src` is on the host
+ca_trust_anchors: []
+
+ca_trust_source_dir: /etc/pki/ca-trust/source

@@ -1,0 +1,62 @@
+---
+- name: Ensure ca-certificates is installed
+  ansible.builtin.package:
+    name: ca-certificates
+    state: present
+
+# EL 7 only reads "blacklist"; newer releases read "blocklist"
+- name: Find the blocklist directory
+  ansible.builtin.find:
+    paths: "{{ ca_trust_source_dir }}"
+    patterns:
+      - blocklist
+      - blacklist
+    file_type: directory
+  register: ca_trust_blocklist_dirs
+
+- name: Check a blocklist directory exists
+  ansible.builtin.assert:
+    that: ca_trust_blocklist_dirs.matched > 0
+    fail_msg: >-
+      Neither {{ ca_trust_source_dir }}/blocklist nor {{ ca_trust_source_dir
+      }}/blacklist exists, so the CA certificates cannot be distrusted.
+    quiet: true
+
+# Prefer "blocklist" if both exist ("blocklist" sorts after "blacklist")
+- name: Distrust compromised CA certificates
+  ansible.builtin.copy:
+    src: blocklist/{{ item }}
+    dest: >-
+      {{ ca_trust_blocklist_dirs.files | map(attribute='path') | sort | last
+      }}/{{ item }}
+    owner: root
+    group: root
+    mode: "0644"
+  loop: "{{ ca_trust_blocklist }}"
+  register: ca_trust_blocklist_files
+
+- name: Trust additional CA certificates
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ ca_trust_source_dir }}/anchors/{{ item.name }}.pem"
+    remote_src: "{{ item.remote_src | default(false) }}"
+    owner: root
+    group: root
+    mode: "0644"
+  loop: "{{ ca_trust_anchors }}"
+  loop_control:
+    label: "{{ item.name }}"
+  register: ca_trust_anchor_files
+
+# Regenerates /etc/pki/ca-trust/extracted, including the Java keystore that
+# /etc/pki/java/cacerts links to
+- name: Update the system trust store
+  ansible.builtin.command: update-ca-trust extract
+  when: ca_trust_blocklist_files is changed or ca_trust_anchor_files is changed
+  changed_when: true
+
+# Stays set for the rest of the run so later plays can restart Java services
+- name: Record that the system trust store changed
+  ansible.builtin.set_fact:
+    ca_trust_changed: true
+  when: ca_trust_blocklist_files is changed or ca_trust_anchor_files is changed
