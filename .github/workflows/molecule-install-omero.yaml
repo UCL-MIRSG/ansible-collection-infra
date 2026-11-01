@@ -24,7 +24,7 @@ jobs:
   molecule-install-omero:
     permissions:
       contents: read
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     env:
       MOLECULE_RUN_TAGS: all
       PY_COLORS: 1
