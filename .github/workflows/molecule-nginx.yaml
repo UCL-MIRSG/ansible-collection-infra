@@ -17,7 +17,7 @@ on:
   schedule:
     # Run monthly to catch anything the paths filter misses, and breakage from
     # new releases of dependencies
-    - cron: "0 6 1 * *"
+    - cron: 0 6 1 * *
   workflow_dispatch:
 
 concurrency:
