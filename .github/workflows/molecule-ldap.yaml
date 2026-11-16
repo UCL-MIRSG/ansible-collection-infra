@@ -5,12 +5,21 @@ on:
   pull_request:
     paths:
       - molecule_configs/*
-      - roles/ldap/**
       - meta/el7-requirements.yml
       - meta/el9-requirements.yml
       - meta/el10-requirements.yml
+      - roles/install_java/**
+      - roles/install_python/**
+      - roles/ldap/**
+      - roles/provision/**
+      - roles/provision_accounts/**
       - .github/workflows/molecule-ldap.yaml
       - "!**/README.md"
+  schedule:
+    # Run monthly to catch anything the paths filter misses, and breakage from
+    # new releases of dependencies
+    - cron: 0 6 1 * *
+  workflow_dispatch:
 
 concurrency:
   cancel-in-progress: true
