@@ -13,11 +13,41 @@ collection can be used to configure infrastructure for deploying XNAT and OMERO.
 | [install_monitoring.yml](playbooks/install_monitoring.yml)   | Configure a host to collect metrics from client machines.                                     |
 | [install_xnat.yml](playbooks/install_xnat.yml)               | Install XNAT on two-tier infrastructure with XNAT Container Service (Docker host and client). |
 
+## Supported versions
+
+| Collection version | Ansible                          | Control node Python | Managed hosts                         |
+| ------------------ | -------------------------------- | ------------------- | ------------------------------------- |
+| 1.x                | Ansible 9 (ansible-core 2.16.\*) | 3.10–3.12           | EL7 (XNAT), EL8 (OMERO), EL9 and EL10 |
+
+The control node (the machine running `ansible-playbook`) and the managed hosts
+have different Python requirements:
+
+| Managed host | Default Python | Supported by ansible-core 2.16 |
+| ------------ | -------------- | ------------------------------ |
+| EL7          | 2.7            | Yes                            |
+| EL8          | 3.6            | Yes                            |
+| EL9          | 3.9            | Yes                            |
+| EL10         | 3.12           | Yes                            |
+
+ansible-core 2.16 is the last release supporting Python 2.7 and 3.6 on managed
+hosts, so newer versions of Ansible are not supported while this collection
+supports EL7 and EL8.
+
+If an EL host is used as the control node, it needs a newer Python than its
+default for ansible-core 2.16 (e.g. `python3.12` on EL8 or EL9). EL10's default
+Python 3.12 can be used as-is.
+
+Although not officially supported by ansible-core 2.16, Ansible 9.13.0 has been
+used successfully on a Python 3.13 control node in our own deployments.
+
 ## External requirements
 
-Before using this collection and its playbooks, you must install the necessary
-Ansible collections and roles, choosing the requirements file appropriate for
-your environment (e.g., [EL7](meta/el7-requirements.yml) or
+The Ansible collections this collection depends on are listed, with the
+supported version ranges, in [galaxy.yml](galaxy.yml). They are installed
+automatically when installing this collection with `ansible-galaxy`.
+
+The collection is tested with the exact versions in the
+`meta/*-requirements.yml` files (e.g., [EL7](meta/el7-requirements.yml) or
 [EL9](meta/el9-requirements.yml)).
 
 ## Using this collection
