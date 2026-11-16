@@ -2,10 +2,10 @@
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   extends: ["github>UCL-MIRSG/.github//renovate/default-config.json5"],
   "ansible-galaxy": {
-    description: "Ansible dependencies in galaxy.yml and meta/<os>-requirements.yml files",
+    description: "Ansible dependencies in galaxy.yml and the Molecule lock file",
     managerFilePatterns: [
       "/^galaxy\\.yml$/",
-      "/meta\\/.*requirements\\.ya?ml$/",
+      "/^molecule_configs\\/requirements\\.yml$/",
     ],
   },
   packageRules: [
