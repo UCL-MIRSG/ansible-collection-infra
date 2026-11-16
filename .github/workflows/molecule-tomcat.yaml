@@ -7,9 +7,6 @@ on:
       - molecule_configs/*
       - playbooks/**
       - roles/**
-      - meta/el7-requirements.yml
-      - meta/el9-requirements.yml
-      - meta/el10-requirements.yml
       - .github/workflows/molecule-tomcat.yaml
       - "!**/README.md"
 
