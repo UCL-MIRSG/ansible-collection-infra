@@ -3,7 +3,7 @@ dependency:
   name: galaxy
   options:
     force: true
-    requirements-file: ${MOLECULE_SCENARIO_DIRECTORY}/../../../meta/omero-el${ROCKY_VERSION:-8}-requirements.yml
+    requirements-file: ${MOLECULE_SCENARIO_DIRECTORY}/../../../molecule_configs/requirements.yml
 
 driver:
   name: docker
