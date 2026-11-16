@@ -5,13 +5,32 @@ on:
   pull_request:
     paths:
       - molecule_configs/*
-      - playbooks/**
-      - roles/**
       - meta/el7-requirements.yml
       - meta/el9-requirements.yml
       - meta/el10-requirements.yml
+      - playbooks/install_xnat.yml
+      - playbooks/group_vars/**
+      - playbooks/molecule/*_xnat*/**
+      - playbooks/molecule/resources/xnat/**
+      - playbooks/molecule/resources/shared/**
+      - roles/docker/**
+      - roles/firewalld/**
+      - roles/install_java/**
+      - roles/install_python/**
+      - roles/nginx/**
+      - roles/postgresql/**
+      - roles/provision/**
+      - roles/ssl_certificates/**
+      - roles/tomcat/**
+      - roles/xnat/**
+      - roles/xnat_container_service/**
       - .github/workflows/molecule-install-xnat.yaml
       - "!**/README.md"
+  schedule:
+    # Run monthly to catch anything the paths filter misses, and breakage from
+    # new releases of dependencies
+    - cron: "0 6 1 * *"
+  workflow_dispatch:
   release:
     types:
       - published

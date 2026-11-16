@@ -5,12 +5,32 @@ on:
   pull_request:
     paths:
       - molecule_configs/*
-      - playbooks/**
-      - roles/**
       - meta/omero-el8-requirements.yml
       - meta/omero-el9-requirements.yml
+      - playbooks/install_omero.yml
+      - playbooks/group_vars/**
+      - playbooks/templates/omero-web-nginx-conf.j2
+      - playbooks/molecule/rocky_omero/**
+      - playbooks/molecule/resources/omero/**
+      - playbooks/molecule/resources/shared/**
+      - roles/firewalld/**
+      - roles/install_java/**
+      - roles/install_python/**
+      - roles/ldap/**
+      - roles/nginx/**
+      - roles/omero_server/**
+      - roles/omero_user/**
+      - roles/omero_web/**
+      - roles/postgresql/**
+      - roles/provision/**
+      - roles/ssl_certificates/**
       - .github/workflows/molecule-install-omero.yaml
       - "!**/README.md"
+  schedule:
+    # Run monthly to catch anything the paths filter misses, and breakage from
+    # new releases of dependencies
+    - cron: "0 6 1 * *"
+  workflow_dispatch:
   release:
     types:
       - published
