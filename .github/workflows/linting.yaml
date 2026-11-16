@@ -18,21 +18,9 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Install EL7 requirements
+      - name: Install requirements
         run: |-
-          ansible-galaxy install -r ./meta/el7-requirements.yml
-
-      - name: Install EL9 requirements
-        run: |-
-          ansible-galaxy install -r ./meta/el9-requirements.yml
-
-      - name: Install OMERO EL8 requirements
-        run: |-
-          ansible-galaxy install -r ./meta/omero-el8-requirements.yml
-
-      - name: Install OMERO EL9 requirements
-        run: |-
-          ansible-galaxy install -r ./meta/omero-el9-requirements.yml
+          ansible-galaxy install -r ./molecule_configs/requirements.yml
 
       - uses: UCL-MIRSG/.github/actions/linting@f0317ea26124fe0b3b923d881ac956301a11ea56 # v0
         with:
