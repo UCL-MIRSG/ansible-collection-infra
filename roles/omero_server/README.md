@@ -116,7 +116,7 @@ before upgrading, default empty (disabled)
 ### OMERO.mail email configuration
 
 Default values are the same as the
-[OMERO.mail defaults](https://docs.openmicroscopy.org/omero/5.6.4/sysadmins/mail.html).
+[OMERO.mail defaults](https://omero.readthedocs.io/en/stable/sysadmins/mail.html).
 
 `omero_server_smtp_enabled`: Enable SMTP server. Default `false`
 
