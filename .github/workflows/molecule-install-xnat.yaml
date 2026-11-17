@@ -4,10 +4,7 @@ name: Test install_xnat playbook
 on:
   pull_request:
     paths:
-      - molecule_configs/*
-      - meta/el7-requirements.yml
-      - meta/el9-requirements.yml
-      - meta/el10-requirements.yml
+      - molecule_configs/requirements.yml
       - playbooks/install_xnat.yml
       - playbooks/group_vars/**
       - playbooks/molecule/*_xnat*/**

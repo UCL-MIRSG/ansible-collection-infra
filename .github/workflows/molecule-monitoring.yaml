@@ -5,9 +5,6 @@ on:
   pull_request:
     paths:
       - molecule_configs/*
-      - meta/el7-requirements.yml
-      - meta/el9-requirements.yml
-      - meta/el10-requirements.yml
       - playbooks/install_monitoring.yml
       - playbooks/group_vars/**
       - playbooks/molecule/*_monitoring/**

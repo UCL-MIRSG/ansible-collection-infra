@@ -4,9 +4,7 @@ name: Test install_omero playbook
 on:
   pull_request:
     paths:
-      - molecule_configs/*
-      - meta/omero-el8-requirements.yml
-      - meta/omero-el9-requirements.yml
+      - molecule_configs/requirements.yml
       - playbooks/install_omero.yml
       - playbooks/group_vars/**
       - playbooks/templates/omero-web-nginx-conf.j2
