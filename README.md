@@ -46,9 +46,13 @@ The Ansible collections this collection depends on are listed, with the
 supported version ranges, in [galaxy.yml](galaxy.yml). They are installed
 automatically when installing this collection with `ansible-galaxy`.
 
-The collection is tested with the exact versions in the
-`meta/*-requirements.yml` files (e.g., [EL7](meta/el7-requirements.yml) or
-[EL9](meta/el9-requirements.yml)).
+The collection is tested with the exact versions in
+[molecule_configs/requirements.yml](molecule_configs/requirements.yml). It is
+recommended that deployments pin their dependencies to these versions in their
+own `requirements.yml`, alongside a pinned version of this collection.
+
+The `meta/*-requirements.yml` files are deprecated, are no longer used for
+testing, and will be removed in a future release.
 
 ## Using this collection
 

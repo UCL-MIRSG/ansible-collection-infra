@@ -8,9 +8,6 @@ on:
       - roles/ca_trust/**
       - roles/install_java/**
       - roles/provision/**
-      - meta/el7-requirements.yml
-      - meta/el9-requirements.yml
-      - meta/el10-requirements.yml
       - .github/workflows/molecule-ca-trust.yaml
       - "!**/README.md"
 

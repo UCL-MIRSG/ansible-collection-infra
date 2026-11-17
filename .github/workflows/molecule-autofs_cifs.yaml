@@ -5,9 +5,7 @@ on:
   pull_request:
     paths:
       - molecule_configs/*
-      - meta/el7-requirements.yml
-      - meta/el9-requirements.yml
-      - meta/el10-requirements.yml
+      - "!molecule_configs/centos7_base_config.yml"
       - roles/autofs_cifs/**
       - .github/workflows/molecule-autofs_cifs.yaml
       - "!**/README.md"

@@ -1,0 +1,16 @@
+---
+# Exact versions of the collection dependencies used for testing with Molecule.
+# These must stay within the ranges in galaxy.yml, and be compatible with the
+# Ansible version stated in the README (ansible-core 2.16, which is the last
+# release supporting Python 2.7 on EL7 and Python 3.6 on EL8 hosts).
+collections:
+  - name: community.general
+    version: 11.4.1
+  - name: ansible.posix
+    version: 2.2.2
+  - name: community.postgresql
+    version: 3.14.3
+  - name: community.docker
+    version: 4.8.8
+  - name: community.crypto
+    version: 2.26.9
