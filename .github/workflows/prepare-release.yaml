@@ -1,0 +1,55 @@
+---
+name: Prepare release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version to release (e.g. 1.57.0)
+        required: true
+        type: string
+
+jobs:
+  prepare-release:
+    permissions:
+      contents: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ inputs.version }}
+      BRANCH: release/${{ inputs.version }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Validate version
+        run: |-
+          if [[ ! "${VERSION}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Version must be in the form X.Y.Z, got '${VERSION}'"
+            exit 1
+          fi
+
+      - name: Checkout source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Bump version in galaxy.yml
+        run: |-
+          sed -i -E "s/^version: .*/version: ${VERSION}/" galaxy.yml
+          git diff --exit-code --quiet galaxy.yml && {
+            echo "::error::galaxy.yml is already at version ${VERSION}"
+            exit 1
+          }
+          git diff galaxy.yml
+
+      - name: Open pull request
+        run: |-
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "${BRANCH}"
+          git commit -am "chore: bump collection version to ${VERSION}"
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "${BRANCH}"
+          gh pr create \
+            --base main \
+            --head "${BRANCH}" \
+            --title "chore: release ${VERSION}" \
+            --body "Bumps the collection version in \`galaxy.yml\` to \`${VERSION}\`. After merging, create the \`${VERSION}\` release from \`main\`."
