@@ -64,12 +64,21 @@
     recurse: true
   notify: Restart tomcat
 
-- name: Add self-signed web certificate for web server to keystore
-  community.general.java_cert:
-    cert_path: "{{ ssl.server_cert }}"
-    keystore_path: "{{ java.keystore_path }}"
-    keystore_pass: "{{ java_keystore.keystore_pass }}"
-    cert_alias: "{{ web_server.host }}"
-    keystore_create: true
-    state: present
+- name: Add self-signed web certificate for web server to the system trust store
   when: ssl.use_ssl and not ssl.validate_certs
+  block:
+    - name: Add self-signed web certificate to the system trust store
+      ansible.builtin.include_role:
+        name: mirsg.infrastructure.ca_trust
+      vars:
+        ca_trust_anchors:
+          - name: "{{ web_server.host }}"
+            src: "{{ ssl.server_cert }}"
+            remote_src: true
+
+    - name: Restart tomcat if the system trust store changed
+      ansible.builtin.debug:
+        msg: System trust store updated
+      when: ca_trust_changed | default(false)
+      changed_when: true
+      notify: Restart tomcat

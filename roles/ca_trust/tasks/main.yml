@@ -1,0 +1,112 @@
+---
+- name: Ensure ca-certificates is installed
+  ansible.builtin.package:
+    name: ca-certificates
+    state: present
+
+# EL 7 only reads "blacklist"; newer releases read "blocklist"
+- name: Find the blocklist directory
+  ansible.builtin.find:
+    paths: "{{ ca_trust_source_dir }}"
+    patterns:
+      - blocklist
+      - blacklist
+    file_type: directory
+  register: ca_trust_blocklist_dirs
+
+- name: Check a blocklist directory exists
+  ansible.builtin.assert:
+    that: ca_trust_blocklist_dirs.matched > 0
+    fail_msg: >-
+      Neither {{ ca_trust_source_dir }}/blocklist nor {{ ca_trust_source_dir
+      }}/blacklist exists, so the CA certificates cannot be distrusted.
+    quiet: true
+
+# Prefer "blocklist" if both exist ("blocklist" sorts after "blacklist")
+- name: Choose the blocklist directory
+  ansible.builtin.set_fact:
+    ca_trust_blocklist_dir: >-
+      {{ ca_trust_blocklist_dirs.files | map(attribute='path') | sort | last }}
+
+- name: Distrust compromised CA certificates
+  ansible.builtin.copy:
+    src: blocklist/{{ item }}
+    dest: "{{ ca_trust_blocklist_dir }}/{{ item }}"
+    owner: root
+    group: root
+    mode: "0644"
+  loop: "{{ ca_trust_blocklist }}"
+  register: ca_trust_blocklist_files
+
+- name: Read additional CA certificates on the host
+  ansible.builtin.slurp:
+    src: "{{ item.src }}"
+  loop: "{{ ca_trust_anchors }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when: item.remote_src | default(false)
+  register: ca_trust_anchor_remote_files
+
+- name: Check each additional CA file contains a PEM certificate
+  ansible.builtin.assert:
+    that: ca_trust_anchor_pem is search('-----BEGIN CERTIFICATE-----')
+    fail_msg: "{{ item.0.src }} does not contain a PEM certificate"
+    quiet: true
+  vars:
+    ca_trust_anchor_pem: >-
+      {{ (item.1.content | b64decode) if item.0.remote_src | default(false) else
+      lookup('ansible.builtin.file', item.0.src) }}
+  loop: "{{ ca_trust_anchors | zip(ca_trust_anchor_remote_files.results) }}"
+  loop_control:
+    label: "{{ item.0.name }}"
+
+# Written in p11-kit format rather than copied to anchors/, because
+# update-ca-trust only exports anchors marked CA:TRUE. A self-signed server
+# certificate in anchors/ would never reach Java's cacerts
+- name: Trust additional CA certificates
+  ansible.builtin.template:
+    src: anchor.p11-kit.j2
+    dest: "{{ ca_trust_source_dir }}/{{ item.0.name }}.p11-kit"
+    owner: root
+    group: root
+    mode: "0644"
+  vars:
+    ca_trust_anchor_pem: >-
+      {{ (item.1.content | b64decode) if item.0.remote_src | default(false) else
+      lookup('ansible.builtin.file', item.0.src) }}
+  loop: "{{ ca_trust_anchors | zip(ca_trust_anchor_remote_files.results) }}"
+  loop_control:
+    label: "{{ item.0.name }}"
+  register: ca_trust_anchor_files
+
+# Catches sources changed by a previous run that failed before extracting. A
+# missing extracted keystore makes find fail, which also forces an extract
+- name: Find trust store sources newer than the extracted Java keystore
+  ansible.builtin.command:
+    argv:
+      - find
+      - "{{ ca_trust_source_dir }}"
+      - -newer
+      - "{{ ca_trust_extracted_dir }}/java/cacerts"
+      - -print
+      - -quit
+  register: ca_trust_newer_sources
+  changed_when: false
+  failed_when: false
+  check_mode: false
+
+# Regenerates /etc/pki/ca-trust/extracted, including the Java keystore that
+# /etc/pki/java/cacerts links to
+- name: Update the system trust store
+  ansible.builtin.command: update-ca-trust extract
+  when: >-
+    ca_trust_blocklist_files is changed or ca_trust_anchor_files is changed or
+    ca_trust_newer_sources.rc != 0 or ca_trust_newer_sources.stdout != ''
+  changed_when: true
+  register: ca_trust_update
+
+# Stays set for the rest of the run so later plays can restart Java services
+- name: Record that the system trust store changed
+  ansible.builtin.set_fact:
+    ca_trust_changed: true
+  when: ca_trust_update is changed
