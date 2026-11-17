@@ -31,6 +31,7 @@
     - role: mirsg.infrastructure.provision
     - role: mirsg.infrastructure.install_python
     - role: mirsg.infrastructure.install_java
+    - role: mirsg.infrastructure.ca_trust
     - role: mirsg.infrastructure.ldap
       when: omero_server_use_ldap
     - role: mirsg.infrastructure.ssl_certificates
@@ -46,6 +47,7 @@
   roles:
     - role: mirsg.infrastructure.provision
     - role: mirsg.infrastructure.install_python
+    - role: mirsg.infrastructure.ca_trust
     - role: mirsg.infrastructure.postgresql
     - role: mirsg.infrastructure.firewalld
 
@@ -63,3 +65,11 @@
         nginx_conf_template: omero-web-nginx-conf.j2
         nginx_conf_file: /etc/nginx/conf.d/omero-web.conf
     - role: mirsg.infrastructure.firewalld
+
+  tasks:
+    - name: Restart OMERO.server if the system trust store changed
+      ansible.builtin.debug:
+        msg: System trust store updated
+      when: ca_trust_changed | default(false)
+      changed_when: true
+      notify: Restart omero-server

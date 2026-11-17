@@ -1,0 +1,21 @@
+---
+- name: Verify Java trusts the LDAP CA certificate
+  hosts: all
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Get the LDAP CA certificate's fingerprints
+      community.crypto.x509_certificate_info:
+        path: /tmp/ca-certificate.pem
+      register: ldap_ca_info
+
+    - name: List the certificates Java trusts
+      ansible.builtin.command: >-
+        /usr/lib/jvm/jre/bin/keytool -list -v -storepass changeit -keystore
+        /usr/lib/jvm/jre/lib/security/cacerts
+      register: java_cacerts
+      changed_when: false
+
+    - name: Check the LDAP CA certificate is trusted
+      ansible.builtin.assert:
+        that: ldap_ca_info.fingerprints.sha256 | upper in java_cacerts.stdout
