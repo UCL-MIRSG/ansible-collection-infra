@@ -5,9 +5,6 @@ on:
   pull_request:
     paths:
       - molecule_configs/*
-      - meta/el7-requirements.yml
-      - meta/el9-requirements.yml
-      - meta/el10-requirements.yml
       - roles/provision/**
       - roles/provision_accounts/**
       - playbooks/setup_user_accounts.yml
