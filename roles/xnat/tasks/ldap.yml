@@ -37,12 +37,18 @@
   notify: Restart tomcat
   tags: configure_xnat_ldap
 
-- name: Add CA certificate for LDAP server to keystore
-  community.general.java_cert:
-    cert_path: "{{ ldap_ca_cert_file_on_client }}"
-    keystore_path: "{{ java.keystore_path }}"
-    keystore_pass: "{{ java_keystore.keystore_pass }}"
-    cert_alias: "{{ xnat_ldap_keystore_alias }}"
-    keystore_create: true
-    state: present
+- name: Add CA certificate for LDAP server to the system trust store
+  ansible.builtin.include_role:
+    name: mirsg.infrastructure.ca_trust
+  vars:
+    ca_trust_anchors:
+      - name: "{{ xnat_ldap_keystore_alias | default('xnat-ldap-ca', true) }}"
+        src: "{{ ldap_ca_cert_file_on_client }}"
+        remote_src: true
+
+- name: Restart tomcat if the system trust store changed
+  ansible.builtin.debug:
+    msg: System trust store updated
+  when: ca_trust_changed | default(false)
+  changed_when: true
   notify: Restart tomcat

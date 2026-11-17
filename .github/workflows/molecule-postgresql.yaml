@@ -5,10 +5,19 @@ on:
   pull_request:
     paths:
       - molecule_configs/*
-      - playbooks/**
-      - roles/**
+      - meta/el7-requirements.yml
+      - meta/el9-requirements.yml
+      - meta/el10-requirements.yml
+      - roles/postgresql/**
+      - roles/provision/**
+      - roles/ssl_certificates/**
       - .github/workflows/molecule-postgresql.yaml
       - "!**/README.md"
+  schedule:
+    # Run monthly to catch anything the paths filter misses, and breakage from
+    # new releases of dependencies
+    - cron: 0 6 1 * *
+  workflow_dispatch:
 
 concurrency:
   cancel-in-progress: true

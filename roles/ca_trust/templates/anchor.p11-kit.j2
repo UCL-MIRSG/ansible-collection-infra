@@ -1,0 +1,11 @@
+# {{ ansible_managed }}
+# Source: {{ item.0.src }}
+
+{% for cert in ca_trust_anchor_pem | regex_findall('-----BEGIN CERTIFICATE-----[\s\S]+?-----END CERTIFICATE-----') %}
+[p11-kit-object-v1]
+class: certificate
+certificate-category: authority
+trusted: true
+{{ cert }}
+
+{% endfor %}
