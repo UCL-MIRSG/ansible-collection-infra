@@ -262,20 +262,22 @@ This repo has `pre-commit` hooks enabled, for instructions see
 
 The collection version in [`galaxy.yml`](galaxy.yml) must match the release tag,
 because `ansible-galaxy` reads the version from `galaxy.yml` at the tagged
-commit when installing the collection from git. To make a new release:
+commit when installing the collection from git. Releases are therefore created
+by a workflow rather than manually. Versioning follows
+[semantic versioning](https://semver.org/) (e.g. `1.57.0`), and tags do not have
+a `v` prefix. To make a new release:
 
-1. Choose the new version, following [semantic versioning](https://semver.org/)
-   (e.g. `1.57.0`). Tags do not have a `v` prefix.
-2. Run the [Prepare release workflow](.github/workflows/prepare-release.yaml)
-   from the Actions tab ("Run workflow"), entering the new version. This opens a
-   PR that bumps the version in `galaxy.yml`.
-3. Review and merge the PR.
-4. [Create a new release](https://github.com/UCL-MIRSG/ansible-collection-infra/releases/new)
-   from `main`, with a new tag matching the version (e.g. `1.56.0`), and use
-   "Generate release notes" to populate the description.
+1. Run the [Prepare release workflow](.github/workflows/prepare-release.yaml)
+   from the Actions tab ("Run workflow"), choosing whether to increment the
+   "major", "minor" or "patch" version. This opens a `release/<version>` PR that
+   bumps the version in `galaxy.yml`.
+2. Review and merge the PR. The
+   [Create release workflow](.github/workflows/create-release.yaml) then tags
+   the merge commit with the version and publishes a GitHub release with
+   generated release notes.
 
-> [!NOTE] Pull requests opened by the workflow do not trigger the other CI
-> workflows, as they are created with the default `GITHUB_TOKEN`.
+Do not create tags or releases manually. Tag creation is restricted to the
+GitHub App used by the Create release workflow.
 
 ## License
 
