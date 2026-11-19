@@ -49,6 +49,26 @@
     createhome: false
     system: true
 
+- name: Ensure OTEL Java agent directory exists
+  ansible.builtin.file:
+    path: /opt/opentelemetry
+    state: directory
+    owner: "{{ tomcat_owner }}"
+    group: "{{ tomcat_group }}"
+    mode: "0755"
+  when: tomcat_otel_enabled
+
+- name: Download the OTEL Java agent
+  ansible.builtin.get_url:
+    url:
+      "https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/{{
+      tomcat_java_agent_version }}/download/opentelemetry-javaagent.jar"
+    dest: /opt/opentelemetry/opentelemetry-javaagent.jar
+    owner: "{{ tomcat_owner }}"
+    group: "{{ tomcat_group }}"
+    mode: "0644"
+  when: tomcat_otel_enabled
+
 - name: Check for existing Tomcat install
   ansible.builtin.stat:
     path: "{{ tomcat_catalina_home }}/bin"
