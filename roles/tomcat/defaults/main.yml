@@ -2,6 +2,10 @@
 # mirsg.tomcat: selinux
 selinux_enabled: false
 
+# mirsg.tomcat: otel instrumentation
+tomcat_otel_enabled: false
+tomcat_java_agent_version: 2.34.0
+
 # mirsg.tomcat: java settings
 java_home: /usr/lib/jvm/jre
 java_profile_d: /etc/profile.d
