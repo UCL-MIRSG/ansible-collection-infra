@@ -258,6 +258,27 @@ for an example.
 This repo has `pre-commit` hooks enabled, for instructions see
 <https://github.com/UCL-MIRSG/.github/tree/main/prek>.
 
+## Releasing a new version
+
+The collection version in [`galaxy.yml`](galaxy.yml) must match the release tag,
+because `ansible-galaxy` reads the version from `galaxy.yml` at the tagged
+commit when installing the collection from git. Releases are therefore created
+by a workflow rather than manually. Versioning follows
+[semantic versioning](https://semver.org/) (e.g. `1.57.0`), and tags do not have
+a `v` prefix. To make a new release:
+
+1. Run the [Prepare release workflow](.github/workflows/prepare-release.yaml)
+   from the Actions tab ("Run workflow"), choosing whether to increment the
+   "major", "minor" or "patch" version. This opens a `release/<version>` PR that
+   bumps the version in `galaxy.yml`.
+2. Review and merge the PR. The
+   [Create release workflow](.github/workflows/create-release.yaml) then tags
+   the merge commit with the version and publishes a GitHub release with
+   generated release notes.
+
+Do not create tags or releases manually. Tag creation is restricted to the
+GitHub App used by the Create release workflow.
+
 ## License
 
 This collection is licensed and distributed under the BSD 3-Clause License.
