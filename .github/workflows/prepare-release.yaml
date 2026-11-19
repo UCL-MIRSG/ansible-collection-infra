@@ -42,14 +42,18 @@ jobs:
           git diff galaxy.yml
 
       - name: Open pull request
-        run: |-
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git switch -c "${BRANCH}"
-          git commit -am "chore: bump collection version to ${VERSION}"
-          git push "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "${BRANCH}"
-          gh pr create \
-            --base main \
-            --head "${BRANCH}" \
-            --title "chore: release ${VERSION}" \
-            --body "Bumps the collection version in \`galaxy.yml\` to \`${VERSION}\`. After merging, create the \`${VERSION}\` release from \`main\`."
+        uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+          branch: release/${{ steps.version.outputs.version }}
+          base: main
+          add-paths: galaxy.yml
+          commit-message:
+            "chore: bump collection version to ${{ steps.version.outputs.version
+            }}"
+          title: "chore: release ${{ steps.version.outputs.version }}"
+          body: >-
+            Bumps the collection version in `galaxy.yml` to `${{
+            steps.version.outputs.version }}`. Merging this PR will create the
+            `${{ steps.version.outputs.version }}` release.
+          sign-commits: true
