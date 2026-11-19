@@ -1,1 +1,20 @@
 CATALINA_OPTS="{{ tomcat_catalina_opts }}"
+{% if tomcat_otel_enabled %}
+CATALINA_OPTS="$CATALINA_OPTS -javaagent:/opt/opentelemetry/opentelemetry-javaagent.jar"
+
+# Service identification
+OTEL_RESOURCE_ATTRIBUTES=service.name=tomcat,service.version=1.0.0
+
+# Enable all signal types
+OTEL_TRACES_EXPORTER=otlp
+OTEL_METRICS_EXPORTER=otlp
+OTEL_LOGS_EXPORTER=otlp
+
+# OTLP exporter configuration
+OTEL_EXPORTER_OTLP_COMPRESSION=gzip
+OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
+
+# Recommended metrics settings
+OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE=DELTA
+OTEL_EXPORTER_OTLP_METRICS_DEFAULT_HISTOGRAM_AGGREGATION=BASE2_EXPONENTIAL_BUCKET_HISTOGRAM
+{% endif %}
