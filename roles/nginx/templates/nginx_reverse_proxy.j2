@@ -95,9 +95,12 @@ http {
     server {
 
 {% if nginx_use_ssl %}
-        listen {{ nginx_https_port }} ssl http2{% if not nginx_add_default_server %} default_server{% endif %};
+        listen {{ nginx_https_port }} ssl{% if not nginx_add_default_server %} default_server{% endif %};
     {% if nginx_ipv6_enabled %}
-        listen [::]:{{ nginx_https_port }} ssl http2{% if not nginx_add_default_server %} default_server{% endif %};
+        listen [::]:{{ nginx_https_port }} ssl{% if not nginx_add_default_server %} default_server{% endif %};
+    {% endif %}
+    {% if nginx_http2 %}
+        http2 on;
     {% endif %}
 {% else %}
         listen {{ nginx_http_port }}{% if not nginx_add_default_server %} default_server{% endif %};

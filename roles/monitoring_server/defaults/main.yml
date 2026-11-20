@@ -202,6 +202,7 @@ monitoring_server_nginx:
   conf_file: /etc/nginx/nginx.conf
   ssl_cert_file: /etc/nginx/ssl/server.cert
   ssl_key_file: /etc/nginx/ssl/server.key
+monitoring_server_nginx_http2: false
 
 monitoring_server_prometheus:
   image: prom/prometheus:v3.13.2@sha256:508729e0e2d18e11fd742a5a5ca70e557b940a93948c3c95fd0123a6fd538b69

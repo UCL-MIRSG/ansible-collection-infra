@@ -1,4 +1,6 @@
 ---
+nginx_http2: false
+
 nginx_owner: root
 nginx_group: root
 
