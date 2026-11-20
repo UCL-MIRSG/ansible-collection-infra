@@ -24,6 +24,8 @@ docker_certificate_directory: /home/docker/.docker
 docker_config_dir: /etc/docker
 docker_daemon_conf_file: /etc/docker/daemon.json
 docker_server_hostname: "{{ ansible_host }}"
+# Set to false to only listen on the local unix socket
+docker_tcp_enabled: true
 docker_server_ip: 0.0.0.0
 docker_server_port: 2376
 docker_tls_verify: true
