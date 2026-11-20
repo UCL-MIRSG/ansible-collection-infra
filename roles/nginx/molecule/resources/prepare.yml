@@ -71,6 +71,14 @@
             group: root
             mode: "0640"
 
+    # The nginx role rotates the container's logs on EL7. logrotate is part of a
+    # base CentOS 7 install, but not of the container image.
+    - name: Install logrotate
+      ansible.builtin.package:
+        name: logrotate
+        state: present
+      when: ansible_facts['distribution_major_version'] is version('7', '==')
+
 - name: Create SSL certificates for nginx
   hosts: all
   gather_facts: true
