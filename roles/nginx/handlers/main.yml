@@ -1,10 +1,35 @@
 ---
-- name: Restart nginx
+- name: Restart nginx service
   ansible.builtin.service:
     name: nginx
     state: restarted
+  when: nginx_install_method == "package"
+  listen: Restart nginx
 
-- name: Reload nginx
+- name: Reload nginx service
   ansible.builtin.service:
     name: nginx
     state: reloaded
+  when: nginx_install_method == "package"
+  listen: Reload nginx
+
+- name: Restart nginx container
+  community.docker.docker_container:
+    name: "{{ nginx_container_name }}"
+    state: started
+    restart: true
+  when: nginx_install_method == "container"
+  listen: Restart nginx
+
+# HUP makes nginx in the container reload its config gracefully
+- name: Reload nginx container
+  ansible.builtin.command:
+    argv:
+      - docker
+      - kill
+      - --signal
+      - HUP
+      - "{{ nginx_container_name }}"
+  changed_when: true
+  when: nginx_install_method == "container"
+  listen: Reload nginx

@@ -18,3 +18,58 @@
           - response.status == 200
           - response.server == "nginx"
           - response.content is search('Hello World!')
+
+- name: Verify the nginx version
+  hosts: all
+  become: true
+  gather_facts: true
+  vars:
+    nginx_command:
+      "{{ 'docker exec nginx nginx' if
+      ansible_facts['distribution_major_version'] == '7' else '/usr/sbin/nginx'
+      }}"
+  tasks:
+    - name: Load the role defaults for the pinned nginx version
+      ansible.builtin.include_vars:
+        file: ../../defaults/main.yml
+
+    - name: Get nginx version
+      ansible.builtin.command: "{{ nginx_command }} -v"
+      register: nginx_version_output
+      changed_when: false
+
+    - name: Check the pinned nginx is installed
+      ansible.builtin.assert:
+        that:
+          - nginx_version_output.stderr is search('nginx/' ~ (nginx_version |
+            regex_escape) ~ '(\s|$)')
+
+- name: Verify the nginx container's logs are rotated
+  hosts: all
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Check nginx reopens its logs after rotation
+      when: ansible_facts['distribution_major_version'] is version('7', '==')
+      block:
+        - name: Rotate the nginx logs
+          ansible.builtin.command: logrotate --force /etc/logrotate.d/nginx
+          changed_when: true
+
+        - name: Send a request to nginx
+          ansible.builtin.uri:
+            url: https://localhost
+            headers:
+              Host: molecule.instance.local
+            validate_certs: false
+
+        - name: Get the app access log
+          ansible.builtin.stat:
+            path: /var/log/nginx/app.access.log
+          register: nginx_app_access_log_stat
+
+        - name: Check the request was logged to the new access log
+          ansible.builtin.assert:
+            that:
+              - nginx_app_access_log_stat.stat.exists
+              - nginx_app_access_log_stat.stat.size > 0

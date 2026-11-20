@@ -59,8 +59,23 @@
       matchPackageNames: ["NrgXnat/batch-launch-plugin"],
       allowedVersions: "<0.9.0",
     },
+    {
+      description: "Wait for nginx.org to publish the EL packages for a new nginx image version, as the nginx role installs the same version from nginx.org",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["nginx"],
+      minimumReleaseAge: "3 days",
+    },
   ],
   customManagers: [
+    {
+      customType: "regex",
+      description: "Update the nginx image, which also sets the nginx.org package version, in roles/nginx/defaults/main.yml",
+      managerFilePatterns: ["/roles/nginx/defaults/main.yml$/"],
+      matchStrings: [
+        "nginx_container_image:\\s?(?<depName>nginx):(?<currentValue>[\\d.]+)@(?<currentDigest>sha256:[a-f0-9]+)",
+      ],
+      datasourceTemplate: "docker",
+    },
     {
       customType: "regex",
       description: "Update Tomcat version",

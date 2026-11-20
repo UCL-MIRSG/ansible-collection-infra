@@ -1,0 +1,51 @@
+---
+- name: Add the nginx.org mainline repository
+  ansible.builtin.yum_repository:
+    name: nginx-mainline
+    description: nginx mainline repo
+    baseurl: "{{ nginx_repo_baseurl }}"
+    gpgcheck: true
+    gpgkey: "{{ nginx_repo_gpgkey }}"
+    # Prefer nginx.org packages over the OS and EPEL nginx packages, and stop
+    # the EL8 nginx module from hiding them
+    priority: "10"
+    module_hotfixes: true
+    enabled: true
+    state: present
+
+- name: Gather installed packages
+  ansible.builtin.package_facts:
+
+# The OS and EPEL nginx packages may have a higher epoch than the nginx.org
+# package, so they must be removed rather than upgraded
+- name: Remove nginx packages that are not from nginx.org
+  ansible.builtin.package:
+    name:
+      - nginx
+      - nginx-core
+      - nginx-filesystem
+      - nginx-all-modules
+      - nginx-mod-*
+    state: absent
+  when:
+    - "'nginx' in ansible_facts.packages"
+    - ansible_facts.packages['nginx'][0].release is not search('ngx')
+
+- name: Ensure the pinned nginx is installed - {{ nginx_version }}
+  ansible.builtin.dnf:
+    name: nginx-{{ nginx_version }}
+    state: present
+    allow_downgrade: true
+
+# The nginx.org package's nginx.conf includes conf.d/*.conf, and its
+# conf.d/default.conf adds a server that would conflict with ours. The file is
+# emptied rather than deleted so that package upgrades don't restore it.
+- name: Disable the default server shipped with the nginx.org package
+  ansible.builtin.copy:
+    content: "# Disabled by mirsg.infrastructure.nginx\n"
+    dest: /etc/nginx/conf.d/default.conf
+    owner: root
+    group: root
+    mode: "0644"
+  when: nginx_conf_file != "/etc/nginx/conf.d/default.conf"
+  notify: Reload nginx

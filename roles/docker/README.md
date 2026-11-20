@@ -3,6 +3,23 @@
 This role is for installing [docker-ce](https://docs.docker.com/engine/install/)
 on CentOS 7 or Rocky Linux 8.
 
+Other roles that only need Docker running, without configuring the daemon, can
+use the `install.yml` and `start.yml` task files. These install Docker and start
+it with the default configuration (listening on the local unix socket only), and
+leave any existing `daemon.json`, certificates and swarm unchanged:
+
+```yaml
+- name: Install Docker
+  ansible.builtin.include_role:
+    name: mirsg.infrastructure.docker
+    tasks_from: install.yml
+
+- name: Start Docker
+  ansible.builtin.include_role:
+    name: mirsg.infrastructure.docker
+    tasks_from: start.yml
+```
+
 ## Role Variables
 
 | Name                       | Description                                                                                          |
