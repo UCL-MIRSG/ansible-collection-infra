@@ -16,7 +16,9 @@ The role installs the nginx mainline version pinned in `nginx_container_image`:
   Docker daemon config, certificates and swarm are not changed, so apply the
   `mirsg.infrastructure.docker` role separately if the host needs them. An
   existing nginx service is stopped and disabled, but its package is left
-  installed for rollback.
+  installed for rollback. The role writes `/etc/logrotate.d/nginx`, replacing
+  the config from the EPEL package, so the container reopens its logs after
+  rotation.
 
 The role fails if the running nginx isn't `nginx_version`.
 

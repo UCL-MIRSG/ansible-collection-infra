@@ -1,0 +1,12 @@
+{{ nginx_log_folder }}/*log {
+    daily
+    rotate 10
+    missingok
+    notifempty
+    compress
+    sharedscripts
+    postrotate
+        # USR1 makes nginx in the container reopen its log files
+        /usr/bin/docker kill --signal USR1 {{ nginx_container_name }} >/dev/null 2>&1 || true
+    endscript
+}

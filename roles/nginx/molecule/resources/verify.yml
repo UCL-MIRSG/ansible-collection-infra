@@ -43,3 +43,33 @@
         that:
           - nginx_version_output.stderr is search('nginx/' ~ (nginx_version |
             regex_escape) ~ '(\s|$)')
+
+- name: Verify the nginx container's logs are rotated
+  hosts: all
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Check nginx reopens its logs after rotation
+      when: ansible_facts['distribution_major_version'] is version('7', '==')
+      block:
+        - name: Rotate the nginx logs
+          ansible.builtin.command: logrotate --force /etc/logrotate.d/nginx
+          changed_when: true
+
+        - name: Send a request to nginx
+          ansible.builtin.uri:
+            url: https://localhost
+            headers:
+              Host: molecule.instance.local
+            validate_certs: false
+
+        - name: Get the app access log
+          ansible.builtin.stat:
+            path: /var/log/nginx/app.access.log
+          register: nginx_app_access_log_stat
+
+        - name: Check the request was logged to the new access log
+          ansible.builtin.assert:
+            that:
+              - nginx_app_access_log_stat.stat.exists
+              - nginx_app_access_log_stat.stat.size > 0
