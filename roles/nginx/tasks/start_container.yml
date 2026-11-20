@@ -20,7 +20,9 @@
     # services on localhost
     network_mode: host
     volumes:
-      - "{{ nginx_conf_file }}:/etc/nginx/nginx.conf:ro"
+      # Mount the directory rather than the file, so the container sees the new
+      # config when it is templated and can be reloaded without a restart
+      - "{{ nginx_conf_file | dirname }}:/etc/nginx:ro"
       - "{{ nginx_certs_dir }}:{{ nginx_certs_dir }}:ro"
       - "{{ nginx_log_folder }}:{{ nginx_log_folder }}"
     restart_policy: always

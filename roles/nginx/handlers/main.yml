@@ -13,14 +13,23 @@
   when: nginx_install_method == "package"
   listen: Reload nginx
 
-# The config file is bind-mounted, and is replaced rather than edited in place
-# when templated, so the container must be restarted to see the new file
 - name: Restart nginx container
   community.docker.docker_container:
     name: "{{ nginx_container_name }}"
     state: started
     restart: true
   when: nginx_install_method == "container"
-  listen:
-    - Restart nginx
-    - Reload nginx
+  listen: Restart nginx
+
+# HUP makes nginx in the container reload its config gracefully
+- name: Reload nginx container
+  ansible.builtin.command:
+    argv:
+      - docker
+      - kill
+      - --signal
+      - HUP
+      - "{{ nginx_container_name }}"
+  changed_when: true
+  when: nginx_install_method == "container"
+  listen: Reload nginx
