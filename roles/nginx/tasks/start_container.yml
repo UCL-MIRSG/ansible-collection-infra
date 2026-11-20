@@ -3,7 +3,7 @@
   ansible.builtin.service_facts:
 
 # Hosts that previously ran nginx from EPEL must free the ports for the
-# container. The package is left installed so it is easy to roll back to.
+# container. The package isn't removed, so it can be rolled back to.
 - name: Stop and disable the nginx service
   ansible.builtin.service:
     name: nginx

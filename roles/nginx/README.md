@@ -15,10 +15,21 @@ The role installs the nginx mainline version pinned in `nginx_container_image`:
   `mirsg.infrastructure.docker` (`tasks_from: install.yml` and `start.yml`). The
   Docker daemon config, certificates and swarm are not changed, so apply the
   `mirsg.infrastructure.docker` role separately if the host needs them. An
-  existing nginx service is stopped and disabled, but its package is left
-  installed for rollback. The role writes `/etc/logrotate.d/nginx`, replacing
-  the config from the EPEL package, so the container reopens its logs after
-  rotation.
+  existing nginx service is stopped and disabled, but its package is not
+  removed. The role writes `/etc/logrotate.d/nginx`, replacing the config from
+  the EPEL package, so the container reopens its logs after rotation.
+
+To go back to the EPEL nginx package on CentOS 7, remove the container and
+restore the package's logrotate config before running the previous release of
+this collection:
+
+```sh
+docker rm --force nginx
+# rpm keeps a modified config file on reinstall, so remove it first
+pkg=$(rpm -qf --queryformat '%{NAME}' /etc/logrotate.d/nginx)
+rm /etc/logrotate.d/nginx
+yum reinstall "$pkg"
+```
 
 The role fails if the running nginx isn't `nginx_version`.
 
