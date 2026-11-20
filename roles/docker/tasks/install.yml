@@ -1,0 +1,68 @@
+---
+# Installs Docker without configuring the daemon, so other roles can reuse it
+# (with start.yml) without changing an existing setup
+- name: Ensure docker dependencies are installed
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: installed
+  loop:
+    - yum-utils
+    - device-mapper-persistent-data
+    - lvm2
+
+- name: Install "epel-release" for centos:7
+  ansible.builtin.package:
+    name: epel-release
+    state: installed
+  when:
+    ansible_os_family == "RedHat" and ansible_distribution_major_version == "7"
+
+- name: Ensure gnupg2 is installed for rpm_key
+  ansible.builtin.package:
+    name: gnupg2
+    state: present
+
+- name: Import docker rpm key
+  ansible.builtin.rpm_key:
+    state: present
+    key: "{{ docker_rpm_gpg_key_url }}"
+
+- name: Add Docker repository
+  ansible.builtin.yum_repository:
+    name: docker
+    description: Docker repo
+    file: docker-ce
+    baseurl: "{{ docker_repo_baseurl }}"
+    gpgcheck: true
+    gpgkey:
+      - "{{ docker_rpm_gpg_key_url }}"
+
+- name: Ensure docker is installed
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: installed
+    allow_downgrade: true
+  loop:
+    - docker-ce{{ "" if docker_version == "latest" else "-" ~ docker_version }}
+    - docker-ce-cli{{ "" if docker_version == "latest" else "-" ~ docker_version
+      }}
+    - containerd.io
+    - docker-buildx-plugin
+    - docker-compose-plugin
+
+- name: Ensure docker service directory exists
+  ansible.builtin.file:
+    path: "{{ docker_service_directory }}"
+    owner: root
+    group: root
+    state: directory
+    mode: "0700"
+
+- name: Set custom docker service configuration
+  ansible.builtin.template:
+    src: docker.conf.j2
+    dest: "{{ docker_service_directory }}/docker.conf"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload docker

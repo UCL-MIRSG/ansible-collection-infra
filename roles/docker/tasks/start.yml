@@ -1,0 +1,16 @@
+---
+- name:
+    Ensure docker service configuration is reloaded before restarting the
+    service
+  ansible.builtin.meta: flush_handlers
+
+- name: Ensure docker daemon is running
+  ansible.builtin.service:
+    name: "{{ docker_service_name }}"
+    state: started
+    enabled: true
+
+- name: Install docker-py
+  ansible.builtin.pip:
+    name: docker
+    state: present

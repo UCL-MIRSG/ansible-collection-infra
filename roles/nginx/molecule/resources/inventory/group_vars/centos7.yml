@@ -16,6 +16,3 @@ install_python:
     - Flask
 
 gunicorn_executable: /usr/bin/gunicorn
-
-# mirsg.infrastructure.docker - nginx runs in a container on EL7
-docker_dind: true

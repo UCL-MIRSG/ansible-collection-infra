@@ -1,11 +1,16 @@
 ---
+# Only install and start Docker. The daemon config, certificates and swarm are
+# left to the docker role, so an existing Docker setup on the host is unchanged
+# and Docker vars from the inventory don't apply here.
 - name: Install Docker
   ansible.builtin.include_role:
     name: mirsg.infrastructure.docker
-  vars:
-    # Docker is only used locally for nginx, so don't expose the daemon on TCP
-    docker_tcp_enabled: false # noqa: var-naming[no-role-prefix]
-    docker_generate_certificates: false # noqa: var-naming[no-role-prefix]
+    tasks_from: install.yml
+
+- name: Start Docker
+  ansible.builtin.include_role:
+    name: mirsg.infrastructure.docker
+    tasks_from: start.yml
 
 - name: Ensure nginx config and log directories exist
   ansible.builtin.file:

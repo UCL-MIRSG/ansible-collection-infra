@@ -11,9 +11,12 @@ The role installs the nginx mainline version pinned in `nginx_container_image`:
   nginx packages from the OS or EPEL are removed first.
 - on CentOS 7, which nginx.org no longer builds packages for, by running the
   official [nginx image](https://hub.docker.com/_/nginx) with Docker, using the
-  host network. Docker is installed with `mirsg.infrastructure.docker`,
-  listening on the local unix socket only. An existing nginx service is stopped
-  and disabled, but its package is left installed for rollback.
+  host network. Docker is installed and started with
+  `mirsg.infrastructure.docker` (`tasks_from: install.yml` and `start.yml`). The
+  Docker daemon config, certificates and swarm are not changed, so apply the
+  `mirsg.infrastructure.docker` role separately if the host needs them. An
+  existing nginx service is stopped and disabled, but its package is left
+  installed for rollback.
 
 The role fails if the running nginx isn't `nginx_version`.
 

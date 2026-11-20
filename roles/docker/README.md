@@ -3,6 +3,23 @@
 This role is for installing [docker-ce](https://docs.docker.com/engine/install/)
 on CentOS 7 or Rocky Linux 8.
 
+Other roles that only need Docker running, without configuring the daemon, can
+use the `install.yml` and `start.yml` task files. These install Docker and start
+it with the default configuration (listening on the local unix socket only), and
+leave any existing `daemon.json`, certificates and swarm unchanged:
+
+```yaml
+- name: Install Docker
+  ansible.builtin.include_role:
+    name: mirsg.infrastructure.docker
+    tasks_from: install.yml
+
+- name: Start Docker
+  ansible.builtin.include_role:
+    name: mirsg.infrastructure.docker
+    tasks_from: start.yml
+```
+
 ## Role Variables
 
 | Name                       | Description                                                                                          |
@@ -30,7 +47,6 @@ used to configure certificate creation and signing:
 | `docker_config_dir`                         | Docker configuration directory. Defaults to `/etc/docker`                                                                                      |
 | `docker_daemon_conf_file`                   | Docker daemon configuration filename. Defaults to `/etc/docker/daemon.json`                                                                    |
 | `docker_server_hostname`                    | Hostname of your Docker server. Used for the `commonName` field of the certificate signing request subject. Defaults to `"{{ ansible_host }}"` |
-| `docker_tcp_enabled`                        | If `true`, the Docker Daemon listens on TCP as well as the local unix socket. Defaults to `true`                                               |
 | `docker_server_ip`                          | IP address of your Docker server. Defaults to `0.0.0.0`                                                                                        |
 | `docker_server_port`                        | Port the Docker Daemon will listen on. Defaults to `2376`.                                                                                     |
 | `docker_tls_verify`                         | If `true`, require that TLS certificates can be verified by a root authority. Defaults to `false`                                              |
