@@ -2,12 +2,32 @@
 
 This role is for configuring [nginx](https://www.nginx.com/) as a
 [reverse proxy](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/)
-on CentOS 7 or RockyLinux 9.
+on CentOS 7, or on EL8 and later (e.g. Rocky Linux, AlmaLinux).
+
+The role installs the nginx mainline version pinned in `nginx_container_image`:
+
+- on EL8 and later, from the
+  [nginx.org](https://nginx.org/en/linux_packages.html) mainline repository. Any
+  nginx packages from the OS or EPEL are removed first.
+- on CentOS 7, which nginx.org no longer builds packages for, by running the
+  official [nginx image](https://hub.docker.com/_/nginx) with Docker, using the
+  host network. Docker is installed with `mirsg.infrastructure.docker`,
+  listening on the local unix socket only. An existing nginx service is stopped
+  and disabled, but its package is left installed for rollback.
+
+The role fails if the running nginx isn't `nginx_version`.
 
 ## Role Variables
 
 | Name                       | Description                                                                                                                                                                                     |
 | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `nginx_install_method`     | `package` to install from the nginx.org repository, or `container` to run the official nginx image. Defaults to `container` on EL7 and `package` otherwise                                      |
+| `nginx_container_image`    | The nginx image to run, pinned by tag and digest. Defaults to the latest mainline release when the role was released, e.g. `nginx:1.31.9@sha256:...`                                            |
+| `nginx_version`            | The nginx version to install from nginx.org. Defaults to the version in the `nginx_container_image` tag, so both install methods run the same nginx                                             |
+| `nginx_repo_baseurl`       | The nginx.org repository to install from. Defaults to the mainline repository, `https://nginx.org/packages/mainline/rhel/$releasever/$basearch/`                                                |
+| `nginx_repo_gpgkey`        | The key used to sign the nginx.org packages. Defaults to `https://nginx.org/keys/nginx_signing.key`                                                                                             |
+| `nginx_container_name`     | Name of the nginx container. Defaults to `nginx`                                                                                                                                                |
+| `nginx_http2`              | Whether to enable HTTP/2. Defaults to `true`                                                                                                                                                    |
 | `nginx_owner`              | The OS user that will have ownership of the nginx service file and directory. Defaults to `root`                                                                                                |
 | `nginx_group`              | The OS group that will have ownership of the nginx service file and directory. Defaults to `root`                                                                                               |
 | `nginx_log_folder`         | The path to the nginx logs. Defaults to `/var/log/nginx`                                                                                                                                        |
@@ -46,6 +66,7 @@ You will need to install the following collections before using
 
 - `ansible.posix`
 - `community.crypto`
+- `community.docker` (CentOS 7 only)
 - `community.general`
 
 ## Example Playbook

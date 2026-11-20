@@ -1,0 +1,26 @@
+---
+- name: Gather services
+  ansible.builtin.service_facts:
+
+# Hosts that previously ran nginx from EPEL must free the ports for the
+# container. The package is left installed so it is easy to roll back to.
+- name: Stop and disable the nginx service
+  ansible.builtin.service:
+    name: nginx
+    state: stopped
+    enabled: false
+  when: "'nginx.service' in ansible_facts.services"
+
+- name: Start nginx container
+  community.docker.docker_container:
+    name: "{{ nginx_container_name }}"
+    image: "{{ nginx_container_image }}"
+    state: started
+    # Use the host network so nginx listens on the host's ports and can proxy to
+    # services on localhost
+    network_mode: host
+    volumes:
+      - "{{ nginx_conf_file }}:/etc/nginx/nginx.conf:ro"
+      - "{{ nginx_certs_dir }}:{{ nginx_certs_dir }}:ro"
+      - "{{ nginx_log_folder }}:{{ nginx_log_folder }}"
+    restart_policy: always

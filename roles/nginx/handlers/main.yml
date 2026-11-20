@@ -1,10 +1,26 @@
 ---
-- name: Restart nginx
+- name: Restart nginx service
   ansible.builtin.service:
     name: nginx
     state: restarted
+  when: nginx_install_method == "package"
+  listen: Restart nginx
 
-- name: Reload nginx
+- name: Reload nginx service
   ansible.builtin.service:
     name: nginx
     state: reloaded
+  when: nginx_install_method == "package"
+  listen: Reload nginx
+
+# The config file is bind-mounted, and is replaced rather than edited in place
+# when templated, so the container must be restarted to see the new file
+- name: Restart nginx container
+  community.docker.docker_container:
+    name: "{{ nginx_container_name }}"
+    state: started
+    restart: true
+  when: nginx_install_method == "container"
+  listen:
+    - Restart nginx
+    - Reload nginx

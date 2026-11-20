@@ -1,5 +1,25 @@
 ---
-nginx_http2: false
+# "package" installs nginx from the nginx.org mainline repository.
+# "container" runs the official nginx image with Docker; this is used on EL7
+# because nginx.org no longer builds packages for it.
+nginx_install_method:
+  "{{ 'container' if ansible_facts['distribution_major_version'] is version('7',
+  '==') else 'package' }}"
+
+# Pinned by tag and digest so version changes are visible in review. The
+# package version is taken from the image tag, so both install methods run the
+# same nginx.
+nginx_container_image: nginx:1.31.9@sha256:84f7876d21d154885f99554d7ae325d8c2213f9169726ea7ab60642f2573a787
+nginx_version:
+  "{{ nginx_container_image | regex_search('^nginx:([0-9.]+)@', '\\1') | first
+  }}"
+
+nginx_repo_baseurl: https://nginx.org/packages/mainline/rhel/$releasever/$basearch/
+nginx_repo_gpgkey: https://nginx.org/keys/nginx_signing.key
+
+nginx_container_name: nginx
+
+nginx_http2: true
 
 nginx_owner: root
 nginx_group: root

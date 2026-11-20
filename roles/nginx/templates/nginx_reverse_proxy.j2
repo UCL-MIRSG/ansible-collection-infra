@@ -1,6 +1,7 @@
 # Configure a reverse proxy
 # Optionally create an additional default_server
-load_module '/usr/lib64/nginx/modules/ngx_stream_module.so';
+# The stream module is built into the nginx.org packages and the official
+# image, so it doesn't need to be loaded
 user nginx;
 worker_processes auto;
 error_log {{ nginx_error_log }} warn;
