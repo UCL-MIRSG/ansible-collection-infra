@@ -1,0 +1,40 @@
+---
+# Only install and start Docker. The daemon config, certificates and swarm are
+# left to the docker role, so an existing Docker setup on the host is unchanged
+# and Docker vars from the inventory don't apply here.
+- name: Install Docker
+  ansible.builtin.include_role:
+    name: mirsg.infrastructure.docker
+    tasks_from: install.yml
+
+- name: Start Docker
+  ansible.builtin.include_role:
+    name: mirsg.infrastructure.docker
+    tasks_from: start.yml
+
+- name: Ensure nginx config and log directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: "{{ nginx_owner }}"
+    group: "{{ nginx_group }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ nginx_conf_file | dirname }}"
+    - "{{ nginx_log_folder }}"
+
+# Replaces the config from the EPEL nginx package, which signals the host nginx
+# service rather than the container
+- name: Configure logrotate to rotate the nginx container's logs
+  ansible.builtin.template:
+    src: nginx_logrotate.j2
+    dest: /etc/logrotate.d/nginx
+    owner: root
+    group: root
+    mode: "0644"
+
+# Pull before the container is (re)started to keep downtime short
+- name: Pull the nginx image
+  community.docker.docker_image_pull:
+    name: "{{ nginx_container_image }}"
+    pull: not_present

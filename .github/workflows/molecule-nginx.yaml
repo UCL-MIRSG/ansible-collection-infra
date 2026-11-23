@@ -5,6 +5,7 @@ on:
   pull_request:
     paths:
       - molecule_configs/*
+      - roles/docker/**
       - roles/install_python/**
       - roles/nginx/**
       - roles/provision/**

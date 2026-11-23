@@ -24,17 +24,13 @@
         ansible_facts['os_family'] == "RedHat" and
         ansible_facts['distribution_major_version'] is version("8", ">=")
 
-- name: Ensure epel is installed
-  ansible.builtin.package:
-    name: epel-release
-    state: installed
+- name: Install nginx from the nginx.org repository
+  ansible.builtin.include_tasks: install_package.yml
+  when: nginx_install_method == "package"
 
-- name: Ensure nginx is installed
-  ansible.builtin.package:
-    name:
-      - nginx
-      - nginx-mod-stream
-    state: installed
+- name: Install Docker and pull the nginx image
+  ansible.builtin.include_tasks: install_container.yml
+  when: nginx_install_method == "container"
 
 - name: Copy certificates when SSL is enabled
   ansible.builtin.include_tasks: ssl_enabled.yml
@@ -55,3 +51,29 @@
     name: nginx
     state: started
     enabled: true
+  when: nginx_install_method == "package"
+
+- name: Ensure nginx container is running
+  ansible.builtin.include_tasks: start_container.yml
+  when: nginx_install_method == "container"
+
+- name: Get installed nginx version
+  ansible.builtin.command:
+    cmd: >-
+      {{ 'docker exec ' ~ nginx_container_name ~ ' nginx -v' if
+      nginx_install_method == 'container' else '/usr/sbin/nginx -v' }}
+  register: nginx_version_output
+  changed_when: false
+
+- name: Assert the pinned nginx is running - {{ nginx_version }}
+  ansible.builtin.assert:
+    that:
+      - nginx_installed_version == nginx_version
+    fail_msg:
+      nginx {{ nginx_installed_version }} is installed, but {{ nginx_version }}
+      is required
+    quiet: true
+  vars:
+    nginx_installed_version:
+      "{{ nginx_version_output.stderr | regex_search('nginx/([0-9.]+)', '\\1') |
+      first }}"

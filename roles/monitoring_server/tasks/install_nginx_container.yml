@@ -73,7 +73,7 @@
     name: nginx
     hostname: nginx
     # Pinned by tag and digest so version changes are visible in review.
-    image: nginx:1.31.3@sha256:8541484afbc9c8a5a8a99b379568ebbc957f658583ec9448fc43104229c03cf8
+    image: nginx:1.31.9@sha256:84f7876d21d154885f99554d7ae325d8c2213f9169726ea7ab60642f2573a787
     state: started
     networks:
       - name: monitor-net

@@ -45,6 +45,40 @@
         name: gunicorn
         state: restarted
 
+# nginx runs in a container on EL7. The nginx role doesn't configure the Docker
+# daemon, so set the storage driver needed for Docker-in-Docker here.
+- name: Configure Docker-in-Docker
+  hosts: all
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Use the vfs storage driver to avoid overlayfs issues
+      when: ansible_facts['distribution_major_version'] is version('7', '==')
+      block:
+        - name: Ensure docker config directory exists
+          ansible.builtin.file:
+            path: /etc/docker
+            owner: root
+            group: root
+            state: directory
+            mode: "0700"
+
+        - name: Write docker daemon configuration file
+          ansible.builtin.copy:
+            content: "{{ {'storage-driver': 'vfs'} | to_json }}"
+            dest: /etc/docker/daemon.json
+            owner: root
+            group: root
+            mode: "0640"
+
+    # The nginx role rotates the container's logs on EL7. logrotate is part of a
+    # base CentOS 7 install, but not of the container image.
+    - name: Install logrotate
+      ansible.builtin.package:
+        name: logrotate
+        state: present
+      when: ansible_facts['distribution_major_version'] is version('7', '==')
+
 - name: Create SSL certificates for nginx
   hosts: all
   gather_facts: true

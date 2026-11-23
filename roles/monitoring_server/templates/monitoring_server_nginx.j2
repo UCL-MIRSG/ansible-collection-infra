@@ -71,7 +71,10 @@ http {
     }
 
     server {
-        listen {{ monitoring_server_nginx.https_port }} ssl http2;
+        listen {{ monitoring_server_nginx.https_port }} ssl;
+{% if monitoring_server_nginx_http2 %}
+        http2 on;
+{% endif %}
 
         # Note: server_name is only used for disambiguation
         server_name     {{ monitoring_server_hostname }};
