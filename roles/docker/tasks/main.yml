@@ -2,6 +2,23 @@
 - name: Install docker
   ansible.builtin.import_tasks: install.yml
 
+- name: Ensure docker service directory exists
+  ansible.builtin.file:
+    path: "{{ docker_service_directory }}"
+    owner: root
+    group: root
+    state: directory
+    mode: "0700"
+
+- name: Set custom docker service configuration
+  ansible.builtin.template:
+    src: docker.conf.j2
+    dest: "{{ docker_service_directory }}/docker.conf"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload docker
+
 - name: Generate CA, server, and client certificates
   when: docker_generate_certificates
   block:
