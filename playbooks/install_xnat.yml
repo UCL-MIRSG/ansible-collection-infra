@@ -46,6 +46,9 @@
   roles:
     - role: mirsg.infrastructure.xnat
     - role: mirsg.infrastructure.firewalld
+    # After firewalld, which fail2ban bans addresses with
+    - role: mirsg.infrastructure.fail2ban
+      when: fail2ban_enabled
 
   tasks:
     - name: Restart tomcat if the system trust store changed

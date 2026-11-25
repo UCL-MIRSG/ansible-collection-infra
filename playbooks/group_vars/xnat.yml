@@ -95,6 +95,9 @@ nginx_server_name: "{{ web_server.host }}"
 nginx_upstream_listen_port: 8104
 nginx_proxy_port: 8080 # tomcat
 nginx_root: /usr/share/tomcat/webapps/ROOT
+# Also set here, not just in the nginx role, so the fail2ban role can find
+# the logs from the "Install XNAT" play
+nginx_log_folder: /var/log/nginx
 nginx_app_access_log: "{{ nginx_log_folder }}/xnat.access.log"
 nginx_app_error_log: "{{ nginx_log_folder }}/xnat.error.log"
 # Slow down password guessing and email spam from the forms XNAT allows
@@ -127,3 +130,22 @@ nginx_rate_limit_paths:
   - /app/template/VerificationSent.vm
   - /app/template/VerifyEmail.vm
   - /app/template/XDATScreen_UpdateUser.vm
+
+# mirsg.infrastructure.fail2ban
+fail2ban_enabled: true
+# Never ban the trusted firewalld zones, or clients nginx doesn't rate limit
+fail2ban_ignoreip: >-
+  {{ (firewalld_internal_zone_sources | default([])) +
+  (firewalld_work_zone_sources | default([])) + (nginx_rate_limit_allowlist |
+  default([])) }}
+fail2ban_jails:
+  # Clients that keep hitting the nginx rate limit
+  - name: nginx-limit-req
+    logpath: "{{ nginx_app_error_log }}"
+  # Wrong passwords for the REST API. Scripts may retry, so allow more attempts
+  - name: nginx-proxy-basic-auth
+    logpath: "{{ nginx_app_access_log }}"
+    maxretry: 10
+  # Scanners looking for e.g. /wp-login.php or /phpmyadmin
+  - name: nginx-botsearch
+    logpath: "{{ nginx_app_access_log }}"
