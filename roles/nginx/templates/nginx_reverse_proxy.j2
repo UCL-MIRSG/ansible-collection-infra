@@ -28,6 +28,32 @@ http {
     gzip on;
     gzip_disable "msie6";
 
+{% if nginx_rate_limit_paths %}
+    # Rate limit POST and PUT requests to sensitive paths per client IP. Requests with
+    # an empty key aren't counted, so other requests, and clients in the
+    # allowlist, aren't limited
+    geo $rate_limit_exempt {
+        default 0;
+{% for address in nginx_rate_limit_allowlist %}
+        {{ address }} 1;
+{% endfor %}
+    }
+
+    map "$rate_limit_exempt:$request_method:$uri" $rate_limit_key {
+        default "";
+{% for path in nginx_rate_limit_paths %}
+        "~*^0:(POST|PUT):{{ path | regex_escape }}([/;]|$)" $binary_remote_addr;
+{% endfor %}
+    }
+
+    limit_req_zone $rate_limit_key zone=rate_limit:10m rate={{ nginx_rate_limit_rate }};
+    limit_req_status 429;
+{% if nginx_rate_limit_dry_run %}
+    limit_req_dry_run on;
+{% endif %}
+
+{% endif %}
+
 {% if nginx_use_ssl %}
     # SSL parameters must be specified outside of the server block.
     # Otherwise may only use the nginx may end up using parameters specified in
@@ -118,6 +144,9 @@ http {
         {% endif %}
 
         location / {
+{% if nginx_rate_limit_paths %}
+            limit_req                           zone=rate_limit burst={{ nginx_rate_limit_burst }} nodelay;
+{% endif %}
             proxy_pass                          http://localhost:{{ nginx_proxy_port }};
             proxy_redirect                      http:// $scheme://;
             proxy_set_header Host               $http_host;

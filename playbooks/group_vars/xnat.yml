@@ -97,3 +97,33 @@ nginx_proxy_port: 8080 # tomcat
 nginx_root: /usr/share/tomcat/webapps/ROOT
 nginx_app_access_log: "{{ nginx_log_folder }}/xnat.access.log"
 nginx_app_error_log: "{{ nginx_log_folder }}/xnat.error.log"
+# Slow down password guessing and email spam from the forms XNAT allows
+# without logging in, from META-INF/xnat/security/configured-urls.yaml in
+# xnat-web. /data/JSESSION isn't included because scripts use it to log in.
+nginx_rate_limit_paths:
+  # Check a username and password
+  - /login
+  - /app/action/XDATLoginUser
+  - /data/services/auth
+  - /REST/services/auth
+  # Reset a password or send emails
+  - /app/action/XDATForgotLogin
+  - /app/action/ModifyPassword
+  - /app/action/XDATRegisterUser
+  - /app/action/RegisterExternalLogin
+  - /app/action/InactiveAccountEmail
+  - /data/services/sendemailverification
+  - /REST/services/sendemailverification
+  # Turbine runs the action named in a request's action parameter, so a POST
+  # to these pages can run the actions above. Browsers only send GETs to them.
+  - /app/template/ForgotLogin.vm
+  - /app/template/InactiveAccount.vm
+  - /app/template/Login.vm
+  - /app/template/PostRegister.vm
+  - /app/template/Register.vm
+  - /app/template/RegisterExternalLogin.vm
+  - /app/template/ResendEmail.vm
+  - /app/template/ResendVerification.vm
+  - /app/template/VerificationSent.vm
+  - /app/template/VerifyEmail.vm
+  - /app/template/XDATScreen_UpdateUser.vm

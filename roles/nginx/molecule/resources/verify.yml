@@ -19,6 +19,62 @@
           - response.server == "nginx"
           - response.content is search('Hello World!')
 
+- name: Verify POST and PUT requests to rate limited paths are limited
+  hosts: localhost
+  tasks:
+    # The app has no /login route, so allowed requests get a 404. The rate and
+    # burst defaults let 6 requests through before limiting
+    - name: Send POST requests to a rate limited path
+      ansible.builtin.uri:
+        url: https://localhost:8080/login;jsessionid=abc
+        method: POST
+        body: username=molecule
+        headers:
+          Host: molecule.instance.local
+        validate_certs: false
+        status_code:
+          - 404
+          - 429
+      register: rate_limited_responses
+      loop: "{{ range(10) | list }}"
+
+    - name: Send a PUT request to the rate limited path
+      ansible.builtin.uri:
+        url: https://localhost:8080/LOGIN
+        method: PUT
+        body: username=molecule
+        headers:
+          Host: molecule.instance.local
+        validate_certs: false
+        status_code:
+          - 404
+          - 429
+      register: rate_limited_put_response
+
+    - name: Send GET requests to the rate limited path
+      ansible.builtin.uri:
+        url: https://localhost:8080/login
+        method: GET
+        headers:
+          Host: molecule.instance.local
+        validate_certs: false
+        status_code:
+          - 404
+          - 429
+      register: unlimited_responses
+      loop: "{{ range(10) | list }}"
+
+    - name: Check only the POST and PUT requests were limited
+      ansible.builtin.assert:
+        that:
+          - rate_limited_responses.results | map(attribute='status') | first ==
+            404
+          - rate_limited_responses.results | map(attribute='status') | last ==
+            429
+          - rate_limited_put_response.status == 429
+          - unlimited_responses.results | map(attribute='status') | unique |
+            list == [404]
+
 - name: Verify the nginx version
   hosts: all
   become: true
