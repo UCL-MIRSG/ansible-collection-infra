@@ -46,6 +46,7 @@
         headers:
           Host: molecule.instance.local
         validate_certs: false
+        return_content: true
         status_code:
           - 404
           - 429
@@ -72,6 +73,9 @@
           - rate_limited_responses.results | map(attribute='status') | last ==
             429
           - rate_limited_put_response.status == 429
+          - rate_limited_put_response.content is search('Too many attempts')
+          - rate_limited_put_response.content is
+            search('href="https://support.molecule.instance.local"')
           - unlimited_responses.results | map(attribute='status') | unique |
             list == [404]
 

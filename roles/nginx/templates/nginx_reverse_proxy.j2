@@ -143,6 +143,34 @@ http {
         root            {{ nginx_root }};
         {% endif %}
 
+{% if nginx_rate_limit_paths %}
+{#- nginx expands $ variables and \ escapes in the page, so remove them #}
+{% set contact = nginx_rate_limit_contact | replace('$', '') | replace('\\', '') | e %}
+        # Explain the rate limit to people using a browser. The page is in the
+        # config, rather than a file, so the nginx container can serve it
+        error_page 429 @rate_limited;
+
+        location @rate_limited {
+            default_type text/html;
+            return 429 '<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Too many attempts</title>
+<style>body { font-family: system-ui, sans-serif; max-width: 36rem; margin: 4rem auto; padding: 0 1rem; line-height: 1.5; color: #222; }</style>
+</head>
+<body>
+<h1>Too many attempts</h1>
+<p>There have been too many attempts from your network in a short time. Please wait a minute, then try again.</p>
+<p>If this keeps happening, contact {% if contact %}{% if contact is match('https?://') %}<a href="{{ contact }}">{{ contact }}</a>{% elif '@' in contact %}<a href="mailto:{{ contact }}">{{ contact }}</a>{% else %}{{ contact }}{% endif %}{% else %}the server administrator{% endif %}.</p>
+<p><a href="/">Back to the home page</a></p>
+</body>
+</html>
+';
+        }
+
+{% endif %}
         location / {
 {% if nginx_rate_limit_paths %}
             limit_req                           zone=rate_limit burst={{ nginx_rate_limit_burst }} nodelay;

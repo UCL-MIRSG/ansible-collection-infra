@@ -48,6 +48,11 @@ nginx_rate_limit_burst: 5
 # Addresses or CIDR ranges that are never rate limited, e.g. a NAT gateway
 # that many users share
 nginx_rate_limit_allowlist: [] # yamllint disable-line rule:brackets
+# Who people who are rate limited should contact, e.g. a support page URL or a
+# shared helpdesk address. Anyone who is limited sees it, mostly bots, so don't
+# use a personal or system mailbox. The page tells people to contact the server
+# administrator when empty.
+nginx_rate_limit_contact: ""
 # Log requests that would be limited without rejecting them, to trial limits
 nginx_rate_limit_dry_run: false
 

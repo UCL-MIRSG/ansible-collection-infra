@@ -9,6 +9,7 @@ nginx_root: /home/
 
 nginx_rate_limit_paths:
   - /login
+nginx_rate_limit_contact: https://support.molecule.instance.local
 
 nginx_use_ssl: true
 nginx_certs_dir: /etc/nginx/ssl
