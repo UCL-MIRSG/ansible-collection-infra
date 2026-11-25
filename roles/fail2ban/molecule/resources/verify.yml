@@ -96,6 +96,21 @@
         that:
           - fail2ban_jail_status.stdout is search('Currently banned:\s+1')
 
+    - name: Get the ban rules
+      ansible.builtin.command: >-
+        {{ 'firewall-cmd --direct --get-all-rules' if
+        ansible_facts['distribution_major_version'] is version('7', '==') else
+        'nft list table inet f2b-table' }}
+      register: fail2ban_rules
+      changed_when: false
+
+    # So e.g. SSH from a banned address still works
+    - name: Check only the web ports are banned
+      ansible.builtin.assert:
+        that:
+          - fail2ban_rules.stdout is search('dports? (\{
+            )?(80|http),(\s?)(443|https)')
+
     # On EL7, reloading firewalld removes the bans until fail2ban restarts
     - name: Reload firewalld
       ansible.builtin.command: firewall-cmd --reload

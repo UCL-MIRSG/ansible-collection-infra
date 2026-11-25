@@ -5,10 +5,12 @@ or on EL8 and later (e.g. Rocky Linux, AlmaLinux), to ban addresses that
 misbehave, e.g. that keep hitting the nginx rate limit set by
 `mirsg.infrastructure.nginx`.
 
-Addresses are banned on all ports, before firewalld's rules, so an address is
-banned whichever zone its traffic is in, e.g. a source added to the `work` zone.
-Run the role after `mirsg.infrastructure.firewalld`. How bans are added depends
-on the OS:
+Addresses are banned before firewalld's rules, so an address is banned whichever
+zone its traffic is in, e.g. a source added to the `work` zone. A jail bans the
+ports in its `port` setting, which fail2ban sets for the jails it provides, e.g.
+`http,https` for `nginx-limit-req`, and which defaults to all ports. A jail can
+set `banaction: "%(banaction_allports)s"` to always ban every port. Run the role
+after `mirsg.infrastructure.firewalld`. How bans are added depends on the OS:
 
 - On EL8 and later, fail2ban adds bans to its own nftables table, `f2b-table`.
   firewalld leaves the table alone, so bans stay in place when firewalld is
@@ -38,14 +40,21 @@ fail2ban_jails:
   # Clients that keep hitting the nginx rate limit
   - name: nginx-limit-req
     logpath: /var/log/nginx/xnat.error.log
+    port: http,https
+    maxretry: 20
   # Wrong passwords for the REST API
   - name: nginx-proxy-basic-auth
     logpath: /var/log/nginx/xnat.access.log
+    port: http,https
     maxretry: 10
   # Scanners looking for e.g. /wp-login.php
   - name: nginx-botsearch
     logpath: /var/log/nginx/xnat.access.log
+    port: http,https
 ```
+
+`nginx-proxy-basic-auth` isn't provided by fail2ban, so it needs `port` to only
+ban the web ports.
 
 `nginx-limit-req` and `nginx-botsearch` are provided by fail2ban.
 `nginx-limit-req` doesn't match the messages nginx logs in its dry run mode
@@ -60,16 +69,17 @@ The role adds the filters in [files/filter.d](files/filter.d):
 
 ## Role Variables
 
-| Name                         | Description                                                                                                                                                     |
-| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `fail2ban_jails`             | Jails to enable, see [Jails](#jails). Defaults to `[]`                                                                                                          |
-| `fail2ban_ignoreip`          | Addresses or CIDR ranges that are never banned, in addition to localhost. Defaults to `[]`                                                                      |
-| `fail2ban_bantime`           | How long to ban an address for. Defaults to `1h`                                                                                                                |
-| `fail2ban_findtime`          | The window in which `maxretry` matches cause a ban. Defaults to `10m`                                                                                           |
-| `fail2ban_maxretry`          | How many matches within `findtime` cause a ban. Jails can set their own. Defaults to `5`                                                                        |
-| `fail2ban_bantime_increment` | Whether to double the ban each time an address is banned again. Defaults to `true`                                                                              |
-| `fail2ban_bantime_maxtime`   | The longest ban. Bans are remembered for this long, so repeat offenders' bans keep increasing. Defaults to `1w`                                                 |
-| `fail2ban_banaction`         | The action used to ban addresses. Defaults to `nftables-allports` on EL8 and later, and `firewallcmd-ipset[actiontype=<allports>, ipsettype=ipset]` on CentOS 7 |
+| Name                          | Description                                                                                                                                                                                                         |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `fail2ban_jails`              | Jails to enable, see [Jails](#jails). Defaults to `[]`                                                                                                                                                              |
+| `fail2ban_ignoreip`           | Addresses or CIDR ranges that are never banned, in addition to localhost. Defaults to `[]`                                                                                                                          |
+| `fail2ban_bantime`            | How long to ban an address for. Defaults to `1h`                                                                                                                                                                    |
+| `fail2ban_findtime`           | The window in which `maxretry` matches cause a ban. Defaults to `10m`                                                                                                                                               |
+| `fail2ban_maxretry`           | How many matches within `findtime` cause a ban. Jails can set their own. Defaults to `5`                                                                                                                            |
+| `fail2ban_bantime_increment`  | Whether to double the ban each time an address is banned again. Defaults to `true`                                                                                                                                  |
+| `fail2ban_bantime_maxtime`    | The longest ban. Bans are remembered for this long, so repeat offenders' bans keep increasing. Defaults to `1w`                                                                                                     |
+| `fail2ban_banaction`          | The action used to ban addresses on a jail's `port`. Defaults to `nftables-multiport` on EL8 and later, and `firewallcmd-ipset[actiontype=<multiport>, ipsettype=ipset]` on CentOS 7                                |
+| `fail2ban_banaction_allports` | The action for jails that ban every port, with `banaction: "%(banaction_allports)s"`. Defaults to `nftables-allports` on EL8 and later, and `firewallcmd-ipset[actiontype=<allports>, ipsettype=ipset]` on CentOS 7 |
 
 ## Useful commands
 

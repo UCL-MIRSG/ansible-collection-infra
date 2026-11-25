@@ -19,8 +19,10 @@ fail2ban_ignoreip: "{{ firewalld_internal_zone_sources + ['198.51.100.7'] }}"
 fail2ban_jails:
   - name: nginx-limit-req
     logpath: "{{ nginx_app_error_log }}"
+    port: http,https
   - name: nginx-proxy-basic-auth
     logpath: "{{ nginx_app_access_log }}"
+    port: http,https
     maxretry: 10
   - name: nginx-botsearch
     logpath: "{{ nginx_app_access_log }}"

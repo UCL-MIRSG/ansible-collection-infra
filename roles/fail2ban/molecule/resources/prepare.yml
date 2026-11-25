@@ -16,6 +16,21 @@
         name: sudo
         state: present
 
+    # nginx's error log has no UTC offset, so fail2ban reads its times as host
+    # time. Use a timezone far from UTC, so the nginx-limit-req jail only bans
+    # if nginx logs in host time. GitHub runners use UTC.
+    - name: Install timezone data
+      ansible.builtin.package:
+        name: tzdata
+        state: present
+
+    - name: Set the timezone
+      ansible.builtin.file:
+        src: /usr/share/zoneinfo/Asia/Kolkata
+        dest: /etc/localtime
+        state: link
+        force: true
+
     # mirsg.infrastructure.provision installs EPEL on real hosts
     - name: Install EPEL
       ansible.builtin.package:

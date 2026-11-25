@@ -29,8 +29,8 @@ http {
     gzip_disable "msie6";
 
 {% if nginx_rate_limit_paths %}
-    # Rate limit POST and PUT requests to sensitive paths per client IP. Requests with
-    # an empty key aren't counted, so other requests, and clients in the
+    # Rate limit requests to sensitive paths per client IP. Requests with an
+    # empty key aren't counted, so other requests, and clients in the
     # allowlist, aren't limited
     geo $rate_limit_exempt {
         default 0;
@@ -39,10 +39,16 @@ http {
 {% endfor %}
     }
 
-    map "$rate_limit_exempt:$request_method:$uri" $rate_limit_key {
+    # Tomcat ignores ;parameters after any path segment, so allow them after
+    # each one. GET and HEAD requests for the page itself aren't limited, so
+    # browsers can load login forms, but ones that send a query string or more
+    # path can pass credentials or Turbine actions, so they are
+    map "$rate_limit_exempt:$request_method:$uri$is_args" $rate_limit_key {
         default "";
 {% for path in nginx_rate_limit_paths %}
-        "~*^0:(POST|PUT):{{ path | regex_escape }}([/;]|$)" $binary_remote_addr;
+{% set path_regex = '/' ~ (path.strip('/').split('/') | map('regex_escape') | join('(?:;[^/]*)?/')) %}
+        "~*^0:(?!GET:|HEAD:)[A-Z]+:{{ path_regex }}(?:[/;?]|$)" $binary_remote_addr;
+        "~*^0:(?:GET|HEAD):{{ path_regex }}(?:;[^/?]*)?(?:/.|\?)" $binary_remote_addr;
 {% endfor %}
     }
 
@@ -144,6 +150,12 @@ http {
         {% endif %}
 
 {% if nginx_rate_limit_paths %}
+        # Tomcat treats "..;" and ".;" segments like ".." and ".", but nginx
+        # doesn't, so they could hide a rate limited path. Browsers never send them
+        if ($uri ~ "(?:^|/)\.\.?;") {
+            return 400;
+        }
+
 {#- nginx expands $ variables and \ escapes in the page, so remove them #}
 {% set contact = nginx_rate_limit_contact | replace('$', '') | replace('\\', '') | e %}
         # Explain the rate limit to people using a browser. The page is in the
@@ -163,6 +175,9 @@ http {
 <body>
 <h1>Too many attempts</h1>
 <p>There have been too many attempts from your network in a short time. Please wait a minute, then try again.</p>
+{% if nginx_rate_limit_ban_notice | bool %}
+<p>If attempts carry on, your network may be blocked from this site for a while.</p>
+{% endif %}
 <p>If this keeps happening, contact {% if contact %}{% if contact is match('https?://') %}<a href="{{ contact }}">{{ contact }}</a>{% elif '@' in contact %}<a href="mailto:{{ contact }}">{{ contact }}</a>{% else %}{{ contact }}{% endif %}{% else %}the server administrator{% endif %}.</p>
 <p><a href="/">Back to the home page</a></p>
 </body>

@@ -131,21 +131,42 @@ nginx_rate_limit_paths:
   - /app/template/VerifyEmail.vm
   - /app/template/XDATScreen_UpdateUser.vm
 
+# Never rate limit the trusted firewalld zones. To also exempt e.g. a NAT
+# gateway many users share, add it to these lists, e.g.
+#   nginx_rate_limit_allowlist: "{{ firewalld_internal_zone_sources + ['192.0.2.1'] }}"
+nginx_rate_limit_allowlist: >-
+  {{ (firewalld_internal_zone_sources | default([])) +
+  (firewalld_work_zone_sources | default([])) }}
+nginx_rate_limit_ban_notice: "{{ fail2ban_enabled }}"
 # mirsg.infrastructure.fail2ban
 fail2ban_enabled: true
-# Never ban the trusted firewalld zones, or clients nginx doesn't rate limit
+# Never ban clients nginx doesn't rate limit, Container Service hosts (by their
+# ansible_ip), or containers on a local Docker bridge. Containers log in to
+# XNAT with tokens that can expire while a job retries
 fail2ban_ignoreip: >-
-  {{ (firewalld_internal_zone_sources | default([])) +
-  (firewalld_work_zone_sources | default([])) + (nginx_rate_limit_allowlist |
-  default([])) }}
+  {{ nginx_rate_limit_allowlist + (groups['container_service_host'] |
+  default([]) | map('extract', hostvars) | map(attribute='ansible_ip',
+  default=None) | select | list) + ['172.17.0.0/16'] }}
+# Bans only block the web ports, so e.g. SSH from a shared network still works,
+# and are short, as many users may share an address
+fail2ban_bantime: 10m
+fail2ban_bantime_maxtime: 1d
+fail2ban_web_ports: >-
+  {{ nginx_http_port | default('http') }},{{ nginx_https_port | default('https')
+  }}
 fail2ban_jails:
-  # Clients that keep hitting the nginx rate limit
+  # Clients that keep hitting the nginx rate limit. Each rejected request is
+  # logged, so allow a person a few rounds of retries
   - name: nginx-limit-req
     logpath: "{{ nginx_app_error_log }}"
+    port: "{{ fail2ban_web_ports }}"
+    maxretry: 20
   # Wrong passwords for the REST API. Scripts may retry, so allow more attempts
   - name: nginx-proxy-basic-auth
     logpath: "{{ nginx_app_access_log }}"
+    port: "{{ fail2ban_web_ports }}"
     maxretry: 10
   # Scanners looking for e.g. /wp-login.php or /phpmyadmin
   - name: nginx-botsearch
     logpath: "{{ nginx_app_access_log }}"
+    port: "{{ fail2ban_web_ports }}"

@@ -10,7 +10,7 @@ bantime.increment = {{ fail2ban_bantime_increment | ternary('true', 'false') }}
 bantime.maxtime = {{ fail2ban_bantime_maxtime }}
 
 banaction = {{ fail2ban_banaction }}
-banaction_allports = {{ fail2ban_banaction }}
+banaction_allports = {{ fail2ban_banaction_allports }}
 {% for jail in fail2ban_jails %}
 
 [{{ jail.name }}]
