@@ -1,0 +1,93 @@
+---
+# fail2ban is in EPEL, which mirsg.infrastructure.provision installs
+- name: Install fail2ban
+  ansible.builtin.package:
+    name:
+      - fail2ban-server
+      # The tool the ban action uses, see fail2ban_banaction
+      - "{{ 'ipset' if ansible_facts['distribution_major_version'] is
+        version('7', '==') else 'nftables' }}"
+    state: present
+
+- name: Copy filters
+  ansible.builtin.copy:
+    src: filter.d/
+    dest: /etc/fail2ban/filter.d/
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart fail2ban
+
+- name: Configure fail2ban
+  ansible.builtin.template:
+    src: fail2ban.local.j2
+    dest: /etc/fail2ban/fail2ban.d/mirsg.local
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart fail2ban
+
+- name: Configure jails
+  ansible.builtin.template:
+    src: jail.local.j2
+    dest: /etc/fail2ban/jail.d/mirsg.local
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart fail2ban
+
+# On EL7, bans are firewalld runtime rules, which are lost when firewalld
+# restarts, so restart fail2ban with firewalld to add them again. Not on EL8
+# and later, where stopping firewalld would stop fail2ban and lift the bans.
+- name: Restart fail2ban when firewalld restarts
+  when: ansible_facts['distribution_major_version'] is version('7', '==')
+  block:
+    - name: Create the fail2ban unit override directory
+      ansible.builtin.file:
+        path: /etc/systemd/system/fail2ban.service.d
+        owner: root
+        group: root
+        mode: "0755"
+        state: directory
+
+    - name: Make fail2ban part of firewalld
+      ansible.builtin.copy:
+        content: |
+          [Unit]
+          After=firewalld.service
+          PartOf=firewalld.service
+        dest: /etc/systemd/system/fail2ban.service.d/firewalld.conf
+        owner: root
+        group: root
+        mode: "0644"
+      register: fail2ban_unit_override
+      notify: Restart fail2ban
+
+    - name: Reload systemd units
+      ansible.builtin.systemd:
+        daemon_reload: true
+      when: fail2ban_unit_override is changed
+
+- name: Check the fail2ban config
+  ansible.builtin.command: fail2ban-client --test
+  changed_when: false
+
+- name: Ensure fail2ban is running
+  ansible.builtin.service:
+    name: fail2ban
+    state: started
+    enabled: true
+
+- name: Restart fail2ban if its config changed
+  ansible.builtin.meta: flush_handlers
+
+- name: Check the jails are running
+  ansible.builtin.command: fail2ban-client status
+  register: fail2ban_status
+  changed_when: false
+  # fail2ban takes a few seconds to start its jails
+  retries: 10
+  delay: 2
+  until:
+    fail2ban_status.rc == 0 and fail2ban_jails | map(attribute='name') |
+    reject('in', fail2ban_status.stdout) | list | length == 0

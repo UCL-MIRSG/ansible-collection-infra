@@ -1,0 +1,141 @@
+---
+- name: Verify the fail2ban config
+  hosts: all
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Get the running jails
+      ansible.builtin.command: fail2ban-client status
+      register: fail2ban_status
+      changed_when: false
+
+    - name: Get the addresses that are never banned
+      ansible.builtin.command: fail2ban-client get nginx-limit-req ignoreip
+      register: fail2ban_ignoreip_output
+      changed_when: false
+
+    - name: Check the jails are running and ignore the trusted addresses
+      ansible.builtin.assert:
+        that:
+          - fail2ban_status.stdout is search('nginx-limit-req')
+          - fail2ban_status.stdout is search('nginx-proxy-basic-auth')
+          - fail2ban_status.stdout is search('nginx-botsearch')
+          - fail2ban_ignoreip_output.stdout is search('10\.11\.12\.0/24')
+          - fail2ban_ignoreip_output.stdout is search('198\.51\.100\.7')
+
+    - name: Test the basic auth filter against access log lines
+      ansible.builtin.command:
+        argv:
+          - fail2ban-regex
+          - "{{ item.line }}"
+          - /etc/fail2ban/filter.d/nginx-proxy-basic-auth.conf
+      register: fail2ban_regex_output
+      changed_when: false
+      failed_when: >-
+        fail2ban_regex_output.rc != 0 or fail2ban_regex_output.stdout is not
+        search('Lines: 1 lines, 0 ignored, ' ~ item.matches ~ ' matched')
+      loop:
+        # Wrong password
+        - line:
+            192.0.2.1 - admin [25/Nov/2026:13:00:00 +0000] "GET /data/projects
+            HTTP/1.1" 401 0 "-" "curl/8.0"
+          matches: 1
+        # No credentials, e.g. a logged out browser tab
+        - line:
+            192.0.2.1 - - [25/Nov/2026:13:00:00 +0000] "GET /data/projects
+            HTTP/1.1" 401 0 "-" "Mozilla/5.0"
+          matches: 0
+        # Right password
+        - line:
+            192.0.2.1 - admin [25/Nov/2026:13:00:00 +0000] "GET /data/projects
+            HTTP/1.1" 200 512 "-" "curl/8.0"
+          matches: 0
+
+- name: Verify clients that keep hitting the rate limit are banned
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    # 6 requests are allowed, so the rest are limited and logged. The client
+    # may be banned before the last requests, so they can't connect (-1).
+    - name: Send POST requests to a rate limited path
+      ansible.builtin.uri:
+        url: http://localhost:8080/login
+        method: POST
+        body: username=molecule
+        headers:
+          Host: molecule.instance.local
+        timeout: 5
+      register: rate_limited_response
+      failed_when: rate_limited_response.status not in [429, 502, -1]
+      loop: "{{ range(15) | list }}"
+
+    - name: Wait until the client can't connect
+      ansible.builtin.uri:
+        url: http://localhost:8080/
+        headers:
+          Host: molecule.instance.local
+        timeout: 5
+      register: banned_response
+      failed_when: false
+      until: banned_response.status == -1
+      retries: 15
+      delay: 2
+
+- name: Verify the client was banned
+  hosts: all
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Get the rate limit jail status
+      ansible.builtin.command: fail2ban-client status nginx-limit-req
+      register: fail2ban_jail_status
+      changed_when: false
+
+    - name: Check the client was banned
+      ansible.builtin.assert:
+        that:
+          - fail2ban_jail_status.stdout is search('Currently banned:\s+1')
+
+    # On EL7, reloading firewalld removes the bans until fail2ban restarts
+    - name: Reload firewalld
+      ansible.builtin.command: firewall-cmd --reload
+      changed_when: true
+      when: ansible_facts['distribution_major_version'] is version('8', '>=')
+
+- name: Verify the client is still banned after firewalld reloads
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Try to connect
+      ansible.builtin.uri:
+        url: http://localhost:8080/
+        headers:
+          Host: molecule.instance.local
+        timeout: 5
+      register: reloaded_response
+      failed_when: reloaded_response.status != -1
+
+- name: Unban the client
+  hosts: all
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Unban the client
+      ansible.builtin.command: fail2ban-client unban --all
+      changed_when: true
+
+- name: Verify the client can connect after it's unbanned
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Wait until the client can connect
+      ansible.builtin.uri:
+        url: http://localhost:8080/
+        headers:
+          Host: molecule.instance.local
+        timeout: 5
+        status_code: 502
+      register: unbanned_response
+      until: unbanned_response.status == 502
+      retries: 10
+      delay: 2

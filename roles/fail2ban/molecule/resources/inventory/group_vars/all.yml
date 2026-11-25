@@ -1,0 +1,26 @@
+---
+# mirsg.infrastructure.nginx
+# Nothing listens on the proxy port, so requests nginx doesn't limit get a 502
+nginx_use_ssl: false
+nginx_server_name: molecule.instance.local
+nginx_proxy_port: 8000
+nginx_rate_limit_paths:
+  - /login
+
+# mirsg.infrastructure.firewalld
+firewalld_allow_public_access: true
+firewalld_public_zone_open_services:
+  - http
+firewalld_internal_zone_sources:
+  - 10.11.12.0/24
+
+# mirsg.infrastructure.fail2ban
+fail2ban_ignoreip: "{{ firewalld_internal_zone_sources + ['198.51.100.7'] }}"
+fail2ban_jails:
+  - name: nginx-limit-req
+    logpath: "{{ nginx_app_error_log }}"
+  - name: nginx-proxy-basic-auth
+    logpath: "{{ nginx_app_access_log }}"
+    maxretry: 10
+  - name: nginx-botsearch
+    logpath: "{{ nginx_app_access_log }}"

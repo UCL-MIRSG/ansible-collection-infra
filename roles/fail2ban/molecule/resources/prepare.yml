@@ -1,0 +1,55 @@
+---
+# The instance doesn't have sudo yet, so don't become root. Molecule connects
+# as root.
+- name: Prepare for fail2ban
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Update YUM repo baseurls
+      ansible.builtin.include_role:
+        name: mirsg.infrastructure.provision
+        tasks_from: RedHat7.yml
+      when: ansible_facts['distribution_major_version'] is version('7')
+
+    - name: Install sudo
+      ansible.builtin.package:
+        name: sudo
+        state: present
+
+    # mirsg.infrastructure.provision installs EPEL on real hosts
+    - name: Install EPEL
+      ansible.builtin.package:
+        name: epel-release
+        state: present
+
+# nginx runs in a container on EL7. The nginx role doesn't configure the Docker
+# daemon, so set the storage driver needed for Docker-in-Docker here.
+- name: Configure Docker-in-Docker
+  hosts: all
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Use the vfs storage driver to avoid overlayfs issues
+      when: ansible_facts['distribution_major_version'] is version('7', '==')
+      block:
+        - name: Ensure docker config directory exists
+          ansible.builtin.file:
+            path: /etc/docker
+            owner: root
+            group: root
+            state: directory
+            mode: "0700"
+
+        - name: Write docker daemon configuration file
+          ansible.builtin.copy:
+            content: "{{ {'storage-driver': 'vfs'} | to_json }}"
+            dest: /etc/docker/daemon.json
+            owner: root
+            group: root
+            mode: "0640"
+
+    - name: Install logrotate
+      ansible.builtin.package:
+        name: logrotate
+        state: present
+      when: ansible_facts['distribution_major_version'] is version('7', '==')

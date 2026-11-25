@@ -1,0 +1,6 @@
+# Managed by Ansible (mirsg.infrastructure.fail2ban)
+
+[Definition]
+# Remember bans for as long as the longest ban, so repeat offenders' bans keep
+# increasing. The default is 1 day.
+dbpurgeage = {{ fail2ban_bantime_maxtime }}
