@@ -31,11 +31,12 @@
     - "'nginx' in ansible_facts.packages"
     - ansible_facts.packages['nginx'][0].release is not search('ngx')
 
-- name: Ensure the pinned nginx is installed - {{ nginx_version }}
+# nginx_version is a minimum: a newer mainline release, e.g. from a package
+# upgrade, is kept so that fixes arrive without waiting for a new pin
+- name: Ensure nginx {{ nginx_version }} or later is installed
   ansible.builtin.dnf:
-    name: nginx-{{ nginx_version }}
+    name: nginx >= {{ nginx_version }}
     state: present
-    allow_downgrade: true
 
 # The nginx.org package's nginx.conf includes conf.d/*.conf, and its
 # conf.d/default.conf adds a server that would conflict with ours. The file is

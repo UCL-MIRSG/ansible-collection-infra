@@ -4,7 +4,7 @@ This role is for configuring [nginx](https://www.nginx.com/) as a
 [reverse proxy](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/)
 on CentOS 7, or on EL8 and later (e.g. Rocky Linux, AlmaLinux).
 
-The role installs the nginx mainline version pinned in `nginx_container_image`:
+The role installs the nginx mainline version in `nginx_container_image`:
 
 - on EL8 and later, from the
   [nginx.org](https://nginx.org/en/linux_packages.html) mainline repository. Any
@@ -31,7 +31,11 @@ rm /etc/logrotate.d/nginx
 yum reinstall "$pkg"
 ```
 
-The role fails if the running nginx isn't `nginx_version`.
+On EL8 and later, `nginx_version` is a minimum: a newer nginx.org mainline
+release, for example from a package upgrade, is kept rather than downgraded, so
+fixes arrive without waiting for a new release of this collection. The container
+runs exactly the pinned image. The role fails if the running nginx is older than
+`nginx_version`, or for the container, isn't `nginx_version`.
 
 ## Role Variables
 
@@ -39,7 +43,7 @@ The role fails if the running nginx isn't `nginx_version`.
 | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `nginx_install_method`     | `package` to install from the nginx.org repository, or `container` to run the official nginx image. Defaults to `container` on EL7 and `package` otherwise                                      |
 | `nginx_container_image`    | The nginx image to run, pinned by tag and digest. Defaults to the latest mainline release when the role was released, e.g. `nginx:1.31.9@sha256:...`                                            |
-| `nginx_version`            | The nginx version to install from nginx.org. Defaults to the version in the `nginx_container_image` tag, so both install methods run the same nginx                                             |
+| `nginx_version`            | The minimum nginx version to install from nginx.org. Defaults to the version in the `nginx_container_image` tag, so both install methods run at least the same nginx                              |
 | `nginx_repo_baseurl`       | The nginx.org repository to install from. Defaults to the mainline repository, `https://nginx.org/packages/mainline/rhel/$releasever/$basearch/`                                                |
 | `nginx_repo_gpgkey`        | The key used to sign the nginx.org packages. Defaults to `https://nginx.org/keys/nginx_signing.key`                                                                                             |
 | `nginx_container_name`     | Name of the nginx container. Defaults to `nginx`                                                                                                                                                |
