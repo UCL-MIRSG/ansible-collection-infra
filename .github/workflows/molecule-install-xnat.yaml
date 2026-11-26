@@ -6,6 +6,7 @@ on:
     paths:
       - molecule_configs/requirements.yml
       - playbooks/install_xnat.yml
+      - playbooks/install_nginx.yml
       - playbooks/group_vars/**
       - playbooks/molecule/*_xnat*/**
       - playbooks/molecule/resources/xnat/**
