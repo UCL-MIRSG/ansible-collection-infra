@@ -65,13 +65,17 @@
   register: nginx_version_output
   changed_when: false
 
-- name: Assert the pinned nginx is running - {{ nginx_version }}
+# The container image is pinned exactly; the package is a minimum version
+- name: Assert the required nginx is running - {{ nginx_version }}
   ansible.builtin.assert:
     that:
-      - nginx_installed_version == nginx_version
+      - >-
+        nginx_installed_version == nginx_version
+        if nginx_install_method == 'container' else
+        nginx_installed_version is version(nginx_version, '>=')
     fail_msg:
-      nginx {{ nginx_installed_version }} is installed, but {{ nginx_version }}
-      is required
+      nginx {{ nginx_installed_version }} is installed, but {{ nginx_version }}{{
+      '' if nginx_install_method == 'container' else ' or later' }} is required
     quiet: true
   vars:
     nginx_installed_version:

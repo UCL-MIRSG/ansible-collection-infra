@@ -38,11 +38,18 @@
       register: nginx_version_output
       changed_when: false
 
-    - name: Check the pinned nginx is installed
+    # The container is pinned exactly; the package is a minimum version
+    - name: Check the required nginx is installed
       ansible.builtin.assert:
         that:
-          - nginx_version_output.stderr is search('nginx/' ~ (nginx_version |
-            regex_escape) ~ '(\s|$)')
+          - >-
+            nginx_installed_version == nginx_version
+            if ansible_facts['distribution_major_version'] == '7' else
+            nginx_installed_version is version(nginx_version, '>=')
+      vars:
+        nginx_installed_version:
+          "{{ nginx_version_output.stderr | regex_search('nginx/([0-9.]+)',
+          '\\1') | first }}"
 
 - name: Verify the nginx container's logs are rotated
   hosts: all
