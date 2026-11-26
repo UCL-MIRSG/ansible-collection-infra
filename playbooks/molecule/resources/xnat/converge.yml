@@ -1,3 +1,7 @@
 ---
 - name: Install XNAT
   ansible.builtin.import_playbook: mirsg.infrastructure.install_xnat
+
+# Re-run nginx on its own after a full deploy, as an nginx upgrade would
+- name: Install nginx only
+  ansible.builtin.import_playbook: mirsg.infrastructure.install_nginx

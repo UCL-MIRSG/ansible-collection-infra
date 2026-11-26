@@ -6,6 +6,7 @@ on:
     paths:
       - molecule_configs/requirements.yml
       - playbooks/install_omero.yml
+      - playbooks/install_nginx.yml
       - playbooks/group_vars/**
       - playbooks/templates/omero-web-nginx-conf.j2
       - playbooks/molecule/rocky_omero/**
