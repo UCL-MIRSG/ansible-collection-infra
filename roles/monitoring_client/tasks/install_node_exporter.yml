@@ -34,6 +34,8 @@
     owner: "{{ monitoring_client_owner }}"
     group: "{{ monitoring_client_group }}"
     mode: "0755"
+  notify:
+    - Restart node_exporter
 
 - name: Copy monitoring client crt and key files to node_exporter folder
   ansible.builtin.copy:
@@ -43,6 +45,8 @@
     group: "{{ monitoring_client_group }}"
     mode: "0600"
     remote_src: true
+  notify:
+    - Restart node_exporter
   with_items:
     - src: "{{ monitoring_client_ssl_key_file }}"
       dest: "{{ monitoring_client_node_exporter_ssl_key }}"

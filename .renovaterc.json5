@@ -78,6 +78,17 @@
     },
     {
       customType: "regex",
+      description: "Update node_exporter version in roles/monitoring_client/defaults/main.yml",
+      managerFilePatterns: ["/roles/monitoring_client/defaults/main.yml$/"],
+      matchStrings: [
+        "monitoring_client_node_exporter_version:\\s?(?<currentValue>.*?)\\n",
+      ],
+      depNameTemplate: "prometheus/node_exporter",
+      datasourceTemplate: "github-releases",
+      extractVersionTemplate: "^v(?<version>.*)$",
+    },
+    {
+      customType: "regex",
       description: "Update Tomcat version",
       managerFilePatterns: [
         "/playbooks/group_vars/xnat.yml$/",

@@ -3,15 +3,6 @@
   hosts: monitoring_host
   become: true
   gather_facts: true
-  pre_tasks:
-    - name: Generate list of docker clients from `monitoring_client` group
-      ansible.builtin.set_fact:
-        docker_client_hostnames: >
-          {{ query('inventory_hostnames', ansible_limit | default('')) |
-          intersect(groups['monitoring_client']) | map('extract', hostvars,
-          monitoring_server_hostname_extractor) | list | default([]) }}
-      failed_when: docker_client_hostnames | length == 0
-
   roles:
     - role: mirsg.infrastructure.provision
     - role: mirsg.infrastructure.install_python
@@ -26,5 +17,7 @@
 
   roles:
     - role: mirsg.infrastructure.ca_trust
+    # Opens the exporter port itself. The firewalld role isn't used here as
+    # it would reset the default zone and services set by each host's own
+    # deploy
     - role: mirsg.infrastructure.monitoring_client
-    - role: mirsg.infrastructure.firewalld

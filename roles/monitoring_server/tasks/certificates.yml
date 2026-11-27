@@ -1,0 +1,110 @@
+---
+# A CA used only for monitoring, which signs the TLS certificate each
+# node_exporter serves to Prometheus. It is kept apart from the Docker CA so
+# that these certificates can't authenticate to a Docker daemon, and the
+# certificates are limited to TLS server use.
+
+- name: Ensure the monitoring certificate directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: "{{ monitoring_server_cert_owner }}"
+    group: "{{ monitoring_server_cert_group }}"
+    state: directory
+    mode: "0700"
+  loop:
+    - "{{ monitoring_server_certificate_directory }}"
+    - "{{ monitoring_server_client_certificate_directory }}"
+
+- name: Generate the monitoring CA private key
+  community.crypto.openssl_privatekey:
+    path: "{{ monitoring_server_ca_key }}"
+    owner: "{{ monitoring_server_cert_owner }}"
+    group: "{{ monitoring_server_cert_group }}"
+    mode: "0400"
+
+- name: Generate the monitoring CA CSR
+  community.crypto.openssl_csr:
+    path: "{{ monitoring_server_ca_csr }}"
+    privatekey_path: "{{ monitoring_server_ca_key }}"
+    common_name: "{{ monitoring_server_ca_common_name }}"
+    use_common_name_for_san: false
+    basic_constraints_critical: true
+    basic_constraints:
+      - CA:TRUE
+    key_usage_critical: true
+    key_usage:
+      - keyCertSign
+      - cRLSign
+
+- name: Generate the self-signed monitoring CA certificate
+  community.crypto.x509_certificate:
+    path: "{{ monitoring_server_ca_cert }}"
+    privatekey_path: "{{ monitoring_server_ca_key }}"
+    csr_path: "{{ monitoring_server_ca_csr }}"
+    provider: selfsigned
+    selfsigned_not_after: "{{ monitoring_server_ca_not_after }}"
+    owner: "{{ monitoring_server_cert_owner }}"
+    group: "{{ monitoring_server_cert_group }}"
+    mode: "0444"
+
+# One key shared by the clients, as before; each client has its own certificate
+- name: Generate the client private key
+  community.crypto.openssl_privatekey:
+    path: "{{ monitoring_server_client_certificate_directory }}/key.pem"
+    owner: "{{ monitoring_server_cert_owner }}"
+    group: "{{ monitoring_server_cert_group }}"
+    mode: "0400"
+
+- name: Generate a CSR for each client
+  community.crypto.openssl_csr:
+    path: "{{ monitoring_server_client_certificate_directory }}/{{ item }}.csr"
+    privatekey_path:
+      "{{ monitoring_server_client_certificate_directory }}/key.pem"
+    common_name: "{{ item }}"
+    subject_alt_name:
+      - DNS:{{ item }}
+    basic_constraints_critical: true
+    basic_constraints:
+      - CA:FALSE
+    key_usage_critical: true
+    key_usage:
+      - digitalSignature
+      - keyEncipherment
+    extended_key_usage:
+      - serverAuth
+  loop: "{{ monitoring_server_certificate_hostnames }}"
+
+- name: Sign a certificate for each client with the monitoring CA
+  community.crypto.x509_certificate:
+    path: "{{ monitoring_server_client_certificate_directory }}/{{ item }}.cert"
+    csr_path:
+      "{{ monitoring_server_client_certificate_directory }}/{{ item }}.csr"
+    provider: ownca
+    ownca_path: "{{ monitoring_server_ca_cert }}"
+    ownca_privatekey_path: "{{ monitoring_server_ca_key }}"
+    ownca_not_after: "{{ monitoring_server_client_certificate_not_after }}"
+    owner: "{{ monitoring_server_cert_owner }}"
+    group: "{{ monitoring_server_cert_group }}"
+    mode: "0400"
+  loop: "{{ monitoring_server_certificate_hostnames }}"
+
+# monitoring_client copies these from the controller to each client
+- name: Copy the CA certificate to the Ansible controller
+  ansible.builtin.fetch:
+    src: "{{ monitoring_server_ca_cert }}"
+    dest: "{{ monitoring_server_certificate_cache_directory }}/ca.pem"
+    flat: true
+
+- name: Copy the client certificates to the Ansible controller
+  ansible.builtin.fetch:
+    src: "{{ monitoring_server_client_certificate_directory }}/{{ item }}.cert"
+    dest: "{{ monitoring_server_certificate_cache_directory }}/{{ item }}.cert"
+    flat: true
+  loop: "{{ monitoring_server_certificate_hostnames }}"
+
+- name: Copy the client private key to the Ansible controller
+  ansible.builtin.fetch:
+    src: "{{ monitoring_server_client_certificate_directory }}/key.pem"
+    dest: "{{ monitoring_server_certificate_cache_directory }}/key.pem"
+    flat: true
+  when: monitoring_server_certificate_hostnames | length > 0
