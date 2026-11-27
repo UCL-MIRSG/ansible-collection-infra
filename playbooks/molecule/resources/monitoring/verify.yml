@@ -25,6 +25,34 @@
           - item.container.State.Running
       loop: "{{ container_info.results }}"
 
+    - name: Read the Prometheus config
+      ansible.builtin.slurp:
+        src: "{{ monitoring_server_storage_root }}/prometheus/prometheus.yml"
+      register: prometheus_config
+
+    - name: Check the client is a node and blackbox target
+      ansible.builtin.assert:
+        that:
+          - client + ':9100' in config
+          - "'https://' + client in config"
+      vars:
+        client: "{{ hostvars['mclient']['hostname'] }}"
+        config: "{{ prometheus_config.content | b64decode }}"
+
+    - name: Stat the client private keys
+      ansible.builtin.stat:
+        path: /home/docker/.docker/client_certs/{{ item }}
+      loop:
+        - "{{ hostvars['mclient']['hostname'] }}.key"
+        - key.pem
+      register: client_keys
+
+    - name: Check the client has its own private key and none is shared
+      ansible.builtin.assert:
+        that:
+          - client_keys.results[0].stat.exists
+          - not client_keys.results[1].stat.exists
+
 - name: Check monitoring client
   hosts: monitoring_client
   become: true
@@ -38,3 +66,19 @@
         that:
           - "'node_exporter.service' in ansible_facts.services"
           - ansible_facts.services['node_exporter.service'].state == "running"
+
+    - name: Get the firewalld default zone
+      ansible.builtin.command: firewall-cmd --get-default-zone
+      register: default_zone
+      changed_when: false
+
+    - name: Get the rich rules in the internal zone
+      ansible.builtin.command: firewall-cmd --zone=internal --list-rich-rules
+      register: internal_rich_rules
+      changed_when: false
+
+    - name: Check the exporter port is open and the default zone is unchanged
+      ansible.builtin.assert:
+        that:
+          - default_zone.stdout == 'public'
+          - internal_rich_rules.stdout is search('port="9100"')

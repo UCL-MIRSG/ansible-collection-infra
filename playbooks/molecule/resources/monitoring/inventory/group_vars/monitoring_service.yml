@@ -9,6 +9,7 @@ docker_server_ip: "{{ hostvars['mserv']['ansible_ip'] }}"
 docker_server_port: 2376
 docker_service_name: docker
 docker_generate_certificates: true # generate TLS certs for clients
+docker_client_per_host_keys: true
 docker_tls_verify: true
 
 # mirsg.infrastructure.monitoring_client

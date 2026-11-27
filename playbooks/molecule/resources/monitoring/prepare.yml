@@ -24,3 +24,18 @@
         path: /etc/firewalld/firewalld.conf
         regexp: ^FirewallBackend=
         line: FirewallBackend=iptables
+
+# Stand in for a public XNAT/OMERO host, whose default zone the monitoring
+# deploy must leave alone
+- name: Start firewalld on the clients with a public default zone
+  hosts: monitoring_client
+  gather_facts: false
+  tasks:
+    - name: Start firewalld
+      ansible.builtin.systemd:
+        name: firewalld
+        state: started
+
+    - name: Set the default zone to public
+      ansible.builtin.command: firewall-cmd --set-default-zone=public
+      changed_when: true

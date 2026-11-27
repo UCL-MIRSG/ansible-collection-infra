@@ -7,17 +7,21 @@
     group: "{{ docker_group }}"
     mode: "0700"
 
+# _docker_client_key_files is set where this file is imported in main.yml
 - name: Generate OpenSSL client private key
   community.crypto.openssl_privatekey:
-    path: "{{ docker_client_certificate_directory }}/key.pem"
+    path: "{{ docker_client_certificate_directory }}/{{ item }}"
     owner: "{{ docker_owner }}"
     group: "{{ docker_group }}"
     mode: "0400"
+  loop: "{{ _docker_client_key_files | unique }}"
 
 - name: Generate OpenSSL CSR for each client using private key
   community.crypto.openssl_csr:
     path: "{{ docker_client_certificate_directory }}/{{ item }}.csr"
-    privatekey_path: "{{ docker_client_certificate_directory }}/key.pem"
+    privatekey_path:
+      "{{ docker_client_certificate_directory }}/{{ item ~ '.key' if
+      docker_client_per_host_keys else 'key.pem' }}"
     common_name: "{{ item }}"
   register: new_docker_client_csr_generated
   loop: "{{ docker_client_hostnames }}"
@@ -41,8 +45,9 @@
     flat: true
   loop: "{{ docker_client_hostnames }}"
 
-- name: Copy private key to temp dir on Ansible controller
+- name: Copy client private keys to temp dir on Ansible controller
   ansible.builtin.fetch:
-    src: "{{ docker_client_certificate_directory }}/key.pem"
-    dest: "{{ docker_client_certificate_cache_directory }}/key.pem"
+    src: "{{ docker_client_certificate_directory }}/{{ item }}"
+    dest: "{{ docker_client_certificate_cache_directory }}/{{ item }}"
     flat: true
+  loop: "{{ _docker_client_key_files | unique }}"

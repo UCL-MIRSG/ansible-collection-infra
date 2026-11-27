@@ -59,6 +59,7 @@ used to configure certificate creation and signing:
 | `docker_client_hostnames`                   | List of hostnames of clients that will connect to the server. Defaults to `[]`                                                                 |
 | `docker_client_certificate_directory`       | Directory in which to store the client certificates. Defaults to `/home/docker/.docker/client_certs`                                           |
 | `docker_client_certificate_cache_directory` | Directory in which to client certificates will be copied to. Defaults to `~/ansible_persistent_files/docker_certificates`                      |
+| `docker_client_per_host_keys`               | If `true`, generate a private key per client (`<hostname>.key`) instead of one `key.pem` shared by all clients. Defaults to `false`            |
 
 If you have specified a list of clients in `docker_client_hostnames`, the
 certificate for each client will be stored locally on your Ansible controller in

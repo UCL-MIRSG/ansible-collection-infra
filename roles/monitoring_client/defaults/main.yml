@@ -1,5 +1,5 @@
 ---
-monitoring_client_node_exporter_version: 1.7.0
+monitoring_client_node_exporter_version: 1.12.1
 
 monitoring_client_node_exporter_binary:
   https://github.com/prometheus/node_exporter/releases/download/v{{
@@ -24,5 +24,15 @@ monitoring_client_ssl_csr_file: /root/monitoring_certs/monitoring.csr
 monitoring_client_ssl_pk8_file: /root/monitoring_certs/monitoring.pk8
 monitoring_client_ssl_cert_file: /root/monitoring_certs/cert.pem
 monitoring_client_server_ca_cert_file: /root/monitoring_certs/ca.pem
+# Name of the client private key in monitoring_client_certificate_cache_directory.
+# Set to "<hostname>.key" when the server sets docker_client_per_host_keys
+monitoring_client_certificate_key_file: key.pem
 monitoring_client_exporter_username: prometheus
 monitoring_client_exporter_password: ""
+
+# Allow the monitoring server to reach node_exporter through firewalld. Only
+# binds the server's IP to the zone and adds one rich rule for the exporter
+# port, so the host's other firewalld settings are left alone. Skipped when
+# firewalld isn't running
+monitoring_client_configure_firewalld: true
+monitoring_client_firewalld_zone: internal

@@ -1,24 +1,25 @@
 ---
+# Targets come from the whole client group rather than the --limit, so a run
+# limited to some clients doesn't drop the others from Prometheus
 - name:
-    Build `monitoring_server_client_hostnames` from `monitoring_client` group
+    Build `monitoring_server_client_hostnames` from the client group - {{
+    monitoring_server_client_group }}
   ansible.builtin.set_fact:
-    # Get hosts in the `monitoring_client`
     monitoring_server_client_hostnames: >
-      {{ query('inventory_hostnames', ansible_limit | default('')) |
-      intersect(groups['monitoring_client']) | map('extract', hostvars,
-      monitoring_server_hostname_extractor) | list | default([]) }}
+      {{ groups.get(monitoring_server_client_group, []) | map('extract',
+      hostvars, monitoring_server_hostname_extractor) | list }}
   failed_when: monitoring_server_client_hostnames | length == 0
 
-- name: Find web servers in `monitoring_client` group
+- name:
+    Find web servers in the client group - {{ monitoring_server_client_group }}
   ansible.builtin.set_fact:
-    # Get any hosts in the `monitoring_client` that are
-    # also in the group named by `monitoring_server_web_group`
+    # Get any monitoring clients that are also in the group named by
+    # `monitoring_server_web_group`
     monitoring_server_web_clients: >
-      {{ query('inventory_hostnames', ansible_limit | default('')) |
-      intersect(groups['monitoring_client']) |
+      {{ groups.get(monitoring_server_client_group, []) |
       intersect(groups.get(monitoring_server_web_group, [])) | map('extract',
       hostvars, monitoring_server_hostname_extractor) | map('regex_replace',
-      '^', 'https://') }}
+      '^', 'https://') | list }}
   failed_when: monitoring_server_web_clients | length == 0
 
 - name: Add monitoring_server group

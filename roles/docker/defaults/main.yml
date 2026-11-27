@@ -45,6 +45,9 @@ docker_client_certificate_directory:
   "{{ docker_certificate_directory }}/client_certs"
 docker_client_certificate_cache_directory:
   "{{ lookup('env', 'HOME') }}/ansible_persistent_files/docker_certificates"
+# Give each client its own private key (<hostname>.key) instead of one shared
+# key.pem. Off by default because xnat_container_service copies key.pem
+docker_client_per_host_keys: false
 
 # Swarm mode
 docker_swarm_enabled: false
