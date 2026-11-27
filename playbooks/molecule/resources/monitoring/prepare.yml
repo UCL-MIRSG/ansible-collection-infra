@@ -26,16 +26,13 @@
         line: FirewallBackend=iptables
 
 # Stand in for a public XNAT/OMERO host, whose default zone the monitoring
-# deploy must leave alone
-- name: Start firewalld on the clients with a public default zone
+# deploy must leave alone. firewalld stays stopped until verify: starting it
+# during converge flushes the NAT rules Docker's embedded DNS needs, so the
+# role writes its rules offline here
+- name: Set a public default zone on the clients
   hosts: monitoring_client
   gather_facts: false
   tasks:
-    - name: Start firewalld
-      ansible.builtin.systemd:
-        name: firewalld
-        state: started
-
     - name: Set the default zone to public
-      ansible.builtin.command: firewall-cmd --set-default-zone=public
+      ansible.builtin.command: firewall-offline-cmd --set-default-zone=public
       changed_when: true

@@ -63,6 +63,13 @@
     common_name: "{{ item }}"
     subject_alt_name:
       - DNS:{{ item }}
+    basic_constraints_critical: true
+    basic_constraints:
+      - CA:FALSE
+    key_usage_critical: true
+    key_usage:
+      - digitalSignature
+      - keyEncipherment
     extended_key_usage:
       - serverAuth
   loop: "{{ monitoring_server_certificate_hostnames }}"

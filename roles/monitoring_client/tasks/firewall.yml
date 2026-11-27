@@ -2,22 +2,16 @@
 # Deliberately not the firewalld role: that also sets the default zone and
 # closes services, which would undo settings from the host's own deploy
 
-# With no state, the systemd module only reports the unit's status
-- name: Get the firewalld service status
-  ansible.builtin.systemd:
-    name: firewalld
-  register: monitoring_client_firewalld_service
-  failed_when: false
+- name: Get the state of services
+  ansible.builtin.service_facts:
 
 # If firewalld is installed but stopped, write the permanent config offline so
 # the exporter port is open once it starts
 - name: Allow the monitoring server to reach node_exporter
-  when:
-    (monitoring_client_firewalld_service.status | default({})).LoadState |
-    default('') == 'loaded'
+  when: "'firewalld.service' in ansible_facts.services"
   vars:
     monitoring_client_firewalld_running:
-      "{{ monitoring_client_firewalld_service.status.ActiveState == 'active' }}"
+      "{{ ansible_facts.services['firewalld.service'].state == 'running' }}"
   block:
     - name:
         Bind the monitoring server to the firewalld zone - {{

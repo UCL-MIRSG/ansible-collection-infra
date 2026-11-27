@@ -29,7 +29,8 @@ monitoring_client_exporter_password: ""
 
 # Allow the monitoring server to reach node_exporter through firewalld. Only
 # binds the server's IP to the zone and adds one rich rule for the exporter
-# port, so the host's other firewalld settings are left alone. Skipped when
-# firewalld isn't running
+# port, so the host's other firewalld settings are left alone. If firewalld is
+# installed but stopped, the permanent config is written offline; skipped when
+# firewalld isn't installed
 monitoring_client_configure_firewalld: true
 monitoring_client_firewalld_zone: internal
