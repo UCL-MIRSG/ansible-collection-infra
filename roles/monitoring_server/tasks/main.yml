@@ -52,6 +52,9 @@
 - name: Install and configure Nginx container
   ansible.builtin.include_tasks: install_nginx_container.yml
 
+- name: Create the monitoring CA and client certificates
+  ansible.builtin.include_tasks: certificates.yml
+
 - name: Install and configure Prometheus container
   ansible.builtin.include_tasks: install_prometheus_container.yml
 

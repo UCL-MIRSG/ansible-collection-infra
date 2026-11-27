@@ -39,19 +39,36 @@
         client: "{{ hostvars['mclient']['hostname'] }}"
         config: "{{ prometheus_config.content | b64decode }}"
 
-    - name: Stat the client private keys
-      ansible.builtin.stat:
-        path: /home/docker/.docker/client_certs/{{ item }}
-      loop:
-        - "{{ hostvars['mclient']['hostname'] }}.key"
-        - key.pem
-      register: client_keys
+    - name: Get the client certificate's details
+      community.crypto.x509_certificate_info:
+        path:
+          /root/monitoring_certs/client_certs/{{ hostvars['mclient']['hostname']
+          }}.cert
+      register: client_cert
 
-    - name: Check the client has its own private key and none is shared
+    - name: Get the monitoring CA certificate's details
+      community.crypto.x509_certificate_info:
+        path: /root/monitoring_certs/ca.pem
+      register: monitoring_ca
+
+    - name: Stat the Docker CA's client certificate directory
+      ansible.builtin.stat:
+        path: /home/docker/.docker/client_certs
+      register: docker_client_certs
+
+    - name:
+        Check the client certificate is from the monitoring CA and only for TLS
+        servers
       ansible.builtin.assert:
         that:
-          - client_keys.results[0].stat.exists
-          - not client_keys.results[1].stat.exists
+          - client_cert.issuer == monitoring_ca.subject
+          # community.crypto reports the OpenSSL long name for serverAuth
+          - client_cert.extended_key_usage | length == 1
+          - client_cert.extended_key_usage[0] in ['TLS Web Server
+            Authentication', 'serverAuth']
+          - "'DNS:' + hostvars['mclient']['hostname'] in
+            client_cert.subject_alt_name"
+          - not docker_client_certs.stat.exists
 
 - name: Check monitoring client
   hosts: monitoring_client
@@ -82,3 +99,29 @@
         that:
           - default_zone.stdout == 'public'
           - internal_rich_rules.stdout is search('port="9100"')
+
+- name: Check the client's exporter verifies against the monitoring CA
+  hosts: monitoring_host
+  become: true
+  gather_facts: false
+  tasks:
+    # The same TLS check Prometheus makes: the certificate must be signed by
+    # the monitoring CA and match the hostname, and the port must be open
+    - name: Fetch metrics over HTTPS, trusting only the monitoring CA
+      ansible.builtin.uri:
+        url: https://{{ hostvars['mclient']['hostname'] }}:9100/metrics
+        ca_path: /root/monitoring_certs/ca.pem
+        validate_certs: true
+        url_username: "{{ monitoring_client_exporter_username }}"
+        url_password: "{{ monitoring_client_exporter_password }}"
+        force_basic_auth: true
+        return_content: true
+      register: node_metrics
+      until: node_metrics.status == 200
+      retries: 5
+      delay: 5
+
+    - name: Check node_exporter returned metrics
+      ansible.builtin.assert:
+        that:
+          - "'node_cpu_seconds_total' in node_metrics.content"

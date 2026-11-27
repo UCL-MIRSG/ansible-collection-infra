@@ -31,12 +31,6 @@
     - name: Generate TLS certificates for each client
       ansible.builtin.import_tasks: client-certs.yml
       when: docker_client_hostnames
-      vars:
-        # With docker_client_per_host_keys each client gets its own
-        # <hostname>.key, otherwise all clients share key.pem
-        _docker_client_key_files: >-
-          {{ docker_client_hostnames | map('regex_replace', '$', '.key') | list
-          if docker_client_per_host_keys else ['key.pem'] }}
 
 - name: Ensure docker config directory exists - {{ docker_config_dir }}
   ansible.builtin.file:

@@ -27,9 +27,7 @@
 
 - name: Copy monitoring client private key to client
   ansible.builtin.copy:
-    src:
-      "{{ monitoring_client_certificate_cache_directory }}/{{
-      monitoring_client_certificate_key_file }}"
+    src: "{{ monitoring_client_certificate_cache_directory }}/key.pem"
     dest: "{{ monitoring_client_ssl_key_file }}"
     owner: "{{ monitoring_client_owner }}"
     group: "{{ monitoring_client_group }}"

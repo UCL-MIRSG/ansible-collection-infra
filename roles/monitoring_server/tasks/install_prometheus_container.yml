@@ -9,9 +9,10 @@
     state: directory
     mode: "0700"
 
-- name: Copy server cert to prometheus bind mount
+- name: Copy the monitoring CA certificate to the prometheus bind mount
   ansible.builtin.copy:
-    src: "{{ monitoring_server_certificate_cache_directory }}/ca.pem"
+    src: "{{ monitoring_server_ca_cert }}"
+    remote_src: true
     dest: "{{ monitoring_server_prometheus.external_data_dir }}/ca.pem"
     owner: "{{ monitoring_server_owner }}"
     group: "{{ monitoring_server_group }}"

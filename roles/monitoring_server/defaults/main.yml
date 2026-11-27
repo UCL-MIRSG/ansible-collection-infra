@@ -8,26 +8,30 @@ monitoring_server_cert_group: root
 monitoring_server_storage_root: /data/monitoring
 monitoring_server_web_group: web
 
-# mirsg.monitoring_server CA and server certificate
+# mirsg.monitoring_server CA, which signs the certificate each client's
+# node_exporter serves. Separate from the Docker CA (see tasks/certificates.yml)
 monitoring_server_certificate_cache_directory:
-  "{{ lookup('env', 'HOME')
-  }}/ansible_persistent_files/monitoring_server_certificates"
+  "{{ lookup('env', 'HOME') }}/ansible_persistent_files/monitoring_certificates"
 monitoring_server_certificate_directory: /root/monitoring_certs
 monitoring_server_ca_key: "{{ monitoring_server_certificate_directory }}/ca.key"
 monitoring_server_ca_csr: "{{ monitoring_server_certificate_directory }}/ca.csr"
 monitoring_server_ca_cert:
   "{{ monitoring_server_certificate_directory }}/ca.pem"
-monitoring_server_server_key:
-  "{{ monitoring_server_certificate_directory }}/server-key.pem"
-monitoring_server_server_csr:
-  "{{ monitoring_server_certificate_directory }}/server.csr"
-monitoring_server_server_cert:
-  "{{ monitoring_server_certificate_directory }}/server-cert.pem"
+monitoring_server_ca_common_name:
+  "{{ monitoring_server_hostname }} monitoring CA"
+monitoring_server_ca_not_after: +3650d
+monitoring_server_client_certificate_not_after: +3650d
 
 # mirsg.monitoring_server client related
 monitoring_server_client_certificate_directory:
   "{{ monitoring_server_certificate_directory }}/client_certs"
 monitoring_server_client_group: monitoring_client
+# Clients to make certificates for: those in both the client group and the
+# --limit. Prometheus scrapes the whole client group regardless
+monitoring_server_certificate_hostnames: >-
+  {{ query('inventory_hostnames', ansible_limit | default('all')) |
+  intersect(groups.get(monitoring_server_client_group, [])) | map('extract',
+  hostvars, monitoring_server_hostname_extractor) | list }}
 
 monitoring_server_smtp_enabled: false
 monitoring_server_smtp_hostname: ""
