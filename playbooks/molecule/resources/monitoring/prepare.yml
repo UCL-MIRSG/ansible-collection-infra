@@ -35,4 +35,8 @@
   tasks:
     - name: Set the default zone to public
       ansible.builtin.command: firewall-offline-cmd --set-default-zone=public
-      changed_when: true
+      register: set_default_zone
+      changed_when: set_default_zone.rc == 0
+      failed_when:
+        - set_default_zone.rc != 0
+        - "'ZONE_ALREADY_SET' not in set_default_zone.stderr"
