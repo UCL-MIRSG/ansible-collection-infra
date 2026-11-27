@@ -14,6 +14,19 @@
         name: sudo
         state: present
 
+    # So the nginx container's timezone can be checked against the host's
+    - name: Install timezone data
+      ansible.builtin.package:
+        name: tzdata
+        state: present
+
+    - name: Set the timezone
+      ansible.builtin.file:
+        src: /usr/share/zoneinfo/Asia/Kolkata
+        dest: /etc/localtime
+        state: link
+        force: true
+
 - name: Install and configure Flask and Gunicorn
   hosts: all
   become: true

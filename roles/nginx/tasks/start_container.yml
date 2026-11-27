@@ -25,4 +25,7 @@
       - "{{ nginx_conf_file | dirname }}:/etc/nginx:ro"
       - "{{ nginx_certs_dir }}:{{ nginx_certs_dir }}:ro"
       - "{{ nginx_log_folder }}:{{ nginx_log_folder }}"
+      # Log in the host's timezone. The error log has no UTC offset, so
+      # fail2ban on the host reads its times as host time
+      - /etc/localtime:/etc/localtime:ro
     restart_policy: always

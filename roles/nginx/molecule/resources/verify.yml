@@ -19,6 +19,126 @@
           - response.server == "nginx"
           - response.content is search('Hello World!')
 
+- name: Verify requests to rate limited paths are limited
+  hosts: localhost
+  tasks:
+    # The app has no /login route, so allowed requests get a 404. The burst
+    # lets 6 requests through before limiting
+    - name: Send POST requests to a rate limited path
+      ansible.builtin.uri:
+        url: https://localhost:8080/login;jsessionid=abc
+        method: POST
+        body: username=molecule
+        headers:
+          Host: molecule.instance.local
+        validate_certs: false
+        status_code:
+          - 404
+          - 429
+      register: rate_limited_responses
+      loop: "{{ range(10) | list }}"
+
+    - name: Send a PUT request to the rate limited path
+      ansible.builtin.uri:
+        url: https://localhost:8080/LOGIN
+        method: PUT
+        body: username=molecule
+        headers:
+          Host: molecule.instance.local
+        validate_certs: false
+        return_content: true
+        status_code:
+          - 404
+          - 429
+      register: rate_limited_put_response
+
+    - name: Check the requests were limited
+      ansible.builtin.assert:
+        that:
+          - rate_limited_responses.results | map(attribute='status') | first ==
+            404
+          - rate_limited_responses.results | map(attribute='status') | last ==
+            429
+          - rate_limited_put_response.status == 429
+          - rate_limited_put_response.content is search('Too many attempts')
+          - rate_limited_put_response.content is
+            search('href="https://support.molecule.instance.local"')
+          - rate_limited_put_response.content is search('may be blocked')
+
+    # The client is over the limit now, so every request that is counted gets
+    # a 429, and every one that isn't gets a 404 from the app
+    - name: Send requests that are counted, or not, towards the limit
+      ansible.builtin.uri:
+        url: https://localhost:8080{{ item.path }}
+        method: "{{ item.method }}"
+        headers:
+          Host: molecule.instance.local
+        validate_certs: false
+        status_code: "{{ item.status }}"
+      loop:
+        # Tomcat ignores ;parameters after any segment
+        - method: POST
+          path: /app;x=1/action/XDATLoginUser
+          status: 429
+        - method: POST
+          path: /APP/Action;y/xdatloginuser;a
+          status: 429
+        - method: POST
+          path: /app/action/XDATLoginUser/x
+          status: 429
+        # Any method other than GET and HEAD
+        - method: PATCH
+          path: /login
+          status: 429
+        - method: DELETE
+          path: /login
+          status: 429
+        # GET and HEAD requests that can pass credentials or Turbine actions
+        - method: GET
+          path: /login?username=a&password=b
+          status: 429
+        - method: GET
+          path: /app/action/XDATLoginUser/a/b
+          status: 429
+        - method: GET
+          path: /app/template/Login.vm?action=a
+          status: 429
+        - method: GET
+          path: /app/template/Login.vm/action/a
+          status: 429
+        - method: HEAD
+          path: /login?username=a
+          status: 429
+        # Browsers loading a page, and other paths, aren't limited
+        - method: GET
+          path: /login
+          status: 404
+        - method: GET
+          path: /app/template/Login.vm
+          status: 404
+        - method: GET
+          path: /app/template/Login.vm;jsessionid=a
+          status: 404
+        - method: HEAD
+          path: /login
+          status: 404
+        - method: POST
+          path: /app/action/XDATLoginUserX
+          status: 404
+        - method: POST
+          path: /loginx
+          status: 404
+        # Segments Tomcat resolves but nginx doesn't are rejected
+        - method: POST
+          path: /a/..;/login
+          status: 400
+        - method: POST
+          path: /a/.;/login
+          status: 400
+        - method: GET
+          path: /a/%2e%2e%3b/login
+          status: 400
+
 - name: Verify the nginx version
   hosts: all
   become: true
@@ -73,3 +193,26 @@
             that:
               - nginx_app_access_log_stat.stat.exists
               - nginx_app_access_log_stat.stat.size > 0
+
+- name: Verify the nginx container logs in the host's timezone
+  hosts: all
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Compare the container's and the host's timezones
+      when: ansible_facts['distribution_major_version'] is version('7', '==')
+      block:
+        - name: Get the host's UTC offset
+          ansible.builtin.command: date +%z
+          register: host_utc_offset
+          changed_when: false
+
+        - name: Get the nginx container's UTC offset
+          ansible.builtin.command: docker exec nginx date +%z
+          register: container_utc_offset
+          changed_when: false
+
+        - name: Check the offsets match
+          ansible.builtin.assert:
+            that:
+              - container_utc_offset.stdout == host_utc_offset.stdout

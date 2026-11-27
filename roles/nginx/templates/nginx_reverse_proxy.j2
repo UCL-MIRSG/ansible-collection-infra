@@ -28,6 +28,38 @@ http {
     gzip on;
     gzip_disable "msie6";
 
+{% if nginx_rate_limit_paths %}
+    # Rate limit requests to sensitive paths per client IP. Requests with an
+    # empty key aren't counted, so other requests, and clients in the
+    # allowlist, aren't limited
+    geo $rate_limit_exempt {
+        default 0;
+{% for address in nginx_rate_limit_allowlist %}
+        {{ address }} 1;
+{% endfor %}
+    }
+
+    # Tomcat ignores ;parameters after any path segment, so allow them after
+    # each one. GET and HEAD requests for the page itself aren't limited, so
+    # browsers can load login forms, but ones that send a query string or more
+    # path can pass credentials or Turbine actions, so they are
+    map "$rate_limit_exempt:$request_method:$uri$is_args" $rate_limit_key {
+        default "";
+{% for path in nginx_rate_limit_paths %}
+{% set path_regex = '/' ~ (path.strip('/').split('/') | map('regex_escape') | join('(?:;[^/]*)?/')) %}
+        "~*^0:(?!GET:|HEAD:)[A-Z]+:{{ path_regex }}(?:[/;?]|$)" $binary_remote_addr;
+        "~*^0:(?:GET|HEAD):{{ path_regex }}(?:;[^/?]*)?(?:/.|\?)" $binary_remote_addr;
+{% endfor %}
+    }
+
+    limit_req_zone $rate_limit_key zone=rate_limit:10m rate={{ nginx_rate_limit_rate }};
+    limit_req_status 429;
+{% if nginx_rate_limit_dry_run %}
+    limit_req_dry_run on;
+{% endif %}
+
+{% endif %}
+
 {% if nginx_use_ssl %}
     # SSL parameters must be specified outside of the server block.
     # Otherwise may only use the nginx may end up using parameters specified in
@@ -117,14 +149,54 @@ http {
         root            {{ nginx_root }};
         {% endif %}
 
+{% if nginx_rate_limit_paths %}
+        # Tomcat treats "..;" and ".;" segments like ".." and ".", but nginx
+        # doesn't, so they could hide a rate limited path. Browsers never send them
+        if ($uri ~ "(?:^|/)\.\.?;") {
+            return 400;
+        }
+
+{#- nginx expands $ variables and \ escapes in the page, so remove them #}
+{% set contact = nginx_rate_limit_contact | replace('$', '') | replace('\\', '') | e %}
+        # Explain the rate limit to people using a browser. The page is in the
+        # config, rather than a file, so the nginx container can serve it
+        error_page 429 @rate_limited;
+
+        location @rate_limited {
+            default_type text/html;
+            return 429 '<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Too many attempts</title>
+<style>body { font-family: system-ui, sans-serif; max-width: 36rem; margin: 4rem auto; padding: 0 1rem; line-height: 1.5; color: #222; }</style>
+</head>
+<body>
+<h1>Too many attempts</h1>
+<p>There have been too many attempts from your network in a short time. Please wait a minute, then try again.</p>
+{% if nginx_rate_limit_ban_notice | bool %}
+<p>If attempts carry on, your network may be blocked from this site for a while.</p>
+{% endif %}
+<p>If this keeps happening, contact {% if contact %}{% if contact is match('https?://') %}<a href="{{ contact }}">{{ contact }}</a>{% elif '@' in contact %}<a href="mailto:{{ contact }}">{{ contact }}</a>{% else %}{{ contact }}{% endif %}{% else %}the server administrator{% endif %}.</p>
+<p><a href="/">Back to the home page</a></p>
+</body>
+</html>
+';
+        }
+
+{% endif %}
         location / {
+{% if nginx_rate_limit_paths %}
+            limit_req                           zone=rate_limit burst={{ nginx_rate_limit_burst }} nodelay;
+{% endif %}
             proxy_pass                          http://localhost:{{ nginx_proxy_port }};
             proxy_redirect                      http:// $scheme://;
             proxy_set_header Host               $http_host;
             proxy_set_header X-Real-IP          $remote_addr;
             proxy_set_header X-Forwarded-Host   $http_host;
             proxy_set_header X-Forwarded-Proto  $scheme;
-            proxy_set_header X-Forwarded-Port   $remote_port;
+            proxy_set_header X-Forwarded-Port   $server_port;
             proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
             proxy_connect_timeout               600;
             proxy_send_timeout                  600;

@@ -1,0 +1,39 @@
+---
+# Jails to enable. Each item needs a name, and every other key is written to
+# the jail's section of the config, e.g.
+#   - name: nginx-limit-req
+#     logpath: /var/log/nginx/app.error.log
+#     maxretry: 10
+# The jail uses the filter with the same name unless it sets filter. Filters
+# in files/filter.d are installed alongside the ones fail2ban provides.
+fail2ban_jails: [] # yamllint disable-line rule:brackets
+
+# Addresses or CIDR ranges that are never banned, in addition to localhost
+fail2ban_ignoreip: [] # yamllint disable-line rule:brackets
+
+# Ban for bantime after maxretry matches within findtime
+fail2ban_bantime: 1h
+fail2ban_findtime: 10m
+fail2ban_maxretry: 5
+
+# Double the ban each time an address is banned again, up to maxtime
+fail2ban_bantime_increment: true
+fail2ban_bantime_maxtime: 1w
+
+# How to ban addresses, before firewalld's rules, so addresses are banned
+# whichever zone their traffic is in. fail2ban_banaction bans the ports in a
+# jail's port setting, which fail2ban sets for the jails it provides, e.g.
+# http,https for nginx-limit-req, and which defaults to all ports.
+# fail2ban_banaction_allports is for jails that set
+# "banaction = %(banaction_allports)s" to always ban every port.
+# On EL8 and later, fail2ban adds the bans to its own nftables table, which
+# firewalld leaves alone when it reloads. firewalld uses iptables on EL7, so
+# bans use a kernel ipset and a firewalld direct rule.
+fail2ban_banaction:
+  "{{ 'firewallcmd-ipset[actiontype=<multiport>, ipsettype=ipset]' if
+  ansible_facts['distribution_major_version'] is version('7', '==') else
+  'nftables-multiport' }}"
+fail2ban_banaction_allports:
+  "{{ 'firewallcmd-ipset[actiontype=<allports>, ipsettype=ipset]' if
+  ansible_facts['distribution_major_version'] is version('7', '==') else
+  'nftables-allports' }}"

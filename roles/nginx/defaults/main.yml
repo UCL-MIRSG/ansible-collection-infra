@@ -38,6 +38,29 @@ nginx_add_default_server: true
 
 nginx_ipv6_enabled: false
 
+# Rate limit requests to these paths, per client IP, e.g. login and password
+# reset endpoints. Sub-paths and ;parameters after any segment are included,
+# and matching is case-insensitive. GET and HEAD requests are only limited when
+# they have a query string or a sub-path, so browsers can load a login page.
+# URLs with "..;" or ".;" segments are rejected, as Tomcat would resolve them.
+# Rate limiting is disabled when empty. Only used by nginx_reverse_proxy.j2.
+nginx_rate_limit_paths: [] # yamllint disable-line rule:brackets
+nginx_rate_limit_rate: 6r/m
+nginx_rate_limit_burst: 5
+# Addresses or CIDR ranges that are never rate limited, e.g. a NAT gateway
+# that many users share
+nginx_rate_limit_allowlist: [] # yamllint disable-line rule:brackets
+# Who people who are rate limited should contact, e.g. a support page URL or a
+# shared helpdesk address. Anyone who is limited sees it, mostly bots, so don't
+# use a personal or system mailbox. The page tells people to contact the server
+# administrator when empty.
+nginx_rate_limit_contact: ""
+# Log requests that would be limited without rejecting them, to trial limits
+nginx_rate_limit_dry_run: false
+# Warn on the rate limit page that clients who keep trying may be blocked,
+# e.g. by fail2ban
+nginx_rate_limit_ban_notice: false
+
 nginx_use_ssl: true
 nginx_certs_dir: /etc/nginx/ssl
 nginx_ssl_cert_file: /etc/nginx/ssl/server.cert

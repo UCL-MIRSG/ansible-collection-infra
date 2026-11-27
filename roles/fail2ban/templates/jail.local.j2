@@ -1,0 +1,21 @@
+# Managed by Ansible (mirsg.infrastructure.fail2ban)
+
+[DEFAULT]
+ignoreip = 127.0.0.1/8 ::1{% for address in fail2ban_ignoreip %} {{ address }}{% endfor %}
+
+bantime = {{ fail2ban_bantime }}
+findtime = {{ fail2ban_findtime }}
+maxretry = {{ fail2ban_maxretry }}
+bantime.increment = {{ fail2ban_bantime_increment | ternary('true', 'false') }}
+bantime.maxtime = {{ fail2ban_bantime_maxtime }}
+
+banaction = {{ fail2ban_banaction }}
+banaction_allports = {{ fail2ban_banaction_allports }}
+{% for jail in fail2ban_jails %}
+
+[{{ jail.name }}]
+enabled = true
+{% for key, value in jail.items() if key != 'name' %}
+{{ key }} = {{ value }}
+{% endfor %}
+{% endfor %}

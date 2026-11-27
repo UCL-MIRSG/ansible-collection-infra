@@ -7,6 +7,15 @@ nginx_proxy_port: 8000
 nginx_diffie_helman_size_bits: 2048
 nginx_root: /home/
 
+nginx_rate_limit_paths:
+  - /login
+  - /app/action/XDATLoginUser
+  - /app/template/Login.vm
+# Slow enough that clients stay over the limit for the whole verify playbook
+nginx_rate_limit_rate: 1r/m
+nginx_rate_limit_ban_notice: true
+nginx_rate_limit_contact: https://support.molecule.instance.local
+
 nginx_use_ssl: true
 nginx_certs_dir: /etc/nginx/ssl
 nginx_ssl_cert_file: /etc/nginx/ssl/server.cert

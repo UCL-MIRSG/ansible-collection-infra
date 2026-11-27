@@ -1,0 +1,10 @@
+---
+# In the same order as for XNAT: nginx, then firewalld, then fail2ban
+- name: Rate limit with nginx and ban with fail2ban
+  hosts: all
+  become: true
+  gather_facts: true
+  roles:
+    - role: mirsg.infrastructure.nginx
+    - role: mirsg.infrastructure.firewalld
+    - role: mirsg.infrastructure.fail2ban
