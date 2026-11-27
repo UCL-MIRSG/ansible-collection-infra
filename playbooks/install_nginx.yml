@@ -1,0 +1,23 @@
+---
+# Installs, upgrades or reconfigures only nginx on XNAT and OMERO web servers
+# that install_xnat.yml or install_omero.yml has already deployed. It sits next
+# to their group_vars, so nginx gets the same settings as a full deploy.
+- name: Install nginx on XNAT web servers
+  hosts: xnat
+  become: true
+  gather_facts: true
+
+  roles:
+    - role: mirsg.infrastructure.nginx
+
+- name: Install nginx on OMERO web servers
+  hosts: omero
+  become: true
+  gather_facts: true
+
+  roles:
+    # Keep these in step with install_omero.yml
+    - role: mirsg.infrastructure.nginx
+      vars:
+        nginx_conf_template: omero-web-nginx-conf.j2
+        nginx_conf_file: /etc/nginx/conf.d/omero-web.conf
